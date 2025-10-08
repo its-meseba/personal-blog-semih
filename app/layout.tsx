@@ -1,6 +1,7 @@
 import "./globals.css";
 
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import { themeEffect } from "./theme-effect";
 import { Analytics } from "./analytics";
 import { Header } from "./header";
@@ -127,6 +128,13 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(generateWebsiteSchema()),
           }}
+        />
+        <Script
+          defer
+          data-website-id="dfid_A9kPvyTeUdPL4ekdtY6iX"
+          data-domain="mehmetsemihbabacan.com"
+          src="https://datafa.st/js/script.js"
+          strategy="afterInteractive"
         />
         <link rel="canonical" href="https://semihbabacan.com" />
         <link rel="alternate" hrefLang="en" href="https://semihbabacan.com" />

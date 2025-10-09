@@ -19,5 +19,7 @@ export function doge() {
                 ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀
                   ▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀
                      ▒▒▒▒▒▒▒▒▒▒▀▀
+
+                  https://github.com/its-meseba
   `);
 }

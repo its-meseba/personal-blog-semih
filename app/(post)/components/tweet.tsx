@@ -23,19 +23,30 @@ async function getAndCacheTweet(id: string): Promise<Tweet | undefined> {
     // @ts-ignore
     if (tweet && !tweet.tombstone) {
       // we populate the cache if we have a fresh tweet
-      await redis.set(`tweet:${id}`, tweet);
+      try {
+        await redis.set(`tweet:${id}`, tweet);
+      } catch (redisError) {
+        console.warn("Failed to cache tweet in Redis:", redisError);
+        // Continue without caching
+      }
       return tweet;
     }
   } catch (error) {
     console.error("tweet fetch error", error);
   }
 
-  const cachedTweet: Tweet | null = await redis.get(`tweet:${id}`);
+  // Try to get from cache, but don't fail if Redis is unavailable
+  try {
+    const cachedTweet: Tweet | null = await redis.get(`tweet:${id}`);
 
-  // @ts-ignore
-  if (!cachedTweet || cachedTweet.tombstone) return undefined;
+    // @ts-ignore
+    if (!cachedTweet || cachedTweet.tombstone) return undefined;
 
-  return cachedTweet;
+    return cachedTweet;
+  } catch (redisError) {
+    console.warn("Failed to fetch tweet from Redis cache:", redisError);
+    return undefined;
+  }
 }
 
 const TweetContent = async ({ id, components }: TweetProps) => {

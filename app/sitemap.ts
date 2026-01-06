@@ -3,9 +3,9 @@ import { getPosts } from './get-posts'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getPosts()
-  
+
   const baseUrl = 'https://semihbabacan.com'
-  
+
   // Static pages
   const staticPages = [
     {
@@ -33,14 +33,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
   ]
-  
+
   // Dynamic thought posts
   const thoughtPosts = posts.map((post) => ({
-    url: `${baseUrl}/2025/${post.id}`,
+    url: `${baseUrl}/2026/${post.id}`,
     lastModified: new Date(post.date),
     changeFrequency: 'monthly' as const,
     priority: 0.6,
   }))
-  
+
   return [...staticPages, ...thoughtPosts]
 }

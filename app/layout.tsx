@@ -19,11 +19,11 @@ export const metadata = {
   description: "Software engineer with 3 years of experience and dual degrees in Computer Science & Industrial Engineering. Ex-CEO of Solace Technology, building AI-native products and scalable systems.",
   keywords: [
     "software engineer",
-    "full stack developer", 
+    "full stack developer",
     "AI engineer",
     "machine learning",
     "TypeScript",
-    "Python", 
+    "Python",
     "React",
     "Next.js",
     "entrepreneur",
@@ -143,7 +143,7 @@ export default async function RootLayout({
         <meta name="msvalidate.01" content="your-bing-verification-code" />
       </head>
 
-      <body className="dark:text-gray-100 max-w-2xl m-auto">
+      <body className="dark:text-gray-100 max-w-3xl m-auto">
         <main className="p-6 pt-3 md:pt-6 min-h-screen">
           <Header />
           {children}

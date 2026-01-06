@@ -16,13 +16,12 @@ export function Header() {
         >
           About
         </Link>
-{/*         
         <Link
           href="/thoughts"
           className="inline-flex text-black dark:text-white hover:bg-gray-200 dark:hover:bg-[#313131] active:bg-gray-300 dark:active:bg-[#242424] rounded-sm p-2 transition-[background-color]"
         >
-          Thoughts
-        </Link> */}
+          Blog
+        </Link>
 
         <Link
           href="/resume"

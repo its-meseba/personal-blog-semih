@@ -2,17 +2,25 @@
 
 import { useSelectedLayoutSegments } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { ago } from "time-ago";
 import useSWR from "swr";
 import type { Post } from "@/app/get-posts";
+import { SeriesBadge } from "@/app/components/SeriesBadge";
+import { AuthorCard } from "@/app/components/AuthorCard";
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
+// Format date for display
+const formatDate = (dateStr: string): string => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
 export function Header({ posts }: { posts: Post[] }) {
   const segments = useSelectedLayoutSegments();
-  // segments can be:
-  // date/post
-  // lang/date/post
   const initialPost = posts.find(
     post => post.id === segments[segments.length - 1]
   );
@@ -28,45 +36,35 @@ export function Header({ posts }: { posts: Post[] }) {
   if (initialPost == null) return <></>;
 
   return (
-    <>
-      <h1 className="text-2xl font-bold mb-1 dark:text-gray-100">
+    <header className="mb-8">
+      {/* Series Badge */}
+      {post.series && (
+        <div className="mb-4">
+          <SeriesBadge series={post.series} size="md" />
+        </div>
+      )}
+
+      {/* Title - Large, bold, sans-serif */}
+      <h1
+        className="text-3xl md:text-[42px] font-bold leading-tight tracking-tight mb-4"
+        style={{ fontFamily: 'Inter, -apple-system, sans-serif' }}
+      >
         {post.title}
       </h1>
 
-      <p className="font-mono flex text-xs text-gray-500 dark:text-gray-500">
-        <span className="flex-grow">
-          <span className="hidden md:inline">
-            <span>
-              <a
-                href="https://twitter.com/rauchg"
-                className="hover:text-gray-800 dark:hover:text-gray-400"
-                target="_blank"
-              >
-                @rauchg
-              </a>
-            </span>
+      {/* Author Section */}
+      <AuthorCard
+        date={formatDate(post.date)}
+        readTime={post.readTime}
+      />
 
-            <span className="mx-2">|</span>
-          </span>
-
-          {/* since we will pre-render the relative time, over time it
-           * will diverge with what the user relative time is, so we suppress the warning.
-           * In practice this is not an issue because we revalidate the entire page over time
-           * and because we will move this to a server component with template.tsx at some point */}
-          <span suppressHydrationWarning={true}>
-            {post.date} ({ago(post.date, true)} ago)
-          </span>
-        </span>
-
-        <span className="pr-1.5">
-          <Views
-            id={post.id}
-            mutate={mutate}
-            defaultValue={post.viewsFormatted}
-          />
-        </span>
-      </p>
-    </>
+      {/* Views Counter (subtle) */}
+      <Views
+        id={post.id}
+        mutate={mutate}
+        defaultValue={post.viewsFormatted}
+      />
+    </header>
   );
 }
 
@@ -75,7 +73,6 @@ function Views({ id, mutate, defaultValue }) {
   const didLogViewRef = useRef(false);
 
   useEffect(() => {
-    if ("development" === process.env.NODE_ENV) return;
     if (!didLogViewRef.current) {
       const url = "/api/view?incr=1&id=" + encodeURIComponent(id);
       fetch(url)
@@ -88,5 +85,12 @@ function Views({ id, mutate, defaultValue }) {
     }
   });
 
-  return <>{views != null ? <span>{views} views</span> : null}</>;
+  return views != null ? (
+    <p
+      className="text-sm mt-4 pt-4 border-t border-gray-100 dark:border-gray-800"
+      style={{ fontFamily: 'Inter, -apple-system, sans-serif', color: 'rgba(117, 117, 117, 1)' }}
+    >
+      {views} views
+    </p>
+  ) : null;
 }

@@ -5,22 +5,24 @@
 
 @layer base {
   :root {
-    font-family: "Inter", sans-serif;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-tap-highlight-color: transparent;
     color-scheme: light;
     /* note: must keep in sync with `theme-color` in `theme-effect.ts` */
-    @apply bg-[#fcfcfc];
-    --foreground-rgb: 0, 0, 0;
+    @apply bg-[#ffffff];
+    --foreground-rgb: 41, 41, 41;
     --background-rgb: 255, 255, 255;
+    --accent-rgb: 26, 137, 23;
   }
 
   :root.dark {
     color-scheme: dark;
     /* note: must keep in sync with `theme-color` in `theme-effect.ts` */
-    @apply bg-[#1C1C1C];
-    --foreground-rgb: 255, 255, 255;
-    --background-rgb: 20, 20, 20;
+    @apply bg-[#121212];
+    --foreground-rgb: 230, 230, 230;
+    --background-rgb: 18, 18, 18;
+    --accent-rgb: 76, 175, 80;
   }
 
   :root.pause-transitions * {
@@ -29,7 +31,7 @@
 
   @supports (font-variation-settings: normal) {
     :root {
-      font-family: "Inter var", sans-serif;
+      font-family: "Inter var", -apple-system, BlinkMacSystemFont, sans-serif;
     }
   }
 }
@@ -41,122 +43,279 @@ body {
   font-size: 16px;
 }
 
-/* Typography improvements */
-h1 {
-  font-size: 2.25rem;
+/* ========================================
+   Medium-Style Article Typography
+   ======================================== */
+
+/* Article body - serif font for reading */
+article {
+  font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+  font-size: 21px;
+  line-height: 1.8;
+  letter-spacing: -0.003em;
+  color: rgb(var(--foreground-rgb));
+}
+
+/* Headings in articles - sans-serif */
+article h1,
+article h2,
+article h3,
+article h4 {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 700;
-  margin-top: 2rem;
-  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+  color: rgb(var(--foreground-rgb));
+}
+
+article h1 {
+  font-size: 42px;
+  line-height: 1.2;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+article h2 {
+  font-size: 28px;
   line-height: 1.3;
+  margin-top: 56px;
+  margin-bottom: 16px;
+  padding-top: 16px;
 }
 
-h2 {
-  font-size: 1.75rem;
-  font-weight: 600;
-  margin-top: 1.75rem;
-  margin-bottom: 1rem;
+article h3 {
+  font-size: 22px;
   line-height: 1.4;
+  margin-top: 42px;
+  margin-bottom: 12px;
 }
 
-h3 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
+article p {
+  margin-bottom: 28px;
 }
 
-p {
-  margin-bottom: 1.25rem;
+article ul,
+article ol {
+  margin-left: 32px;
+  margin-bottom: 28px;
 }
 
-ul, ol {
-  margin-left: 1.5rem;
-  margin-bottom: 1.25rem;
+article li {
+  margin-bottom: 12px;
+  padding-left: 4px;
 }
 
-li {
-  margin-bottom: 0.5rem;
-}
-
-/* Thoughts content */
-.thoughts-content {
-  max-width: 70ch;
-  margin: 0 auto;
-}
-
-/* Language indicator */
-.language-notice {
-  background-color: rgba(var(--foreground-rgb), 0.1);
-  padding: 1rem;
-  border-radius: 0.5rem;
-  margin-bottom: 2rem;
+/* Blockquotes - Medium style */
+article blockquote {
   font-style: italic;
+  font-size: 24px;
+  line-height: 1.6;
+  margin: 42px 0;
+  padding: 0 0 0 30px;
+  border-left: 3px solid rgb(var(--accent-rgb));
+  color: rgba(var(--foreground-rgb), 0.8);
 }
 
-/* Improve code block readability */
-pre, code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 0.9em;
+article blockquote p {
+  margin-bottom: 0;
 }
 
-pre {
-  padding: 1rem;
-  border-radius: 0.5rem;
+/* Code blocks */
+article pre,
+article code {
+  font-family: "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 16px;
+}
+
+article pre {
+  padding: 20px 24px;
+  border-radius: 8px;
   overflow-x: auto;
-  margin-bottom: 1.5rem;
-  background-color: rgba(var(--foreground-rgb), 0.05);
+  margin: 32px 0;
+  background-color: rgba(var(--foreground-rgb), 0.04);
+  border: 1px solid rgba(var(--foreground-rgb), 0.08);
 }
 
-code {
-  padding: 0.2em 0.4em;
-  border-radius: 0.25rem;
-  background-color: rgba(var(--foreground-rgb), 0.05);
+article code {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: rgba(var(--foreground-rgb), 0.06);
+  font-size: 18px;
 }
 
-pre code {
+article pre code {
   padding: 0;
   background-color: transparent;
+  font-size: 16px;
 }
 
-/* Thoughts post list improvements */
-.post-list-item {
-  padding-bottom: 1.5rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(var(--foreground-rgb), 0.1);
+/* Links in articles */
+article a {
+  color: rgb(var(--foreground-rgb));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(var(--foreground-rgb), 0.3);
+  transition: text-decoration-color 0.2s ease;
 }
 
-.post-list-item:last-child {
-  border-bottom: none;
+article a:hover {
+  text-decoration-color: rgb(var(--foreground-rgb));
 }
 
-.post-list-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
+/* ========================================
+   Non-Article Styles
+   ======================================== */
 
-.post-list-date {
-  font-size: 0.9rem;
-  color: rgba(var(--foreground-rgb), 0.7);
-}
-
-/* Improve navigation and link styles */
+/* General link styles (nav, etc) */
 a {
-  color: #0070f3;
+  color: inherit;
   text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.dark a {
-  color: #3b82f6;
+  transition: opacity 0.2s ease;
 }
 
 a:hover {
-  text-decoration: underline;
+  opacity: 0.7;
 }
 
-/* Improved readability for content */
-article {
-  font-size: 1.05rem;
-  line-height: 1.75;
+/* ========================================
+   Post List Card Styles
+   ======================================== */
+
+.post-card {
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(var(--foreground-rgb), 0.1);
 }
+
+.post-card:last-child {
+  border-bottom: none;
+}
+
+.post-card-title {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+  color: rgb(var(--foreground-rgb));
+}
+
+.post-card-title:hover {
+  opacity: 1;
+}
+
+.post-card-excerpt {
+  font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(var(--foreground-rgb), 0.7);
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.post-card-meta {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13px;
+  color: rgba(var(--foreground-rgb), 0.5);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.post-card-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ========================================
+   Reading Progress Bar
+   ======================================== */
+
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: rgb(var(--accent-rgb));
+  z-index: 100;
+  transition: width 0.1s ease-out;
+}
+
+/* ========================================
+   Author Card
+   ======================================== */
+
+.author-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.author-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.author-name {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgb(var(--foreground-rgb));
+}
+
+.author-meta {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13px;
+  color: rgba(var(--foreground-rgb), 0.5);
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+
+@media (max-width: 768px) {
+  article {
+    font-size: 18px;
+    line-height: 1.7;
+  }
+
+  article h1 {
+    font-size: 32px;
+  }
+
+  article h2 {
+    font-size: 24px;
+    margin-top: 40px;
+  }
+
+  article h3 {
+    font-size: 20px;
+  }
+
+  article blockquote {
+    font-size: 20px;
+    padding-left: 20px;
+    margin: 32px 0;
+  }
+
+  .post-card-title {
+    font-size: 18px;
+  }
+
+  .post-card-excerpt {
+    font-size: 15px;
+  }
+}
+

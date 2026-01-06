@@ -1,33 +1,37 @@
 import postsData from "./posts.json";
-import redis from "./redis";
+import { db } from "./firebase";
 import commaNumber from "comma-number";
+import { getReadTime } from "./author";
 
 // Type for posts as they exist in the JSON file
 type PostData = {
   id: string;
   date: string;
   title: string;
+  series?: string;
+  excerpt?: string;
 };
 
 export type Post = PostData & {
   views: number;
   viewsFormatted: string;
+  readTime: string;
 };
 
-// shape of the HSET in redis
+// shape of views from Firebase
 type Views = {
-  [key: string]: string;
+  [key: string]: number;
 };
 
 export const getPosts = async () => {
   let allViews: Views = {};
 
   try {
-    console.log("Fetching all views from Redis");
-    allViews = (await redis.hgetall("views")) || {};
+    console.log("Fetching all views from Firebase");
+    allViews = await db.getViews();
     console.log("Retrieved views:", allViews);
   } catch (error) {
-    console.warn("Failed to fetch views from Redis, using defaults:", error);
+    console.warn("Failed to fetch views from Firebase, using defaults:", error);
     // Continue with empty views object - posts will show 0 views
   }
 
@@ -38,9 +42,12 @@ export const getPosts = async () => {
       ...post,
       views,
       viewsFormatted: commaNumber(views),
+      readTime: getReadTime(post.id),
     };
   });
 
   console.log(`Processed ${posts.length} posts`);
   return posts;
 };
+
+

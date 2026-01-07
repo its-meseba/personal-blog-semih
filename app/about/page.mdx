@@ -5,6 +5,7 @@ import { ProjectsSection } from "./components/projects-section";
 import { ExperienceSection } from "./components/experience-section";
 import { EducationSection } from "./components/education-section";
 import { AchievementsSection } from "./components/achievements-section";
+import { LatestPostsSection } from "./components/latest-posts-section";
 
 export const metadata = {
   title: 'Mehmet Semih Babacan',
@@ -24,6 +25,8 @@ export const metadata = {
       additionalInfo={aboutData.intro.additionalInfo}
       personalNote={aboutData.intro.personalNote}
     />
+
+    <LatestPostsSection />
 
     <ProjectsSection
       title={aboutData.featuredProjects.title}

@@ -3,9 +3,9 @@ export const aboutData = {
   // About Section
   intro: {
     title: "About",
-    description: "I'm a software engineer with 3 years of experience and dual degrees in Computer Science & Industrial Engineering, building applications and scalable systems end to end. I ship full-stack products—from Python backends and agent workflows to Flutter apps and Next.js dashboards—with a focus on UX, performance, and delivery.",
-    additionalInfo: "As ex-CEO of Solace Technology, I launched two AI-native products (smart home & B2B assistant), leading architecture, ML integration, and Go-To-Market. Previously contributed to MPC wallet and Central Bank's (CBDC) Digital Currency research at TÜBİTAK, and real-time ML pipelines in R&D programs.",
-    personalNote: "I'm seeking a high-impact software engineering role to build, ship, and scale. I combine systems thinking, AI/ML integration, and rapid prototyping to turn ideas into scalable, user-centric software."
+    description: "I love building software that people actually use. I studied Computer Science and Industrial Engineering, but honestly, engineering is just how I think. I get excited about niche problems that nobody else noticed and everyday annoyances that everyone just accepts.",
+    additionalInfo: "I've shipped AI assistants, smart home systems, crypto wallets, and blockchain prototypes. I've raised money, grown teams, and taken products from nothing to real users. The common thread is the same: I like turning ideas into things that work and watching them create value for someone.",
+    // personalNote: "I'm looking for a place where I can build products that matter. Not features for features' sake. If you have a hard problem and need someone who will own it from start to finish, let's talk."
   },
 
   // Featured Projects Section
@@ -281,7 +281,7 @@ export const aboutData = {
           "Clean separation of backend AI services and frontend"
         ]
       },
-      
+
     ]
   },
 

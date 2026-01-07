@@ -13,11 +13,15 @@ interface AuthorCardProps {
 export function AuthorCard({ showBio = false, date, readTime }: AuthorCardProps) {
     return (
         <div className="author-card">
-            <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
-                {/* Fallback avatar with initials */}
-                <span className="text-lg font-semibold text-gray-500 dark:text-gray-400">
-                    {author.name.split(" ").map(n => n[0]).join("")}
-                </span>
+            <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden shrink-0">
+                <Image
+                    src="/images/photo.jpeg"
+                    alt={author.name}
+                    width={48}
+                    height={48}
+                    className="w-full h-full object-cover"
+                    priority
+                />
             </div>
             <div className="author-info">
                 <Link

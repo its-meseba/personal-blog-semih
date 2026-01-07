@@ -7,3 +7,4 @@ export { ProjectsSection } from './projects-section';
 export { ExperienceSection } from './experience-section';
 export { EducationSection } from './education-section';
 export { AchievementsSection } from './achievements-section';
+export { LatestPostsSection } from './latest-posts-section';

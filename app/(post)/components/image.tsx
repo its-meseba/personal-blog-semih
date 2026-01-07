@@ -2,7 +2,7 @@ import sizeOf from "image-size";
 import { join } from "path";
 import { readFile } from "fs/promises";
 import { Caption } from "./caption";
-import NextImage from "next/image";
+import { BlogImage as ClientBlogImage } from "./blog-image";
 
 export async function Image({
   src,
@@ -47,7 +47,7 @@ export async function Image({
             );
           }
         }
-        
+
         if (imageBuffer) {
           const computedSize = sizeOf(imageBuffer);
           if (
@@ -61,7 +61,7 @@ export async function Image({
       } catch (error) {
         console.error("Error computing image size:", error);
       }
-      
+
       // Default fallback dimensions for blog images if size couldn't be computed
       if (width === null || height === null) {
         width = 800;
@@ -86,7 +86,7 @@ export async function Image({
 
     return (
       <span className="my-5 flex flex-col items-center">
-        <NextImage
+        <ClientBlogImage
           width={width * factor}
           height={height * factor}
           alt={alt ?? ""}

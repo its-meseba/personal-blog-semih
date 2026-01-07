@@ -10,29 +10,29 @@ export const metadata = {
 
 ![Native Mobile Development](/images/blog/native-mobile-development.png)
 
-There's a pattern that shows up repeatedly in technology: someone invents an abstraction to avoid a painful constraint, everyone adopts it, and then the original constraint disappears—but the abstraction remains. And now the abstraction is pure overhead.
+There's a pattern that shows up repeatedly in technology: someone invents an abstraction to avoid a painful constraint, everyone adopts it, and then the original constraint disappears but the abstraction remains. And now the abstraction is pure overhead.
 
 Cross-platform mobile frameworks are about to become the next example.
 
 To understand why, you have to go back to why cross-platform frameworks existed in the first place. The answer was never "because developers love JavaScript" or "because Dart is a joy to write." It was economics. Specifically, labor economics.
 
-Native mobile development is expensive. Not because Swift or Kotlin are hard—they're actually quite pleasant languages. It's expensive because you need two teams: one for iOS, one for Android. Two codebases. Two sets of platform expertise. Two release cycles to manage. Two sets of bugs that don't directly transfer.
+Native mobile development is expensive. Not because Swift or Kotlin are hard they're actually quite pleasant languages. It's expensive because you need two teams: one for iOS, one for Android. Two codebases. Two sets of platform expertise. Two release cycles to manage. Two sets of bugs that don't directly transfer.
 
-For a startup burning runway, this is a brutal multiplier. You don't just need a mobile engineer—you need mobile *engineers*, plural, with different specializations. Or you need that rare unicorn who's deeply fluent in both platforms.
+For a startup burning runway, this is a brutal multiplier. You don't just need a mobile engineer you need mobile *engineers*, plural, with different specializations. Or you need that rare unicorn who's deeply fluent in both platforms.
 
-Cross-platform frameworks promised to cut this roughly in half. Learn one framework, target both platforms. React Native, Flutter, Xamarin, Cordova—the names changed but the promise stayed the same: write once, run everywhere, fire half your mobile team.
+Cross-platform frameworks promised to cut this roughly in half. Learn one framework, target both platforms. React Native, Flutter, Xamarin, Cordova the names changed but the promise stayed the same: write once, run everywhere, fire half your mobile team.
 
 But there was always a cost.
 
 Cross-platform frameworks work by inserting a layer between your code and the native platform. This layer has to translate your "universal" code into platform-specific operations. And translation is never free.
 
-Performance suffers—not catastrophically, but noticeably. Your app's startup time is slower. Animations are slightly less smooth. Memory usage creeps up. Power users feel it, even if they can't articulate why.
+Performance suffers not catastrophically, but noticeably. Your app's startup time is slower. Animations are slightly less smooth. Memory usage creeps up. Power users feel it, even if they can't articulate why.
 
 Debugging becomes harder, yet of course not always necessarily. Instead of a clean stack trace from your UI to the platform, you now have some JavaScript (or Dart) at the top, a bridge layer in the middle, and native code at the bottom. When something breaks at the lower levels, you're hunting through two runtimes.
 
-Platform features arrive late—or never. Apple announces a new API at WWDC; native apps can use it immediately. Cross-platform apps wait for the framework to add a binding, which might take months. Some features never get exposed at all, forcing developers into awkward "native module" workarounds. The gap is closing, but it's not gone. The latest Liquid Glass design pattern for iOS is a perfect example of this.
+Platform features arrive late or never. Apple announces a new API at WWDC; native apps can use it immediately. Cross-platform apps wait for the framework to add a binding, which might take months. Some features never get exposed at all, forcing developers into awkward "native module" workarounds. The gap is closing, but it's not gone. The latest Liquid Glass design pattern for iOS is a perfect example of this.
 
-And there's cognitive overhead. Cross-platform developers have to understand both the framework's abstractions *and* the underlying platforms well enough to debug them. They're not avoiding complexity—they're adding a layer of it.
+And there's cognitive overhead. Cross-platform developers have to understand both the framework's abstractions *and* the underlying platforms well enough to debug them. They're not avoiding complexity they're adding a layer of it.
 
 Most teams accepted these costs because the alternative was worse. Paying twice the engineers cost more than dealing with slightly worse apps and more complex debugging. The math was clear.
 
@@ -40,7 +40,7 @@ Now the math is changing.
 
 ## The Agentic Inversion
 
-Agentic AI—systems that can autonomously write, test, and maintain code—changes the economics of software development in general. But it changes mobile development disproportionately, because mobile development's cost structure was so heavily weighted toward labor.
+Agentic AI systems that can autonomously write, test, and maintain code changes the economics of software development in general. But it changes mobile development disproportionately, because mobile development's cost structure was so heavily weighted toward labor.
 
 Here's the thing about AI: it doesn't care which language it writes. Claude or GPT-5.2 will generate Swift as readily as TypeScript. The conceptual work of translating a feature specification into code is roughly the same; the language is just syntax. Maintaining two codebases stops requiring twice the humans once you have agents that can maintain code without getting tired or demanding raises.
 
@@ -50,34 +50,34 @@ Think of cross-platform frameworks as a bet. The bet is: we'll accept a fixed co
 
 Abstraction overhead is fixed. An extra layer between your code and the platform imposes the same performance cost whether you wrote the code by hand or an AI wrote it. The bridge layer doesn't know or care.
 
-But labor savings are now variable—and trending toward zero. When AI agents can write and maintain native code as easily as cross-platform code, the "savings" disappear. What you're left with is all the downsides of abstraction and none of the original justification.
+But labor savings are now variable and trending toward zero. When AI agents can write and maintain native code as easily as cross-platform code, the "savings" disappear. What you're left with is all the downsides of abstraction and none of the original justification.
 
 ## The Quiet Migration
 
 This is why I think we'll see a quiet migration back to native development over the next few years.
 
-It probably won't be loud. Companies that migrated to Flutter or React Native with great fanfare rarely announce they're migrating back—it feels like admitting a mistake. But watch the behavior, not the announcements. Watch where new development happens in companies that have both native and cross-platform codebases. Watch which apps get rewrites when performance becomes critical.
+It probably won't be loud. Companies that migrated to Flutter or React Native with great fanfare rarely announce they're migrating back it feels like admitting a mistake. But watch the behavior, not the announcements. Watch where new development happens in companies that have both native and cross-platform codebases. Watch which apps get rewrites when performance becomes critical.
 
 The pattern will likely show up first in categories where abstraction overhead hurts most: games, video apps, anything involving complex animations or real-time processing. These teams already stretched cross-platform frameworks to their limits. They'll move back to native first.
 
-But it won't stop there. Eventually, teams building "ordinary" apps will start asking: "What is this abstraction layer actually buying us?" And when the honest answer is "we used to save on engineers, but now we don't"—they'll start migrating too.
+But it won't stop there. Eventually, teams building "ordinary" apps will start asking: "What is this abstraction layer actually buying us?" And when the honest answer is "we used to save on engineers, but now we don't" they'll start migrating too.
 
 ## What This Means Practically
 
 If you're building a new mobile app today and planning heavy AI assistance in development, the case for cross-platform is weaker than you think. You're not actually saving the labor you expect to save. Meanwhile, you're imposing performance and flexibility constraints that will follow you forever.
 
-If you already have a cross-platform codebase, this doesn't mean drop everything and rewrite. Rewrites are expensive and dangerous. But it does mean questioning your assumptions. The trade-off that made your architecture rational may have expired. A gradual migration—new features in native, old features maintained but not expanded—might be worth considering.
+If you already have a cross-platform codebase, this doesn't mean drop everything and rewrite. Rewrites are expensive and dangerous. But it does mean questioning your assumptions. The trade-off that made your architecture rational may have expired. A gradual migration new features in native, old features maintained but not expanded might be worth considering.
 
-If you're building developer tools, frameworks, or platforms, pay close attention. The cross-platform wave was never really about developer preference—it was about economics. When the economics shift, preferences reassert themselves. A lot of developers would rather write native code. Many of them are quite good at it. They just couldn't justify the cost. That justification is evaporating.
+If you're building developer tools, frameworks, or platforms, pay close attention. The cross-platform wave was never really about developer preference it was about economics. When the economics shift, preferences reassert themselves. A lot of developers would rather write native code. Many of them are quite good at it. They just couldn't justify the cost. That justification is evaporating.
 
-And if you're an engineer evaluating what skills to invest in—native expertise may be more durable than you think. The demand for "write once, run everywhere" was a response to scarcity. When AI makes code abundant, the scarce thing becomes deep platform knowledge—understanding what's actually possible, what performs well, what users expect on each platform.
+And if you're an engineer evaluating what skills to invest in native expertise may be more durable than you think. The demand for "write once, run everywhere" was a response to scarcity. When AI makes code abundant, the scarce thing becomes deep platform knowledge understanding what's actually possible, what performs well, what users expect on each platform.
 
 The people who know native development deeply will be more valuable, not less. They'll be the ones directing AI to produce excellent platform-native experiences while their cross-platform counterparts struggle with the limitations of their abstraction layer.
 
 ## The Broader Pattern
 
-This whole dynamic is an instance of a broader pattern: AI doesn't just make things cheaper—it reshapes which costs are fixed and which are variable, which trade-offs are worth making and which aren't. Many decisions we made to optimize for expensive labor will need to be revisited.
+This whole dynamic is an instance of a broader pattern: AI doesn't just make things cheaper it reshapes which costs are fixed and which are variable, which trade-offs are worth making and which aren't. Many decisions we made to optimize for expensive labor will need to be revisited.
 
 Cross-platform frameworks were an ingenious solution to a painful constraint. When the constraint disappears, though, solutions become baggage.
 
-I strongly believe that native mobile development is coming back. And the reason isn't nostalgia or fashion or technical religion. The reason is that the economics flipped—and the economics always win.
+I strongly believe that native mobile development is coming back. And the reason isn't nostalgia or fashion or technical religion. The reason is that the economics flipped and the economics always win.

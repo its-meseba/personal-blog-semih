@@ -23,38 +23,50 @@ export async function Image({
     if (width === null || height === null) {
       let imageBuffer: Buffer | null = null;
 
-      if (src.startsWith("http")) {
-        imageBuffer = Buffer.from(
-          await fetch(src).then(res => res.arrayBuffer())
-        );
-      } else {
-        if (
-          !process.env.CI &&
-          process.env.VERCEL_URL &&
-          process.env.NODE_ENV === "production"
-        ) {
-          imageBuffer = Buffer.from(
-            await fetch("https://" + process.env.VERCEL_URL + src).then(res =>
-              res.arrayBuffer()
-            )
-          );
+      try {
+        if (src.startsWith("http")) {
+          const response = await fetch(src);
+          if (response.ok) {
+            imageBuffer = Buffer.from(await response.arrayBuffer());
+          }
         } else {
-          imageBuffer = await readFile(
-            new URL(
-              join(import.meta.url, "..", "..", "..", "..", "public", src)
-            ).pathname
-          );
+          if (
+            !process.env.CI &&
+            process.env.VERCEL_URL &&
+            process.env.NODE_ENV === "production"
+          ) {
+            const response = await fetch("https://" + process.env.VERCEL_URL + src);
+            if (response.ok) {
+              imageBuffer = Buffer.from(await response.arrayBuffer());
+            }
+          } else {
+            imageBuffer = await readFile(
+              new URL(
+                join(import.meta.url, "..", "..", "..", "..", "public", src)
+              ).pathname
+            );
+          }
         }
+        
+        if (imageBuffer) {
+          const computedSize = sizeOf(imageBuffer);
+          if (
+            computedSize.width !== undefined &&
+            computedSize.height !== undefined
+          ) {
+            width = computedSize.width;
+            height = computedSize.height;
+          }
+        }
+      } catch (error) {
+        console.error("Error computing image size:", error);
       }
-      const computedSize = sizeOf(imageBuffer);
-      if (
-        computedSize.width === undefined ||
-        computedSize.height === undefined
-      ) {
-        throw new Error("Could not compute image size");
+      
+      // Default fallback dimensions for blog images if size couldn't be computed
+      if (width === null || height === null) {
+        width = 800;
+        height = 800;
       }
-      width = computedSize.width;
-      height = computedSize.height;
     }
 
     let alt: string | null = null;

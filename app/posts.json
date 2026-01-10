@@ -1,6 +1,12 @@
 {
   "posts": [
     {
+      "id": "claude-skills-integration",
+      "date": "2026-01-10",
+      "title": "Portable Agentic Skills: When Developer Preferences Become Configuration Files",
+      "series": "Agentic Coding"
+    },
+    {
       "id": "native-mobile-development",
       "date": "2026-01-06",
       "title": "Native App Development Returns When Labor Costs Collapse",

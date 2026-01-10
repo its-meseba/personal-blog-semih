@@ -1,0 +1,57 @@
+export const metadata = {
+  title: 'Portable Agentic Skills: When Developer Preferences Become Configuration Files',
+  description: 'Claude Code has the best agentic experience but costs ~$1k/month for heavy use. I built a Claude Skills-compatible system for Antigravity that makes AI coding preferences portable across platforms.',
+  openGraph: {
+    title: 'Portable Agentic Skills: When Developer Preferences Become Configuration Files',
+    description: 'Claude Code has the best agentic experience but costs ~$1k/month for heavy use. I built a Claude Skills-compatible system for Antigravity that makes AI coding preferences portable across platforms.',
+    images: [{ url: '/og/claude-skills-integration' }]
+  }
+}
+
+![Claude Skills Integration](/images/blog/claude-skills-integration.png)
+
+Claude Code has the best agentic coding experience I've used. The skill system is elegant. The CLAUDE.md conventions are well-designed. The way it maintains context across sessions feels natural rather than forced. Cursor delivers a similarly polished experience across different development workflows.
+
+These tools represent what agentic development should feel like when it's working well.
+
+But here's the constraint that changes the economic calculation: heavy development with these tools runs around $1,000/month. For someone actively building across multiple projects and experiments, that cost becomes a significant fixed overhead that shapes how you allocate both attention and working time.
+
+Google's Antigravity IDE operates on a fundamentally different model. With AI Pro, you get remarkably generous limits at a fraction of the cost. The underlying model capabilities are genuinely strong. You can accomplish substantial development work without worrying about hitting usage caps.
+
+What's notably missing is the refined developer experience that Anthropic built thoughtfully into Claude Code. The small details that compound into workflow efficiency. The conventions that make the tool feel like an extension of how you think rather than a separate system you're negotiating with.
+
+This gap between raw capability and polished experience creates an interesting opportunity.
+
+## Hackable by Design
+
+These agentic tools are, by their fundamental architecture, hackable. They're explicitly designed to read configuration files. They're designed to be extended through rules and structured workflows. They're designed to adapt to how individual developers prefer to work.
+
+So instead of switching tools entirely and accepting trade-offs in either direction, the question becomes more surgically targeted: which specific features are actually worth the effort of porting across environments?
+
+The Claude Skills specification stands out as particularly valuable and portable. It's a simple, elegant pattern for encapsulating procedural knowledge in a form AI agents can consume efficiently.
+
+The structure is minimal: a directory with a SKILL.md file containing YAML frontmatter and natural language instructions. Optional scripts for deterministic operations that shouldn't be improvised. References for documentation that provides context. Assets for templates and reusable files.
+
+The AI loads skills on demand rather than always, keeping the context window lean while offering deep procedural knowledge exactly when it's needed. It's progressive disclosure applied thoughtfully to agent configuration.
+
+## Cross-Platform by Convention
+
+This pattern ports directly to Antigravity with no modification. Same directory structure, same file conventions, different runtime environment executing the same logic.
+
+I built a cross-platform skill library that works identically in Claude Code and Antigravity. Skills written once deploy everywhere without adjustment. Global rules persist across all projects through a shared configuration file. Workflows trigger with slash commands following consistent patterns.
+
+The vision is straightforward: write skills once, use everywhere.
+
+**The repository is public: [github.com/its-meseba/antigravity-configuration-and-claude-skills-integration](https://github.com/its-meseba/antigravity-configuration-and-claude-skills-integration)**
+
+## The Deeper Insight
+
+The deeper insight here isn't primarily about cost optimization, though that clearly matters for anyone doing substantial development work. It's that the agentic infrastructure layer is quietly becoming standardized across competing tools and vendors.
+
+The skills you build, the rules you encode, the workflows you document—these are portable assets now. They work across tools because the underlying model capabilities are converging faster than the surface-level product differentiation can keep pace with.
+
+Your development preferences are no longer locked into a single vendor's ecosystem. They're not tied to subscription decisions or platform migrations. They're configuration files that you own and can move freely.
+
+That's a meaningful shift in how developer tooling works. And it suggests an interesting question for anyone investing time in these systems: are you building preferences in a format that transfers, or are you accumulating lock-in without realizing it?
+
+---

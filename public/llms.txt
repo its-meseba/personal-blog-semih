@@ -8,6 +8,7 @@ https://semihbabacan.com/thoughts
 https://semihbabacan.com/resume
 
 # Blog Posts
+https://semihbabacan.com/2026/gemini-flash-superiority
 https://semihbabacan.com/2026/claude-skills-integration
 https://semihbabacan.com/2026/native-mobile-development
 

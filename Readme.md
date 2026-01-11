@@ -14,7 +14,7 @@ Mehmet Semih Babacan is a visionary tech entrepreneur from Turkey. As co-founder
 - **Research Experience**: Blockchain research at TÜBİTAK BİLGEM's UEKAE Blockchain Research Laboratory
 - **Current Venture**: Co-founder of Solace (2023-Present), developing AI-driven smart home solutions
 - **Previous Work**: Contributions to SismEQ (AI-powered disaster response system) and experience at Cezeri AI and Robotics
-- **GitHub**: [koltukutsu](https://github.com/koltukutsu)
+- **GitHub**: [its-meseba](https://github.com/its-meseba)
 
 ## How to run
 

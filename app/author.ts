@@ -8,7 +8,7 @@ export const author = {
     links: {
         twitter: "https://x.com/its_meseba",
         linkedin: "https://www.linkedin.com/in/mehmetsemihbabacan",
-        github: "https://github.com/koltukutsu",
+        github: "https://github.com/its-meseba",
     },
 };
 
@@ -22,7 +22,7 @@ export const calculateReadTime = (content: string): string => {
 
 // Default read times for posts (add entries when creating new posts)
 export const defaultReadTimes: Record<string, string> = {
-    // Add entries like: "post-slug": "5 min read"
+    "gemini-flash-superiority": "17 min read",
 };
 
 // Get read time for a post

@@ -89,7 +89,7 @@ export const aboutData = {
         technologies: ["Python", "Gemma 3", "LoRA Fine-tuning", "FastAPI", "Pygame", "PyTorch", "PEFT", "Intel GPU Optimization"],
         role: "AI Engineer & Full-Stack Developer",
         status: "Complete",
-        github: "https://github.com/koltukutsu/gemma-3-local-fine-tuned-chess",
+        github: "https://github.com/its-meseba/gemma-3-local-fine-tuned-chess",
 
         images: [
           "/images/featured-projects/chess-arena.png"
@@ -112,7 +112,7 @@ export const aboutData = {
         technologies: ["Flutter", "Go", "Dart FFI", "MPC", "Cryptography", "Go"],
         role: "Research Engineer",
         status: "Completed",
-        github: "https://github.com/koltukutsu/mpc-wallet",
+        github: "https://github.com/its-meseba/mpc-wallet",
         detailedDescription: "A secure cryptocurrency wallet that distributes trust through multi-party computation, removing single points of failure traditional wallets face. Built with clean separation between UI (Flutter) and cryptographic core (Go via FFI).",
         achievements: [
           "Clean separation of UX and cryptographic concerns",
@@ -186,9 +186,9 @@ export const aboutData = {
         status: "Completed",
         website: "https://hesap-landing-website.vercel.app/",
         github: [
-          "https://github.com/koltukutsu/hesapp",
-          "https://github.com/koltukutsu/Hesap-owner-interface",
-          "https://github.com/koltukutsu/Hesap-landing-website"
+          "https://github.com/its-meseba/hesapp",
+          "https://github.com/its-meseba/Hesap-owner-interface",
+          "https://github.com/its-meseba/Hesap-landing-website"
         ],
         images: [
           "/images/featured-projects/hesap-interface.png"
@@ -209,7 +209,7 @@ export const aboutData = {
         technologies: ["TypeScript", "Chrome Extension APIs", "Web APIs"],
         role: "Personal Project",
         status: "Completed",
-        github: "https://github.com/koltukutsu/note-nook",
+        github: "https://github.com/its-meseba/note-nook",
         detailedDescription: "A unified note-taking platform combining web app and browser extension for frictionless idea capture. Features instant context preservation and seamless synchronization across devices.",
         achievements: [
           "Unified TypeScript codebase across web and extension",
@@ -224,7 +224,7 @@ export const aboutData = {
         technologies: ["Flutter", "Spotify API", "OAuth 2.0", "Mobile Development"],
         role: "Personal Project",
         status: "Completed",
-        github: "https://github.com/koltukutsu/wakely",
+        github: "https://github.com/its-meseba/wakely",
         detailedDescription: "A personalized alarm app that integrates with Spotify to wake users with their favorite music. Features OAuth authentication, playlist management, and cross-platform mobile support.",
         achievements: [
           "Spotify Web API integration and OAuth 2.0 flow",
@@ -239,7 +239,7 @@ export const aboutData = {
         technologies: ["Flutter", "Python", "Jupyter Notebooks", "Linguistics"],
         role: "Personal Project",
         status: "Completed",
-        github: "https://github.com/koltukutsu/cevapp",
+        github: "https://github.com/its-meseba/cevapp",
         detailedDescription: "An innovative language learning app that transforms passive English study into active speaking practice through voice capture and AI-driven question generation.",
         achievements: [
           "End-to-end voice capture and storage flow",
@@ -254,7 +254,7 @@ export const aboutData = {
         technologies: ["TypeScript", "Web Development", "Analytics"],
         role: "Personal Project",
         status: "Completed",
-        github: "https://github.com/koltukutsu/listele-wep-app",
+        github: "https://github.com/its-meseba/listele-wep-app",
         detailedDescription: "A focused landing page and waitlist system designed for early product validation, featuring conversion optimization and rapid deployment capabilities.",
         achievements: [
           "Conversion-optimized landing experience",
@@ -270,7 +270,7 @@ export const aboutData = {
         role: "Personal Project",
         status: "Active",
         website: "https://ochtarcus.com",
-        github: "https://github.com/koltukutsu/ochtarcus",
+        github: "https://github.com/its-meseba/ochtarcus",
         detailedDescription: "Ochtarcus is a comprehensive knowledge platform that combines AI-powered search with curated entrepreneurial content. The platform enables entrepreneurs to access expert knowledge through natural language queries, browse a rich library of blogs and videos, and connect with a community of innovators. Features include unlimited AI search, personalized recommendations, and integration with leading entrepreneurial organizations like Y Combinator and a16z.",
         achievements: [
           "AI-powered search with natural language processing",

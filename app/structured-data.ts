@@ -9,7 +9,7 @@ export function generatePersonSchema() {
     "url": "https://semihbabacan.com",
     "sameAs": [
       "https://linkedin.com/in/mehmetsemihbabacan",
-      "https://github.com/koltukutsu",
+      "https://github.com/its-meseba",
       "https://www.researchgate.net/profile/Mehmet-Semih-Babacan"
     ],
     "jobTitle": "Software Engineer",

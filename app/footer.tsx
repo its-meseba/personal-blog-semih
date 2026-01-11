@@ -11,7 +11,7 @@ export function Footer() {
         )
       </div>
       <div>
-        <A target="_blank" href="https://github.com/koltukutsu">
+        <A target="_blank" href="https://github.com/its-meseba">
           Source
         </A>
       </div>

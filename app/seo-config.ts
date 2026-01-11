@@ -3,13 +3,13 @@ export const seoConfig = {
   siteName: "Mehmet Semih Babacan",
   siteUrl: "https://semihbabacan.com",
   siteDescription: "Software engineer with 3 years of experience and dual degrees in Computer Science & Industrial Engineering. Ex-CEO of Solace Technology, building AI-native products and scalable systems.",
-  
+
   // Author information
   author: {
     name: "Mehmet Semih Babacan",
     email: "m.semihbabacan@gmail.com",
     linkedin: "https://linkedin.com/in/mehmetsemihbabacan",
-    github: "https://github.com/koltukutsu",
+    github: "https://github.com/its-meseba",
     twitter: "@semihbabacan",
     location: "Istanbul, Turkey",
   },
@@ -17,7 +17,7 @@ export const seoConfig = {
   // Default metadata for pages
   defaultTitle: "Mehmet Semih Babacan - Software Engineer & Tech Entrepreneur",
   titleTemplate: "%s | Mehmet Semih Babacan",
-  
+
   // Keywords for different page types
   keywords: {
     general: [
@@ -119,7 +119,7 @@ export const seoConfig = {
   ai: {
     allowedBots: [
       'GPTBot',
-      'ChatGPT-User', 
+      'ChatGPT-User',
       'CCBot',
       'Claude-Web',
       'anthropic-ai',
@@ -157,7 +157,7 @@ export function generatePageMetadata({
   const url = `${seoConfig.siteUrl}${path}`;
   const pageDescription = description || seoConfig.siteDescription;
   const pageKeywords = [...seoConfig.keywords.general, ...keywords];
-  
+
   return {
     title,
     description: pageDescription,

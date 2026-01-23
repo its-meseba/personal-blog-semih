@@ -23,12 +23,7 @@ export function Header() {
           Blog
         </Link>
 
-        <Link
-          href="/resume"
-          className="inline-flex text-black dark:text-white hover:bg-gray-200 dark:hover:bg-[#313131] active:bg-gray-300 dark:active:bg-[#242424] rounded-sm p-2 transition-[background-color]"
-        >
-          Resume
-        </Link>
+
 
         <div className="hidden md:flex items-center gap-1 ml-2 pl-2 border-l border-gray-200 dark:border-gray-700">
           <Link

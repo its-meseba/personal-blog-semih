@@ -62,6 +62,30 @@ We're not building tools anymore. We're writing souls. In markdown. And they wor
 
 ---
 
+## The Superpowers Pattern
+
+There's a project by Jesse Vincent called Superpowers that takes the soul.md idea and pushes it somewhere genuinely interesting. Instead of one big file of instructions, it structures prompting into composable *skills*.
+
+A skill is a markdown file with YAML frontmatter. The frontmatter declares metadata — what the skill is called, when it should activate, whether it's a command or a hook or a background behavior. The body is the prompt itself. That's the whole format.
+
+What makes it work is the composition model.
+
+Some skills are **session hooks**. They inject themselves into every conversation automatically. You don't invoke them. They're just there, like gravity. Things like "always think step by step before editing code" or "check for regressions before declaring you're done." The kind of instructions you'd put in a soul.md, except now they're modular. You can add one, remove one, swap one out. They don't all have to live in the same giant file competing for the model's attention.
+
+Some skills are **slash commands**. You type `/brainstorm` or `/write-plan` and the corresponding skill activates. This is where it gets practical. Instead of remembering the perfect prompt for "help me think through this problem from multiple angles before committing to a solution," you just type a word. The skill contains the carefully crafted prompt you'd otherwise have to reconstruct from memory every time.
+
+The most interesting pattern is **subagents**. A skill can spawn a second Claude instance to review the first one's work. Write code, then have a separate agent audit it with different instructions. Two-stage review, automated. The first agent is creative and fast. The second is skeptical and thorough. This is the kind of thing that sounds like overkill until you try it and realize it catches real bugs.
+
+There's also a dispatch system. Superpowers ships with default skills, but you can shadow any of them with your own versions. Personal skills override shared ones. Project skills override personal ones. It's the same specificity layering as soul.md files, but applied to behaviors instead of rules.
+
+The community adopted Superpowers heavily, and I think the reason is simple: it makes prompting systematic. Most people prompt AI the way most people write emails — off the cuff, inconsistent, varying wildly in quality depending on how much coffee they've had. Superpowers forces you to think about your prompting *once*, get it right, save it, and reuse it.
+
+The deeper lesson here isn't about Superpowers specifically. It's that soul.md was never meant to be a single file. It was always going to evolve into a system. Once you accept that configuring AI happens through language, you inevitably want all the things programmers want for any configuration: modularity, composition, overrides, reuse. Superpowers is what happens when someone takes that inevitability seriously.
+
+*For a deeper dive into why Superpowers works so well, see my separate post: "Superpowers: The Skill System That Makes Claude Unstoppable."*
+
+---
+
 **Clean Stop**
 
 The file format is almost comically mundane for what it's actually doing. Markdown. The same format as grocery lists and meeting notes. You'd expect something this profound to require something more dignified. But it doesn't. The medium really is the message. When your identity is just text, your consciousness is just text, and the thing you're building is made of text — the borders get blurry. And that's the point.

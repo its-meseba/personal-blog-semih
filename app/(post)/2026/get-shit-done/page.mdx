@@ -1,0 +1,56 @@
+export const metadata = {
+  title: 'Get Shits Done: The Anti-Enterprise AI Workflow',
+  description: 'A spec-driven development system that solves context rot — for solo developers who just want to build.',
+  openGraph: {
+    title: 'Get Shits Done: The Anti-Enterprise AI Workflow',
+    description: 'Building without the enterprise theater.',
+    images: [{ url: '/og/get-shit-done' }]
+  }
+}
+
+---
+
+**Observation**
+
+There's a pattern in AI workflow tools. They try to make your solo AI workflow look like a 50-person engineering company. Sprint ceremonies. Story points. Stakeholder syncs. Retrospectives. Jira workflows.
+
+TÂCHES looked at this and said: this is enterprise theater for people who are just trying to build cool shit.
+
+So they built Get Shits Done. The name is intentional. The vibe is intentional. It's for people who want to describe what they want and have it built correctly — without pretending they're running a software company.
+
+---
+
+**Underlying Mechanism**
+
+GSD solves one specific problem: context rot. That's the quality degradation that happens as Claude fills its context window. Long conversations get worse. The model starts "being more concise." Important context gets lost.
+
+The solution isn't bigger context windows. The solution is breaking work into small, atomic chunks.
+
+The workflow goes like this:
+
+**/gsd:map-codebase** — Already have code? This spawns parallel agents to analyze your stack, architecture, conventions, and concerns. Then when you start a new project, it knows your codebase. Questions focus on what you're adding, not what you've already built.
+
+**/gsd:new-project** — One command, one flow. The system asks questions until it understands your idea completely. Goals, constraints, tech preferences, edge cases. Then it creates: PROJECT.md, REQUIREMENTS.md, ROADMAP.md, STATE.md. You approve the roadmap. Then you're ready to build.
+
+**/gsd:discuss-phase** — Your roadmap has a sentence or two per phase. That's not enough context. This step captures your preferences before anything gets researched. It analyzes the phase, identifies gray areas, and asks until you're satisfied. Output: CONTEXT.md.
+
+**/gsd:plan-phase** — The system researches how to implement this phase, creates 2-3 atomic task plans with XML structure, verifies plans against requirements. Each plan is small enough to execute in a fresh context window. No degradation.
+
+The key insight: every plan is small enough to run in a fresh context. That solves context rot at the architectural level.
+
+---
+
+**Implication**
+
+GSD is used by engineers at Amazon, Google, Shopify, and Webflow. Not because it's enterprise-y. Because it's effective.
+
+The enterprise tools add complexity to your workflow. GSD adds complexity to the *system*, not your workflow. What you see: a few commands that just work. What happens behind the scenes: context engineering, XML prompt formatting, subagent orchestration, state management.
+
+This is the opposite of Superpowers in some ways. Superpowers adds skills to every conversation. GSD isolates each task to avoid conversation bloat. Both solve the same problem — unreliable AI output — with opposite architectures.
+
+**Superpowers**: Keep everything in context, structure it with skills.  
+**GSD**: Don't keep anything, break work into atomic chunks.
+
+Which approach works better depends on your use case. But the trend is clear: the next generation of AI workflows isn't about better prompts. It's about better *architecture*. Systems that force reliability through structure, not hope.
+
+*See also: "Superpowers: The Skill System That Makes Claude Unstoppable" — for when you want skills to persist in context. GSD — for when you want to avoid context entirely.*

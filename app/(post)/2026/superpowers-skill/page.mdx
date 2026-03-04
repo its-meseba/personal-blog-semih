@@ -36,6 +36,26 @@ There's also a dispatch system with overrides. Personal skills shadow shared ski
 
 ---
 
+## The Technical Patterns That Make It Work
+
+Most people write system prompts like suggestions. "Please consider using best practices." This is like posting a speed limit sign in a town with no cops. The model reads it, nods politely, and does whatever its training distribution suggests.
+
+Superpowers works because it treats prompt engineering as mechanism design. You're not asking the model to be better. You're building structures that make it hard to be worse.
+
+**Aggressive Skill Matching**: The rule is "If there's even a 1% chance a skill applies, you MUST invoke it." The failure mode isn't false positives—it's the model rationalizing why a skill isn't needed for a task that seems "too simple." There's a Red Flags table with patterns to catch: "This is too simple, no skill needed." You're inoculating against rationalization before it happens.
+
+**Two-Stage Subagent Review**: When generating code, it spawns a subagent with *different instructions* to audit the output. The writing prompt says "implement this." The review prompt says "find everything wrong." Different instructions produce genuinely different attention patterns.
+
+**TDD as Structural Enforcement**: Instructions to delete code and start over if tests aren't written first. This forces the model to specify behavior before generating it.
+
+**Skill Chaining and Shadowing**: Skills trigger other skills. A coding skill invokes testing, which invokes review. Layering means personal overrides shared, project overrides personal. CSS specificity for agent behavior.
+
+**Grounding Enforcement**: Every claim cites `file:line`. Every inference gets labeled. You're forcing the model to show its work.
+
+The common thread: none of these patterns trust the model's judgment about when to apply them. The model's judgment about *what to do* is often good. Its judgment about *when to try hard* is terrible. So you take that decision away from it. You build the cops, not just the speed limit signs.
+
+---
+
 **Implication**
 
 Why did the community adopt this so aggressively?

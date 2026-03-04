@@ -1,5 +1,6 @@
 {
   "posts": [
+    {"id": "get-shit-done", "date": "2026-03-04", "title": "Get Shits Done: The Anti-Enterprise AI Workflow", "series": "Agentic Coding"},
     {"id": "superpowers-skill", "date": "2026-03-04", "title": "Superpowers: The Skill System That Makes Claude Unstoppable", "series": "Agentic Coding"},
     {"id": "soul-md", "date": "2026-03-04", "title": "Your Soul Is a Markdown File Now", "series": "Agentic Coding"},
     {"id": "ralph-loop", "date": "2026-03-04", "title": "Ralph Loop: The Night Shift You Don't Pay For", "series": "Agentic Coding"},

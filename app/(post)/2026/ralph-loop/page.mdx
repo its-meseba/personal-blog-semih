@@ -1,0 +1,63 @@
+export const metadata = {
+  title: 'Ralph Loop: The Night Shift You Don\'t Pay For',
+  description: 'Something weird is happening in the repos of a small but growing group of developers. They\'re pushing commits at 3am, 4am, 5am — not because they\'re grinding through the night, but because they\'re asleep. Their agent isn\'t.',
+  openGraph: {
+    title: 'Ralph Loop: The Night Shift You Don\'t Pay For',
+    description: 'Something weird is happening in the repos of a small but growing group of developers. They\'re pushing commits at 3am — because they\'re asleep. Their agent isn\'t.',
+    images: [{ url: '/og/ralph-loop' }]
+  }
+}
+
+---
+
+**Observation**
+
+Something weird is happening in the repos of a small but growing group of developers. They're pushing commits at 3am, 4am, 5am — not because they're grinding through the night, but because they're asleep. Their agent isn't.
+
+The pattern is called Ralph Loop. The name isn't fancy. It's not a framework or a product launch. It's a workflow someone figured out with Claude Code: you define a task, set up a loop, go to bed, and wake up to a pull request. Sometimes a good one. Sometimes a terrible one. But always *something* — which turns out to be the point.
+
+---
+
+**Underlying Mechanism**
+
+To understand why this matters, you need to understand what changed about coding agents in the last six months.
+
+The first generation of AI coding tools were autocomplete on steroids. You typed, they suggested. Useful, but fundamentally reactive. You were still the driver. The AI was a passenger who occasionally pointed out a shortcut.
+
+Claude Code is different. It can hold context across a codebase, run terminal commands, read error messages, iterate on its own output, and — critically — keep going when it hits a wall. Not perfectly. Not even reliably. But persistently.
+
+Ralph Loop exploits this persistence. Here's the basic idea:
+
+1. You write a detailed prompt describing what you want built or fixed.
+2. You wrap Claude Code in a script that re-invokes it when it finishes or stalls.
+3. You add guardrails — tests that must pass, lint checks, maybe a budget on iterations.
+4. You run it.
+5. You leave.
+
+That's it. There's no orchestration platform. No fancy infra. It's a while loop with an LLM inside it.
+
+The reason it works — when it works — is that most software tasks aren't one brilliant insight followed by execution. They're a long series of small, boring decisions interspersed with debugging. Read the error. Change the line. Run it again. Read the new error. Most of this doesn't require genius. It requires patience. And patience is the one thing computers have always been better at than humans.
+
+What Ralph Loop really does is reframe the agent's weakness as a feature. Everyone complains that LLMs make mistakes. That they hallucinate. That they write code that doesn't compile. Fine. But if you give them a feedback loop — real compiler errors, real test failures, real output — they can often correct themselves. Not on the first try. Maybe not on the fifth. But by the twentieth iteration, at 4am, while you're in REM sleep, something clicks.
+
+The key insight is that the cost of iteration has collapsed. Running Claude Code in a loop for 8 hours costs less than a nice dinner. The compute is cheap. The tokens are cheap. What was expensive was *your attention*. Ralph Loop removes you from the loop. That's the whole trick.
+
+---
+
+**Implication**
+
+This changes the economics of software development in a way most people haven't internalized yet.
+
+We've been thinking about AI coding tools as productivity multipliers. "10x developer" stuff. You write code faster, you ship features faster, you're more productive during your working hours. Ralph Loop suggests a different model entirely: what if the constraint isn't how fast you code, but how many hours in the day you can code at all?
+
+A developer running Ralph Loop doesn't get a 2x or 10x multiplier on their 8-hour workday. They get an additional 16 hours of low-quality-but-nonzero work layered on top. Some of that work is garbage. But some of it is a working first draft that would have taken them a full day to produce manually. The morning becomes triage and refinement instead of creation from scratch.
+
+This has second-order effects that matter for product development. If the bottleneck was always "we don't have enough engineering hours," and you just added a ghost shift to every developer on the team, roadmaps change. The calculus of what's worth building changes. Small speculative features that nobody would greenlight because they'd take a developer two days? Let the loop try it overnight. If it works, great. If it doesn't, you lost nothing but electricity.
+
+It also changes what it means to be a good developer. The skill that matters in Ralph Loop isn't typing speed or algorithm knowledge. It's the ability to write a clear, unambiguous prompt. To decompose a problem into something an agent can chew on. To design the right guardrails — the tests and checks that tell the loop whether it's converging or spinning. The best Ralph Loop operators are turning into something that looks less like traditional programmers and more like technical project managers for an inexhaustible but somewhat unreliable junior dev.
+
+---
+
+**Clean Stop**
+
+The factory doesn't care if the lights are on. That was the original insight of automation. Ralph Loop is just that insight, finally arriving for knowledge work. Not with a bang. With a while loop and a `sleep` command.

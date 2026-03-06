@@ -1,0 +1,69 @@
+export const metadata = {
+  title: 'The Identity Crisis of AI Agents',
+  description: 'Every AI agent accessing your systems is like an unmanaged employee with no badge, no audit trail, and no boundaries. This is the security hole no one is talking about.',
+  openGraph: {
+    title: 'The Identity Crisis of AI Agents',
+    description: 'The security hole no one is talking about.',
+    images: [{ url: '/og/agent-identity-crisis' }]
+  }
+}
+
+---
+
+# The Identity Crisis of AI Agents
+
+Most companies right now are worried about the wrong AI problem.
+
+They're debating prompt engineering techniques, model selection, fine-tuning strategies. Meanwhile, something much more fundamental is broken, and almost nobody is talking about it.
+
+Every AI agent accessing your systems today is, for all practical purposes, an unmanaged employee. No badge. No audit trail. No boundaries. And you probably don't even know how many of them are running.
+
+---
+
+## The Observation
+
+Here's what's actually happening inside enterprises right now. A developer on the platform team spins up an agent to automate ticket triage. Someone in finance deploys a GPT-based workflow that reads invoices and hits the ERP API. A product manager connects an agent to the CRM to generate weekly summaries. Marketing has three different agent tools accessing the content management system.
+
+None of these agents have identities. Not in the way your IT security team thinks about identity. They don't exist in your directory. They don't have scoped permissions that expire. They don't show up in access reviews. When they authenticate to your systems, they're borrowing a human's credentials — or worse, using a shared service account that was provisioned in 2019 and has never been rotated.
+
+This is the norm, not the exception.
+
+If a human employee operated this way — no badge, accessing sensitive systems under someone else's login, with no record of what they did or why — you'd call that a security incident. When an AI agent does it, we call it innovation.
+
+---
+
+## The Underlying Mechanism
+
+The reason this is happening is architectural. Our entire identity infrastructure was built for two types of principals: humans and services. Humans get SSO, MFA, role-based access. Services get API keys and service accounts. Both are well-understood.
+
+AI agents are neither.
+
+An agent isn't a human. It doesn't respond to MFA prompts. It doesn't have judgment about whether an access request is appropriate. But it's also not a traditional service. It's autonomous. It makes decisions about what to access and when. It chains actions together in ways that weren't explicitly programmed. It can be instructed by external inputs — user prompts, other agents, even data it retrieves — to behave in ways its deployer never intended.
+
+We have no identity primitive for this. And that's the root of the problem.
+
+This is what the team at [Orchid Security](https://www.orchid.security/) calls the "dark matter" of enterprise AI. Agents are proliferating across organizations, operating in the gaps between existing security controls, essentially invisible to the systems designed to enforce governance. You can't manage what you can't see. You can't audit what doesn't have an identity. And you can't scope permissions for an entity that doesn't exist in your access model.
+
+---
+
+## The Implication
+
+Here's the thing that should make every product and engineering leader uncomfortable: the agent deployment problem is going to get worse by an order of magnitude before anyone's governance catches up.
+
+We're entering the agentic era. The whole point is that agents act on behalf of humans, autonomously, at scale. Every major platform — Salesforce, ServiceNow, Microsoft, Google — is shipping agent capabilities. Your vendors are deploying agents. Your customers will deploy agents that interact with your product. Your own teams are deploying agents faster than your security team can inventory them.
+
+The enterprise deployment risk isn't theoretical. It's the same risk pattern we saw with shadow IT a decade ago, except shadow IT was humans using unauthorized SaaS tools. Shadow agents are autonomous software entities using authorized tools in unauthorized ways, under borrowed credentials, with no oversight.
+
+And here's the counter-intuitive part: the companies that move fastest on AI adoption are the most exposed. The more agents you deploy, the larger your ungoverned attack surface. Speed without identity infrastructure isn't a competitive advantage. It's a liability with a delayed fuse.
+
+The companies that will actually scale agentic AI in production — in regulated industries, with real data, touching real systems — will be the ones that solve identity first. Not model selection. Not prompt optimization. Identity.
+
+Because an agent without an identity isn't an employee. It's an intruder you invited in.
+
+---
+
+## The Clean Stop
+
+The agentic era doesn't need better models. It needs better infrastructure. Agent identity is the unsexy, foundational layer that determines whether enterprise AI deployment is a transformation or a catastrophe. The companies building this layer are working on the problem that actually matters.
+
+*See also: [Get Shits Done: The Anti-Enterprise AI Workflow](https://www.mehmetsemihbabacan.com/2026/get-shit-done) — for how to build AI systems the right way.*

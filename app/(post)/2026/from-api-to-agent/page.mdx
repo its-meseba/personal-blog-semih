@@ -1,0 +1,162 @@
+export const metadata = {
+  title: 'From API to Agent: The Infrastructure Shift',
+  description: "How AI agents are forcing a complete rethink of backend infrastructure — from stateless requests to stateful, memory-backed systems.",
+  openGraph: {
+    title: 'From API to Agent: The Infrastructure Shift',
+    description: "The database doesn't just store data anymore. It remembers.",
+    images: [{ url: '/og/from-api-to-agent' }]
+  }
+}
+
+---
+
+# From API to Agent: The Infrastructure Shift
+
+**The database doesn't just store data anymore. It remembers.**
+
+---
+
+## The Old World: APIs Were Simple
+
+For 20 years, we built APIs the same way:
+
+```
+Client → "Give me user #1234" → Server → Returns JSON → Done.
+```
+
+Stateless. Simple. Predictable.
+
+Your database was a filing cabinet. You asked a question, it gave you the file. No context. No memory. No drama.
+
+Then came AI agents — and broke everything.
+
+---
+
+## The New World: Agents Need Memory
+
+An agent doesn't just need data. It needs **context**.
+
+"Give me user #1234" is no longer enough.
+
+Now the question is:
+
+> "What was the last 10 interactions this user had? What did they almost buy but abandoned? What's their communication style? What did we promise them last week?"
+
+That's not a query. That's a **memory**.
+
+And your infrastructure wasn't built for this.
+
+---
+
+## The Three Big Shifts
+
+### 1. From Stateless to Stateful
+
+**Old:** Every request starts fresh  
+**New:** Every request continues a conversation
+
+| Before | After |
+|--------|-------|
+| 1000 requests/min | 1000 concurrent conversations |
+| No context between calls | Persistent context windows |
+| Simple caching | Complex memory management |
+
+**What this means:** Your database now needs to track not just data, but **relationships, history, and intent** across time.
+
+---
+
+### 2. From Queries to Actions
+
+**Old:** "SELECT * FROM users WHERE..."  
+**New:** "What should I do for this user right now?"
+
+APIs answered questions. Agents **make decisions**.
+
+This requires:
+
+- **Reasoning engines** (LLMs)
+- **Action registries** (what can the agent actually do?)
+- **Safety layers** (what should the agent NOT do?)
+
+The infrastructure now needs to support **decision-making**, not just data retrieval.
+
+---
+
+### 3. From Per-Request to Per-Conversation
+
+**Old pricing:** $0.001 per API call  
+**New pricing:** How do you price a relationship?
+
+If one agent manages 10,000 ongoing conversations, the cost structure is completely different.
+
+You can't charge per request. You need pricing models that reflect **value delivered**, not compute consumed.
+
+---
+
+## Who's Pivoting (And How)
+
+This isn't theoretical. Companies are already making the shift:
+
+| Company | Old Role | New Role |
+|---------|----------|----------|
+| **Pinecone** | Vector database | Agent memory |
+| **Temporal** | Workflow engine | Agent orchestration |
+| **Supabase** | Postgres + API | Agent-ready backend |
+| **LangChain** | LLM wrappers | Agent frameworks |
+| **MongoDB** | Document store | Context store |
+
+The winners will be the ones who solve: **"How do I keep an agent coherent across 1000 conversations?"**
+
+---
+
+## The Real Problem: Context Windows
+
+Here's the dirty secret:
+
+Every agent has a limit. Claude has 200K tokens. GPT-4 has 128K. Gemini has 2M.
+
+But your user base has **infinite** history.
+
+**The infrastructure problem:** How do you fit 6 months of customer history into a model that can only hold 200K tokens?
+
+Solutions emerging:
+
+- **Summarization agents** — compress history into summaries
+- **Vector RAG** — retrieve relevant memories on demand
+- **Hybrid approaches** — hot memory (recent) vs cold memory (archived)
+
+This is now a **core engineering problem**, not just an ML problem.
+
+---
+
+## What This Means for Product People
+
+If you're building AI products, here are the questions you need to answer:
+
+1. **Memory:** How does your agent remember past interactions?
+2. **Context:** What's the maximum context window you support?
+3. **Actions:** What can your agent actually do? (vs just answer)
+4. **Cost:** How does pricing change when agents run continuously?
+5. **Safety:** What's the autonomy level? (autonomy → approval → monitoring)
+
+The companies that get this right will own the next decade of enterprise software.
+
+---
+
+## The Bottom Line
+
+APIs were about **data transfer**.
+
+Agents are about **relationship management**.
+
+Your infrastructure doesn't just need to store things anymore. It needs to **understand** things.
+
+The database isn't a filing cabinet anymore. It's becoming a **mind**.
+
+---
+
+*What's your take? Are you rebuilding infrastructure for agents, or adapting what you have?*
+
+---
+
+**#AI #AgenticAI #Infrastructure #Product #SaaS #Engineering**

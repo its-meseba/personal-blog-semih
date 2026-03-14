@@ -1,0 +1,167 @@
+export const metadata = {
+  title: 'Queued Messages vs /btw: The Claude Code Interaction Guide',
+  description: "What's the difference between queuing a message and using /btw in Claude Code? A deep dive into the two ways to interact with AI coding assistants.",
+  openGraph: {
+    title: 'Queued Messages vs /btw: The Claude Code Interaction Guide',
+    description: "What's the difference between queuing a message and using /btw in Claude Code?",
+    images: [{ url: '/og/queued-vs-btw' }]
+  }
+}
+
+---
+
+# Queued Messages vs /btw: The Claude Code Interaction Guide
+
+**What's the difference between queuing a message and using /btw? More importantly — when should you use which?**
+
+---
+
+## The Scenario
+
+You're deep in a coding session. Claude Code is refactoring a complex component, writing tests, and you're watching the magic happen.
+
+Then it hits you: "Oh, I should tell Claude to use TypeScript for this."
+
+But wait — Claude is still working. What do you do?
+
+**Two options:**
+1. Type your message anyway (it gets queued)
+2. Use `/btw` to inject your note
+
+They sound similar. They're not.
+
+---
+
+## Option 1: Queued Messages
+
+When you type a message while Claude is working, it gets **queued** and becomes the next user turn once Claude finishes.
+
+```bash
+# Claude is refactoring... you type:
+"Please also use TypeScript for this"
+```
+
+What happens:
+1. Claude finishes current task
+2. Your message arrives as a **fresh prompt**
+3. Claude treats it as a **new task** entirely
+
+It's like leaving a note on someone's desk while they're in a meeting. They'll see it when they're done — and then address it as a separate item on their todo list.
+
+---
+
+## Option 2: The /btw Command
+
+`/btw` (short for "by the way") is specifically designed for **injecting context without interrupting**.
+
+```bash
+# Claude is refactoring... you type:
+/btw use TypeScript for this
+```
+
+What happens:
+1. Claude **keeps working** on the current task
+2. Your note gets **woven into** the ongoing work
+3. Claude adjusts **on the fly**
+
+It's like tapping someone's shoulder mid-sentence and saying "oh, also —" They acknowledge, nod, and incorporate your note without stopping what they're saying.
+
+---
+
+## The Key Differences
+
+| Aspect | Queued Message | /btw |
+|--------|---------------|------|
+| **Timing** | Runs AFTER current task | Runs DURING current task |
+| **Context** | Fresh start | Continues existing context |
+| **Interrupt** | Yes (waits for turn) | No (injects immediately) |
+| **Use case** | New task | Side-note, correction |
+
+---
+
+## When to Use Each
+
+### Use Queued Messages When:
+
+- You have a **completely new task** you want Claude to do next
+- You want to **review** what Claude just did before giving the next instruction
+- The request is **unrelated** to what Claude is currently doing
+
+**Example:**
+Claude just finished writing tests. You want it to now write documentation.
+→ Queue the message: "Now write documentation for these functions"
+
+### Use /btw When:
+
+- You want to **add context** to what Claude is currently doing
+- You need to **correct** something Claude misunderstood
+- You have a **quick note** that should be incorporated into the current work
+
+**Example:**
+Claude is refactoring a component. You want to add a specific requirement.
+→ Use /btw: "/btw also add error handling for edge cases"
+
+---
+
+## A Practical Example
+
+You're building a login form. Claude is wiring up the form validation.
+
+You want to add: "Use Zod for validation."
+
+### Option A: Queue the message
+
+```
+# You type while Claude is working:
+Use Zod for validation
+```
+
+**Result:** Claude finishes the current validation code, then starts a NEW task to refactor everything to use Zod. It might even ask clarifying questions first.
+
+### Option B: Use /btw
+
+```
+# You type while Claude is working:
+/btw use Zod for validation
+```
+
+**Result:** Claude keeps writing the validation code, but now it uses Zod from the start. Seamless. No context switch.
+
+---
+
+## The Mental Model
+
+Think of it like working with a colleague:
+
+- **Queued message:** "Hey, after you finish that report, can you also create a slide deck?"
+- **/btw:** "Hey, while you're working on that report — can you use the new template?"
+
+Both are valid. They just do different things.
+
+---
+
+## Pro Tips
+
+1. **Start with /btw** — It's less disruptive and usually what you want
+2. **Queue for new tasks** — When you want Claude to finish one thing before starting another
+3. **You can queue multiple /btw** — Yes, you can use /btw multiple times in a row!
+4. **/btw works mid-thought** — Even if Claude is thinking (reasoning), /btw gets absorbed
+
+---
+
+## The Bottom Line
+
+Both queued messages and /btw let you interact with Claude Code while it's busy. The difference is whether you want to:
+
+- **Start a new task** → Queue the message
+- **Modify the current task** → Use /btw
+
+Master both, and you'll have a much smoother coding experience.
+
+---
+
+*What's your experience with these commands? Drop a comment below.*
+
+---
+
+**#ClaudeCode #AI #DeveloperTools #CodingAssistant #Productivity**

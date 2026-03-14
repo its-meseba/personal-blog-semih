@@ -1,6 +1,9 @@
 /* eslint-disable */
 /* tslint:disable */
-const withMDX = require("@next/mdx")();
+const withMDX = require("@next/mdx")({
+  remarkPlugins: [require("remark-gfm")],
+  rehypePlugins: [],
+});
 
 module.exports = withMDX({
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],

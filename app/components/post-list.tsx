@@ -120,6 +120,12 @@ export function PostRow({ post }: { post: ListPost }) {
           <span className="font-mono text-meta tabular-nums text-faint">
             {post.readTime}
           </span>
+          {post.viewsFormatted && (
+            <span className="font-mono text-meta tabular-nums text-faint">
+              <span aria-hidden="true">/ </span>
+              {post.viewsFormatted} views
+            </span>
+          )}
           {post.series && <SeriesTag series={post.series} />}
           {post.status === "draft" && <DraftTag />}
         </div>

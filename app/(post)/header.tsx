@@ -1,14 +1,11 @@
 "use client";
 
-import { useSelectedLayoutSegments } from "next/navigation";
 import { useEffect, useRef } from "react";
-import useSWR from "swr";
 
 import type { Post } from "@/app/get-posts";
+import { useCurrentPost } from "./use-current-post";
 import { SeriesTag } from "@/app/components/SeriesBadge";
 import { AuthorCard } from "@/app/components/AuthorCard";
-
-const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const formatDate = (dateStr: string): string => {
   return new Date(dateStr).toLocaleDateString("en-US", {
@@ -23,21 +20,9 @@ const formatDate = (dateStr: string): string => {
  * Everything above the first paragraph, and nothing else.
  */
 export function Header({ posts }: { posts: Post[] }) {
-  const segments = useSelectedLayoutSegments();
-  const initialPost = posts.find(
-    post => post.id === segments[segments.length - 1]
-  );
+  const { post, mutate } = useCurrentPost(posts, { refreshInterval: 5000 });
 
-  const { data: post, mutate } = useSWR(
-    `/api/view?id=${initialPost?.id ?? ""}`,
-    fetcher,
-    {
-      fallbackData: initialPost,
-      refreshInterval: 5000,
-    }
-  );
-
-  if (initialPost == null) return <></>;
+  if (post == null) return <></>;
 
   return (
     <header className="mb-block border-b border-border pb-rhythm">

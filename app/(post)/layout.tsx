@@ -1,6 +1,6 @@
 import { Header } from "./header";
 import { PostFooter } from "./post-footer";
-import { getAllPosts } from "../get-posts";
+import { getPosts } from "../get-posts";
 import { ReadingProgress } from "../components/ReadingProgress";
 
 export const revalidate = 60;
@@ -10,9 +10,12 @@ export const revalidate = 60;
  * and the footer share that same axis so the page has one edge, not three.
  */
 export default async function Layout({ children }) {
-  // Drafts included: a draft page still needs its masthead (it is `noindex`,
-  // not headless). Lists and feeds do their own filtering.
-  const posts = await getAllPosts();
+  // Published only. `Header` and `PostFooter` are client components, so this
+  // array is serialised into every post page’s flight payload: sending
+  // `getAllPosts()` published every draft title and standfirst in the HTML of
+  // every published post. A draft page resolves its own post client-side
+  // through `/api/view` (see `useCurrentPost`), so it still renders.
+  const posts = await getPosts();
 
   return (
     <>

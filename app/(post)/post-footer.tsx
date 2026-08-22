@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useSelectedLayoutSegments } from "next/navigation";
 
 import type { Post } from "@/app/get-posts";
+import { useCurrentPost } from "./use-current-post";
 import { getSeriesConfig } from "@/app/series";
 import { formatDate } from "@/app/components/post-list";
 import { relatedPosts } from "@/lib/related";
@@ -17,8 +17,7 @@ import { relatedPosts } from "@/lib/related";
  * it cannot store.
  */
 export function PostFooter({ posts }: { posts: Post[] }) {
-  const segments = useSelectedLayoutSegments();
-  const post = posts.find(entry => entry.id === segments[segments.length - 1]);
+  const { post } = useCurrentPost(posts);
 
   if (post == null) return null;
 

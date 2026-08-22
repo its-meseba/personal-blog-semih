@@ -36,7 +36,9 @@ export type PostFrontmatter = {
 };
 
 /** A validated post plus everything derived from the file. */
-export type IndexedPost = Required<Pick<PostFrontmatter, "slug" | "title" | "description" | "date" | "status">> &
+export type IndexedPost = Required<
+  Pick<PostFrontmatter, "slug" | "title" | "description" | "date" | "status">
+> &
   Pick<PostFrontmatter, "series" | "cover" | "canonical"> & {
     /** Alias of `slug`; the historical field name used across the app. */
     id: string;
@@ -55,17 +57,29 @@ export const SITE_URL = "https://semihbabacan.com";
 
 export const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
-/** Canonical year for a post, taken from its date. */
+/** Year read out of a post's date. Only a fallback — the folder is the truth. */
 export function postYear(date: string): string {
   return date.slice(0, 4);
 }
 
-/** Canonical path for a post: `/<year>/<slug>`. Never changes shape. */
-export function postPath(post: Pick<PostFrontmatter, "slug" | "date">): string {
-  return `/${postYear(post.date)}/${post.slug}`;
+/** Enough of a post to build its URL: the folder year when we have it. */
+export type PostLink = Pick<PostFrontmatter, "slug" | "date"> & {
+  /** URL year, taken from the `app/(post)/<year>/` folder the post lives in. */
+  year?: string;
+};
+
+/**
+ * Canonical path for a post: `/<year>/<slug>`. Never changes shape.
+ *
+ * `year` comes from the post's folder, which is what Next.js actually routes.
+ * The date-derived fallback is only for the rare caller holding raw
+ * frontmatter; `lib/content.ts` fails the build if the two ever disagree.
+ */
+export function postPath(post: PostLink): string {
+  return `/${post.year ?? postYear(post.date)}/${post.slug}`;
 }
 
-export function postUrl(post: Pick<PostFrontmatter, "slug" | "date">): string {
+export function postUrl(post: PostLink): string {
   return `${SITE_URL}${postPath(post)}`;
 }
 
@@ -74,7 +88,7 @@ export function postUrl(post: Pick<PostFrontmatter, "slug" | "date">): string {
  * declares that it was first published elsewhere.
  */
 export function postCanonicalUrl(
-  post: Pick<PostFrontmatter, "slug" | "date" | "canonical">,
+  post: PostLink & Pick<PostFrontmatter, "canonical">
 ): string {
   return post.canonical ?? postUrl(post);
 }

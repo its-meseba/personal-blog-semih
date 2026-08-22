@@ -9,6 +9,7 @@ import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 import { calculateReadTime } from "@/app/author";
+import { stripJsxBlocks } from "./markdown-to-html";
 import { getSeriesConfig, type Series } from "@/app/series";
 import {
   ABSOLUTE_URL_RE,
@@ -20,8 +21,15 @@ import {
   postYear,
 } from "./post-types";
 
-/** Posts still live next to their route. Moving them is a later, riskier step. */
-const POSTS_ROOT = join(process.cwd(), "app", "(post)", "2026");
+/**
+ * Posts still live next to their route: `app/(post)/<year>/<slug>/page.mdx`.
+ * The year FOLDER is the URL year, so every 4-digit folder is discovered.
+ * Hardcoding one year silently hides next year's posts from the index while
+ * Next.js still serves their route — a 404 nobody notices.
+ */
+const POSTS_ROOT = join(process.cwd(), "app", "(post)");
+/** A post year folder. Everything else under `(post)` is route plumbing. */
+const YEAR_DIR_RE = /^\d{4}$/;
 const POST_FILE = "page.mdx";
 const POST_EXPORT = "export const post";
 
@@ -47,7 +55,7 @@ function extractPostExport(source: string, file: string): unknown {
   if (declarationAt === -1) {
     throw new PostValidationError(
       file,
-      `missing \`${POST_EXPORT} = { ... }\` export`,
+      `missing \`${POST_EXPORT} = { ... }\` export`
     );
   }
 
@@ -55,7 +63,7 @@ function extractPostExport(source: string, file: string): unknown {
   if (openAt === -1) {
     throw new PostValidationError(
       file,
-      "`post` export is not an object literal",
+      "`post` export is not an object literal"
     );
   }
 
@@ -89,7 +97,9 @@ function extractPostExport(source: string, file: string): unknown {
         } catch (error) {
           throw new PostValidationError(
             file,
-            `\`post\` export is not a valid object literal (${(error as Error).message})`,
+            `\`post\` export is not a valid object literal (${
+              (error as Error).message
+            })`
           );
         }
       }
@@ -102,13 +112,13 @@ function extractPostExport(source: string, file: string): unknown {
 function requireString(
   raw: Record<string, unknown>,
   key: string,
-  file: string,
+  file: string
 ): string {
   const value = raw[key];
   if (typeof value !== "string" || value.trim() === "") {
     throw new PostValidationError(
       file,
-      `\`${key}\` must be a non-empty string`,
+      `\`${key}\` must be a non-empty string`
     );
   }
   return value;
@@ -117,14 +127,14 @@ function requireString(
 function optionalString(
   raw: Record<string, unknown>,
   key: string,
-  file: string,
+  file: string
 ): string | undefined {
   const value = raw[key];
   if (value === undefined) return undefined;
   if (typeof value !== "string" || value.trim() === "") {
     throw new PostValidationError(
       file,
-      `\`${key}\`, when present, must be a non-empty string`,
+      `\`${key}\`, when present, must be a non-empty string`
     );
   }
   return value;
@@ -135,6 +145,7 @@ function validateFrontmatter(
   raw: unknown,
   file: string,
   expectedSlug: string,
+  expectedYear: string
 ): PostFrontmatter {
   if (typeof raw !== "object" || raw === null || Array.isArray(raw)) {
     throw new PostValidationError(file, "`post` export must be an object");
@@ -145,7 +156,7 @@ function validateFrontmatter(
   if (slug !== expectedSlug) {
     throw new PostValidationError(
       file,
-      `slug "${slug}" does not match folder "${expectedSlug}"`,
+      `slug "${slug}" does not match folder "${expectedSlug}"`
     );
   }
 
@@ -153,7 +164,23 @@ function validateFrontmatter(
   if (!ISO_DATE_RE.test(date) || Number.isNaN(Date.parse(date))) {
     throw new PostValidationError(
       file,
-      `\`date\` must be a real YYYY-MM-DD date (got "${date}")`,
+      `\`date\` must be a real YYYY-MM-DD date (got "${date}")`
+    );
+  }
+
+  // The folder decides the URL (`/<year>/<slug>`), the date decides how the
+  // post is displayed and sorted. If they disagree, the post is linked at a
+  // year Next.js has no route for and 404s in silence. Fail the build instead.
+  if (postYear(date) !== expectedYear) {
+    throw new PostValidationError(
+      file,
+      `year mismatch: the post lives in folder "${expectedYear}" (so its URL is ` +
+        `/${expectedYear}/${expectedSlug}) but \`date\` is "${date}" (year ` +
+        `"${postYear(date)}"). Move the post to app/(post)/${postYear(
+          date
+        )}/${expectedSlug}/ ` +
+        `or change \`date\` to a ${expectedYear} date — a URL year and a date ` +
+        `year that disagree produce a link that 404s.`
     );
   }
 
@@ -161,7 +188,7 @@ function validateFrontmatter(
   if (!POST_STATUSES.includes(status)) {
     throw new PostValidationError(
       file,
-      `\`status\` must be one of ${POST_STATUSES.join(" | ")} (got "${status}")`,
+      `\`status\` must be one of ${POST_STATUSES.join(" | ")} (got "${status}")`
     );
   }
 
@@ -169,7 +196,7 @@ function validateFrontmatter(
   if (series && !getSeriesConfig(series)) {
     throw new PostValidationError(
       file,
-      `unknown series "${series}" — add it to app/series.ts`,
+      `unknown series "${series}" — add it to app/series.ts`
     );
   }
 
@@ -181,7 +208,7 @@ function validateFrontmatter(
     if (typeof tag !== "string" || tag.trim() === "") {
       throw new PostValidationError(
         file,
-        "`tags` must contain non-empty strings only",
+        "`tags` must contain non-empty strings only"
       );
     }
     return tag;
@@ -191,7 +218,7 @@ function validateFrontmatter(
   if (canonical && !ABSOLUTE_URL_RE.test(canonical)) {
     throw new PostValidationError(
       file,
-      `\`canonical\` must be an absolute http(s) URL (got "${canonical}")`,
+      `\`canonical\` must be an absolute http(s) URL (got "${canonical}")`
     );
   }
 
@@ -258,22 +285,43 @@ export function extractBody(source: string): string {
   return body.join("\n").trim();
 }
 
-function readPostDirectories(): string[] {
+/** One post on disk: the year folder that owns its URL, plus its slug folder. */
+type PostLocation = { year: string; slug: string };
+
+function isDirectory(path: string): boolean {
+  return existsSync(path) && statSync(path).isDirectory();
+}
+
+/** Every `app/(post)/<year>/<slug>/page.mdx`, for ANY 4-digit year folder. */
+function readPostDirectories(): PostLocation[] {
   if (!existsSync(POSTS_ROOT)) return [];
-  return readdirSync(POSTS_ROOT).filter(entry => {
-    const file = join(POSTS_ROOT, entry, POST_FILE);
-    return statSync(join(POSTS_ROOT, entry)).isDirectory() && existsSync(file);
-  });
+
+  const locations: PostLocation[] = [];
+
+  for (const year of readdirSync(POSTS_ROOT)) {
+    if (!YEAR_DIR_RE.test(year)) continue;
+    const yearDir = join(POSTS_ROOT, year);
+    if (!isDirectory(yearDir)) continue;
+
+    for (const slug of readdirSync(yearDir)) {
+      if (!isDirectory(join(yearDir, slug))) continue;
+      if (!existsSync(join(yearDir, slug, POST_FILE))) continue;
+      locations.push({ year, slug });
+    }
+  }
+
+  return locations;
 }
 
 function buildIndex(): IndexedPost[] {
-  const posts = readPostDirectories().map((slug): IndexedPost => {
-    const file = join(POSTS_ROOT, slug, POST_FILE);
+  const posts = readPostDirectories().map(({ year, slug }): IndexedPost => {
+    const file = join(POSTS_ROOT, year, slug, POST_FILE);
     const source = readFileSync(file, "utf8");
     const frontmatter = validateFrontmatter(
       extractPostExport(source, file),
       file,
       slug,
+      year
     );
     const body = extractBody(source);
 
@@ -281,8 +329,12 @@ function buildIndex(): IndexedPost[] {
       ...frontmatter,
       id: frontmatter.slug,
       tags: frontmatter.tags ?? [],
-      year: postYear(frontmatter.date),
-      readTime: calculateReadTime(body),
+      // The folder is the URL year. `validateFrontmatter` has already proven
+      // the date agrees with it, so the two can never drift apart.
+      year,
+      // Prose only: a <Diagram> body is inline SVG markup, not words to read.
+      // Same stripper the feed uses, so the two never disagree.
+      readTime: calculateReadTime(stripJsxBlocks(body)),
       excerpt: frontmatter.description,
       body,
     };
@@ -303,7 +355,7 @@ export function getAllPosts(): IndexedPost[] {
  */
 export function getPosts(): IndexedPost[] {
   return getAllPosts().filter(
-    post => post.status === "published" || INCLUDE_DRAFTS,
+    post => post.status === "published" || INCLUDE_DRAFTS
   );
 }
 

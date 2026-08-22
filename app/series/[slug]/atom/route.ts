@@ -22,7 +22,7 @@ export async function GET(
   return new Response(
     buildAtomFeed(series.posts, {
       selfPath: `/series/${series.id}/atom`,
-      alternatePath: "/thoughts",
+      alternatePath: `/series/${series.id}`,
       title: `${author.name} — ${series.name}`,
       subtitle: series.description ?? `Posts in the ${series.name} series`,
     }),

@@ -11,19 +11,21 @@ module.exports = withMDX({
     mdxRs: true,
   },
   // `lib/content.ts` reads the post sources at request time on dynamic routes,
-  // so the MDX files must be traced into the serverless output.
+  // so the MDX files must be traced into the serverless output. Every year
+  // folder, not just this year's — a hardcoded year drops next year's posts.
   outputFileTracingIncludes: {
-    "/**": ["./app/(post)/2026/**/*.mdx"],
+    "/**": ["./app/(post)/*/**/*.mdx"],
   },
   typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
-    ignoreBuildErrors: true,
+    // Type errors fail the build. `npx tsc --noEmit` is clean, so nothing is
+    // being hidden here and nothing should be.
+    ignoreBuildErrors: false,
   },
   eslint: {
-    // Deactivate ESLint during builds
+    // Stays ON deliberately: eslint 8.56 cannot read the eslint-config-next 16
+    // flat config and dies with "Converting circular structure to JSON", so
+    // enabling lint here breaks the build outright. The real fix is upgrading
+    // eslint (v9) and migrating the config — not flipping this flag.
     ignoreDuringBuilds: true,
   },
   images: {

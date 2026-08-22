@@ -6,16 +6,37 @@ import { ExperienceSection } from "./components/experience-section";
 import { EducationSection } from "./components/education-section";
 import { AchievementsSection } from "./components/achievements-section";
 import { LatestPostsSection } from "./components/latest-posts-section";
+import { JsonLd } from "../components/JsonLd";
+import { personSchema, websiteSchema } from "../structured-data";
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from "../author";
+import { atomAlternateTypes } from "@/lib/feed-links";
+
+export const ABOUT_URL = SITE_URL + '/about'
 
 export const metadata = {
-  title: 'Mehmet Semih Babacan',
-  description: 'Visionary tech entrepreneur and co-founder of Solace',
+  title: { absolute: SITE_TITLE },
+  description: SITE_DESCRIPTION,
+  alternates: {
+    canonical: ABOUT_URL,
+    types: atomAlternateTypes(),
+  },
   openGraph: {
-    title: 'Mehmet Semih Babacan',
-    description: 'Visionary tech entrepreneur and co-founder of Solace',
+    type: 'profile',
+    url: ABOUT_URL,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     images: [{ url: '/about/opengraph-image' }]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: ['/about/opengraph-image']
   }
 }
+
+<JsonLd data={personSchema()} />
+<JsonLd data={websiteSchema()} />
 
 <AboutLayout>
   <div className="pb-chapter">

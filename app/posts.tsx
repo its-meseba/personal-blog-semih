@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import type { Post } from "./get-posts";
@@ -12,6 +12,16 @@ const fetcher = (url: string) => fetch(url).then(res => res.json());
 const ALL = "all";
 
 /**
+ * How long the staggered row entrance is allowed to run before the list drops
+ * the markup that drives it. Comfortably past the last row's landing
+ * (`--dur-base` 200ms + eight `--stagger-step` delays = 520ms), and the point
+ * of dropping it is that a series filter click afterwards re-renders the rows
+ * with no animation attached at all - the entrance is a first-load event, not
+ * a response to filtering.
+ */
+const ROW_ENTER_WINDOW_MS = 600;
+
+/**
  * The writing index.
  *
  * Hierarchy, not a flat changelog: the newest post gets the lead treatment,
@@ -20,6 +30,16 @@ const ALL = "all";
  */
 export function Posts({ posts: initialPosts }: { posts: Post[] }) {
   const [selectedSeries, setSelectedSeries] = useState<string>(ALL);
+
+  // True for the first paint (server render included), then permanently off.
+  // Dropping it after the animation has already finished changes nothing on
+  // screen - the keyframes end on the row's natural resting state.
+  const [enterRows, setEnterRows] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setEnterRows(false), ROW_ENTER_WINDOW_MS);
+    return () => clearTimeout(timer);
+  }, []);
 
   // View counts stay live; this is the same request cadence as before.
   const { data: posts } = useSWR("/api/posts", fetcher, {
@@ -82,7 +102,7 @@ export function Posts({ posts: initialPosts }: { posts: Post[] }) {
           </nav>
         )}
 
-        <PostList posts={filteredPosts} />
+        <PostList posts={filteredPosts} enterRows={enterRows} />
       </main>
     </Suspense>
   );

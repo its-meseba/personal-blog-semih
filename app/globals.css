@@ -51,6 +51,20 @@
     /* --- reading measure ------------------------------------------------ */
     --measure: 68ch;
 
+    /* --- motion ----------------------------------------------------------
+       Mirrors `transitionDuration` / `transitionTimingFunction` in
+       `tailwind.config.js` (`duration-instant|quick|base`, `ease-console`),
+       exposed as variables for the places Tailwind utilities cannot reach:
+       keyframes, `animation-delay`, and the `::view-transition-*` pseudo
+       tree. No new durations - if you need a new beat, add it to the
+       Tailwind config first and mirror it here. ------------------------- */
+    --dur-instant: 80ms;
+    --dur-quick: 140ms;
+    --dur-base: 200ms;
+    --ease-console: cubic-bezier(0.22, 0.61, 0.36, 1);
+    /* one row-stagger step; derived from a token, not a new number */
+    --stagger-step: calc(var(--dur-instant) / 2);
+
     /* --- legacy aliases (pre-token CSS still reads these) ---------------- */
     --foreground-rgb: 22, 19, 15;
     --background-rgb: 251, 247, 241;
@@ -99,6 +113,10 @@
   :root.pause-transitions * {
     transition-duration: 0ms !important;
     animation-duration: 0ms !important;
+    /* a zeroed duration is not enough for a *delayed* animation: with
+       `both` fill the element would sit at its `from` keyframe (invisible)
+       for the length of the delay. Zero the delay too. */
+    animation-delay: 0ms !important;
   }
 
   html {
@@ -152,9 +170,126 @@
     *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
+      /* same reason as `.pause-transitions` above: a staggered row must not
+         wait out its delay while invisible. */
+      animation-delay: 0ms !important;
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+}
+
+/* ==========================================================================
+   Page transitions
+
+   Two mechanisms, because App Router navigations are two different things:
+
+     cross-document (typed URL, refresh, a plain <a>, back to a hard load)
+       -> the native View Transitions API, driven entirely by the
+          `@view-transition` at-rule below. No JavaScript, and a browser
+          without support simply ignores the at-rule.
+
+     soft navigation (every `next/link` click)
+       -> `document.startViewTransition` is NOT reachable here: Next's
+          built-in `<ViewTransition>` needs `experimental.viewTransition`
+          *and* a `react@experimental` build, and this app is pinned to
+          `react@19.0.0-rc` (which exports no ViewTransition). Hand-rolling
+          `startViewTransition(() => router.push())` snapshots the DOM
+          before the RSC payload arrives, so it animates nothing. Instead
+          the route wrapper (`app/components/route-motion.tsx`) remounts on
+          pathname change and replays `page-enter` below - the same
+          cross-fade-plus-a-few-pixels, ~200ms, no library.
+
+   `[data-motion-ready]` is set on <html> once, after hydration, so the very
+   first document paint never starts at `opacity: 0` (that would push out
+   LCP). Only navigations animate.
+   ========================================================================== */
+
+@view-transition {
+  navigation: auto;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes page-exit {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes row-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 4px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --- soft navigation ---------------------------------------------------- */
+
+:root[data-motion-ready] .route-motion {
+  animation: page-enter var(--dur-base) var(--ease-console) both;
+}
+
+/* --- cross-document navigation ------------------------------------------ */
+
+::view-transition-old(root) {
+  animation: page-exit var(--dur-quick) var(--ease-console) both;
+}
+
+::view-transition-new(root) {
+  animation: page-enter var(--dur-base) var(--ease-console) both;
+}
+
+/* The post title is the one element worth morphing rather than cross-fading.
+   A name has to be unique per document, so only the post masthead carries it;
+   the index deliberately does not name a row, because a click on any row but
+   the newest would morph the wrong headline. */
+.vt-post-title {
+  view-transition-name: post-title;
+}
+
+/* --- list rows ---------------------------------------------------------- */
+
+/* Set by `PostList` on first render of the writing index only, and dropped
+   again once the last row has landed - so a series filter click never
+   replays it. Purely visual: `opacity`/`transform`, so no layout shift, and
+   nothing here blocks a click. */
+[data-row-enter] {
+  animation: row-enter var(--dur-base) var(--ease-console) both;
+  animation-delay: calc(var(--row-index, 0) * var(--stagger-step));
+}
+
+/* --- the opt-out --------------------------------------------------------
+   The universal selector in the `prefers-reduced-motion` block above cannot
+   reach the `::view-transition-*` pseudo tree (it hangs off the document
+   root, not off any element), so the view-transition animations have to be
+   killed by name. Removing the animation from the pseudo-elements ends the
+   transition on the next frame: the new page just appears. ------------- */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+
+  .vt-post-title {
+    view-transition-name: none;
   }
 }
 

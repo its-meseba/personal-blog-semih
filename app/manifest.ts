@@ -1,18 +1,20 @@
 import { MetadataRoute } from 'next'
 
+import { SITE_DESCRIPTION, SITE_TITLE } from './author'
 import { LIGHT, THEME_COLOR } from './styles/tokens'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Mehmet Semih Babacan - Software Engineer & Tech Entrepreneur',
+    name: SITE_TITLE,
     short_name: 'Semih Babacan',
-    description: 'Software engineer with 3 years of experience, ex-CEO of Solace Technology, building AI-native products and scalable systems.',
+    // One source: `app/author.ts`.
+    description: SITE_DESCRIPTION,
     start_url: '/',
     display: 'standalone',
     background_color: THEME_COLOR.light,
     theme_color: LIGHT.accentField,
     orientation: 'portrait-primary',
-    categories: ['technology', 'thoughts', 'portfolio', 'engineering'],
+    categories: ['technology', 'thoughts', 'portfolio', 'productivity'],
     lang: 'en',
     icons: [
       {

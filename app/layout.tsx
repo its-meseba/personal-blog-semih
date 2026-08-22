@@ -8,40 +8,37 @@ import { themeEffect } from "./theme-effect";
 import { Analytics } from "./analytics";
 import { Header } from "./header";
 import { Footer } from "./footer";
+import { RouteMotion } from "./components/route-motion";
 import { doge } from "./doge";
-import { generatePersonSchema, generateWebsiteSchema } from "./structured-data";
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL, author } from "./author";
 
 // "Fire max" fonts (Archivo / Source Serif 4 / JetBrains Mono) are declared
 // in `app/styles/fonts.ts` and mounted as CSS variables below.
 
 export const metadata = {
   title: {
-    default: "Mehmet Semih Babacan - Software Engineer & Tech Entrepreneur",
+    default: SITE_TITLE,
     template: "%s | Mehmet Semih Babacan",
   },
-  description:
-    "Software engineer with 3 years of experience and dual degrees in Computer Science & Industrial Engineering. Ex-CEO of Solace Technology, building AI-native products and scalable systems.",
+  // Every description on this page comes from `app/author.ts`. It used to be
+  // pasted here three times and drifted out of date in all three.
+  description: SITE_DESCRIPTION,
   keywords: [
-    "software engineer",
-    "full stack developer",
-    "AI engineer",
-    "machine learning",
+    "Mehmet Semih Babacan",
+    "AI technical product manager",
+    "AI product management",
+    "AI agents",
+    "agentic coding",
+    "LLM products",
+    "developer tooling",
     "TypeScript",
-    "Python",
-    "React",
     "Next.js",
-    "entrepreneur",
-    "startup founder",
-    "blockchain",
-    "smart contracts",
     "Solace Technology",
-    "TÜBİTAK",
-    "YTU",
     "Istanbul",
   ],
-  authors: [{ name: "Mehmet Semih Babacan", url: "https://semihbabacan.com" }],
-  creator: "Mehmet Semih Babacan",
-  publisher: "Mehmet Semih Babacan",
+  authors: [{ name: author.name, url: SITE_URL }],
+  creator: author.name,
+  publisher: author.name,
   robots: {
     index: true,
     follow: true,
@@ -56,44 +53,37 @@ export const metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://semihbabacan.com",
-    siteName: "Mehmet Semih Babacan",
-    title: "Mehmet Semih Babacan - Software Engineer & Tech Entrepreneur",
-    description:
-      "Software engineer with 3 years of experience and dual degrees in Computer Science & Industrial Engineering. Ex-CEO of Solace Technology, building AI-native products and scalable systems.",
+    url: SITE_URL,
+    siteName: author.name,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Mehmet Semih Babacan - Software Engineer & Tech Entrepreneur",
+        alt: SITE_TITLE,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mehmet Semih Babacan - Software Engineer & Tech Entrepreneur",
-    description:
-      "Software engineer with 3 years of experience and dual degrees in Computer Science & Industrial Engineering. Ex-CEO of Solace Technology, building AI-native products and scalable systems.",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     images: ["/opengraph-image"],
     creator: "@semihbabacan",
   },
-  verification: {
-    google: "your-google-verification-code",
-    yandex: "your-yandex-verification-code",
-    yahoo: "your-yahoo-verification-code",
-  },
   alternates: {
-    canonical: "https://semihbabacan.com",
+    canonical: SITE_URL,
     languages: {
-      "en-US": "https://semihbabacan.com",
-      "tr-TR": "https://semihbabacan.com/tr",
+      "en-US": SITE_URL,
+      "tr-TR": `${SITE_URL}/tr`,
     },
     // Feed autodiscovery. Posts override `canonical` with their own URL.
     types: atomAlternateTypes(),
   },
   category: "technology",
-  metadataBase: new URL("https://semihbabacan.com"),
+  metadataBase: new URL(SITE_URL),
 };
 
 export const viewport = {
@@ -127,18 +117,6 @@ export default async function RootLayout({
             __html: `(${themeEffect.toString()})();(${doge.toString()})();`,
           }}
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(generatePersonSchema()),
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(generateWebsiteSchema()),
-          }}
-        />
         <Script
           defer
           data-website-id="dfid_A9kPvyTeUdPL4ekdtY6iX"
@@ -152,17 +130,16 @@ export default async function RootLayout({
           hrefLang="tr"
           href="https://semihbabacan.com/tr"
         />
-        <meta
-          name="google-site-verification"
-          content="your-google-verification-code"
-        />
-        <meta name="msvalidate.01" content="your-bing-verification-code" />
+        {/* Sitemap autodiscovery, alongside the Atom feed declared above. */}
+        <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
       </head>
 
       <body className="flex min-h-screen flex-col bg-background text-fg">
         <main className="mx-auto w-full max-w-shell grow px-6 pb-block pt-3 md:pt-6">
+          {/* The masthead sits outside `RouteMotion` on purpose: it is the
+              fixed point the page turns around, so it must not fade. */}
           <Header />
-          {children}
+          <RouteMotion>{children}</RouteMotion>
         </main>
 
         <Footer />

@@ -3,7 +3,7 @@ import { postMetadata } from "@/lib/post-metadata";
 export const post = {
   slug: "deepseek-agent-harness",
   title: "I Read DeepSeek's Agent Harness So You Don't Have To",
-  description: "DeepSeek open-sourced the program that wraps its model: 245 packages, 1,234 TypeScript files, 724 design notes. The interesting decisions are all in the harness, and they are the same decisions you are about to make in your own AI product.",
+  description: "DeepSeek open-sourced the program that wraps its model. The interesting decisions are all in that program, not in the model, and they are the same decisions you are about to make in your own AI product.",
   date: "2026-08-22",
   series: "AI Product Sense",
   tags: ["agents", "architecture", "open-source"],
@@ -12,11 +12,9 @@ export const post = {
 
 export const metadata = postMetadata(post);
 
-DeepSeek quietly published `deepseek-harness` under MIT. I cloned it and read it properly: roughly 245 workspace packages, 1,234 TypeScript source files, and the 724 dated design notes its own agents left behind.
+DeepSeek quietly published `deepseek-harness` under MIT, and the model is the least interesting thing about it. What they actually shipped is the program that wraps the model: the loop, the tools, the log, the rules about what the thing is allowed to touch. That program is where a product lives.
 
-I did this because the model layer is where everyone looks and the harness layer is where the product actually lives. If you ship anything with an LLM in it, the decisions in this repo are the decisions you are about to make, whether you make them on purpose or by accident.
-
-The counts above are my own, taken from the clone. This post is the part I would bring to a product review.
+So I cloned it and read it properly, package by package, over a few evenings. If you ship anything with an LLM in it, the decisions sitting in this repo are the decisions you are about to make, whether you make them on purpose or by accident.
 
 ## What a harness even is
 
@@ -72,9 +70,9 @@ Swap the model and the product barely changes. Swap the harness and it is a diff
 
 ## What is actually in there
 
-There is no `main()` in this codebase. A running `dsh` is a tree of about 80 plugins assembled at boot from stacked YAML patch files, and **the agent loop is a row in that tree**. So is the model adapter, the tool registry, and the session log. You replace any of them with a one-row edit and no fork.
+There is no `main()` in this codebase. A running `dsh` is a tree of plugins assembled at boot from stacked YAML patch files, and **the agent loop is a row in that tree**. So is the model adapter, the tool registry, and the session log. You replace any of them with a one-row edit and no fork.
 
-The cost is real and the repo does not hide it. Finding out who serves `ctx.fs` means grepping roughly 233 `package.json` files plus a 78-row patch, which is why `dsh --dump-config` exists as a first-class command. When your architecture needs a tool to tell you what your architecture is, you have bought flexibility with legibility.
+The cost is real and the repo does not hide it. Finding out who serves `ctx.fs` means grepping the whole workspace and then reading the patch files on top, which is why `dsh --dump-config` exists as a first-class command. When your architecture needs a tool to tell you what your architecture is, you have bought flexibility with legibility.
 
 The session log is the truth, and **the model's memory is derived from it**. Every event is appended with a contiguous sequence number and nothing is ever deleted. What the model sees on the next call is folded out of that log by a function called `deriveMessages()`, not stored somewhere separate. The invariant they hold is: model-visible implies logged.
 
@@ -138,13 +136,13 @@ Steering lands mid-task, which I did not expect. New prompts queue as `next-turn
 
 Subagents are children with their own sessions, in-process or as a separate OS process. The genuinely funny part: DeepSeek ships providers that spawn **Claude Code and Codex as subagents**. They treat competing products as pluggable workers. Those providers register dormant and you have to copy a preset and remove a `disabled` flag to enable them, but the seam is there.
 
-The repo says it was built primarily by coding agents, and the evidence is structural. 724 dated decision notes in about ten weeks, each with problem, decision, alternatives, consequences, each mirrored in Chinese. `CLAUDE.md` is a symlink to `AGENTS.md` so one instruction file serves three different agent products. Rules are 36 verify scripts in CI rather than paragraphs asking nicely.
+The repo says it was built primarily by coding agents, and the evidence is structural. Every decision carries a dated note with problem, decision, alternatives, consequences, each one mirrored in Chinese. `CLAUDE.md` is a symlink to `AGENTS.md` so one instruction file serves three different agent products. Rules are verify scripts in CI rather than paragraphs asking nicely.
 
 <Callout kind="warning" label="The detail most write-ups skip">
 The sandbox governs **file writes only**. Read-only, workspace-write, full access, enforced by the actual kernel (bwrap or Landlock on Linux, Seatbelt on macOS) rather than by asking the model politely. Network access is explicitly outside that vocabulary. So an agent you have confined to a directory can still call anything on the internet, and if that surprises you, it should shape how you scope your own permissions model.
 </Callout>
 
-Honest answer on maturity: it is `0.1.0-rc.8`, a self-declared developer preview, on-disk formats pinned at version 0 with no migration path, no auth layer, and a `BENCHMARK.md` that is 231 bytes of "run it yourself." I read code and docs. I did not measure latency, token cost, or sandbox overhead, so I cannot tell you how it performs. Take everything above as an architecture review, not a benchmark.
+Honest answer on maturity: it is `0.1.0-rc.8`, a self-declared developer preview, on-disk formats pinned at version 0 with no migration path, no auth layer, and a `BENCHMARK.md` that amounts to "run it yourself." I read code and docs. I did not measure latency, token cost, or sandbox overhead, so I cannot tell you how it performs. Take everything above as an architecture review, not a benchmark.
 
 ## What this means if you build AI products
 
@@ -215,6 +213,12 @@ The fifth is **evals that score the label and never the sentence**. Most teams m
 
 None of this is exotic. It is the same list DeepSeek arrived at, written down as architecture instead of as a postmortem.
 
-## Where I landed
+## What I took from it
 
-I went in expecting a Claude Code clone with a Chinese label on it. What I found was a bet: that the harness, not the model, is the durable part, and that the way to prove it is to make every single piece replaceable including the loop itself. Whether that bet pays off depends on an ecosystem that does not exist yet. The surface is built and the plugins are not.
+Nobody using your product will ever meet your model. They meet the loop.
+
+They meet the moment it stops and asks before doing something expensive. They meet the moment their correction lands mid-task instead of after four wasted minutes. They meet the moment you can tell them exactly what happened at 14:40 last Tuesday, because the log is still on disk and nothing was quietly overwritten. That is the product. The model underneath is the **one part you did not build**, and your competitor has the same one.
+
+So the build order I would argue for is the one this repo already implies. Loop first, because a tight loop on an average model beats a loose loop on the best one, and users feel the difference in minutes. Guard second, because the buyer who lets you near production is buying the guard, not the reasoning. Log third, because trust is a claim until somebody outside your team can check it. The model seam last, so the week a better model ships you spend an afternoon on it instead of a quarter.
+
+I would want those four settled and written down before anyone on the team writes the first prompt.

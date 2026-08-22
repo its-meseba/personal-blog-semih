@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 
 import { SeriesTag } from "./SeriesBadge";
@@ -22,6 +23,13 @@ export type ListPost = {
   status?: string;
   viewsFormatted?: string;
 };
+
+/**
+ * How many rows carry a stagger delay before the rest land together. Eight
+ * steps of `--stagger-step` (40ms) is 320ms of tail - past that a stagger
+ * stops reading as one gesture and starts reading as a queue.
+ */
+const MAX_STAGGERED_ROWS = 8;
 
 export function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString("en-US", {
@@ -92,10 +100,32 @@ export function PostLead({ post }: { post: ListPost }) {
   );
 }
 
-/** Every other post: date rail on the left at `md`, stacked below it. */
-export function PostRow({ post }: { post: ListPost }) {
+/**
+ * Every other post: date rail on the left at `md`, stacked below it.
+ *
+ * `enterIndex` is the row's position in the stagger. `null` (the default)
+ * means no entrance at all - see `PostList`.
+ */
+export function PostRow({
+  post,
+  enterIndex = null,
+}: {
+  post: ListPost;
+  enterIndex?: number | null;
+}) {
+  const staggered =
+    enterIndex == null
+      ? null
+      : ({
+          "--row-index": Math.min(enterIndex, MAX_STAGGERED_ROWS),
+        } as CSSProperties);
+
   return (
-    <article className="grid grid-cols-1 gap-x-6 gap-y-1.5 py-rhythm md:grid-cols-[7.5rem_minmax(0,1fr)]">
+    <article
+      data-row-enter={staggered ? "" : undefined}
+      style={staggered ?? undefined}
+      className="grid grid-cols-1 gap-x-6 gap-y-1.5 py-rhythm md:grid-cols-[7.5rem_minmax(0,1fr)]"
+    >
       <p className="font-mono text-meta tabular-nums text-faint md:pt-1">
         {formatDate(post.date)}
       </p>
@@ -146,13 +176,23 @@ export function MonthRule({ date }: { date: string }) {
   );
 }
 
-/** Renders lead + month-grouped rows. Used by both list surfaces. */
+/**
+ * Renders lead + month-grouped rows. Used by both list surfaces.
+ *
+ * `enterRows` opts the rows into their staggered entrance. It is off by
+ * default and the writing index turns it on for its first render only, so a
+ * series filter click re-renders the list with no motion at all. The lead
+ * post never animates: it is the largest text on the page and a good LCP
+ * candidate, and an entrance that starts transparent would delay it.
+ */
 export function PostList({
   posts,
   withLead = true,
+  enterRows = false,
 }: {
   posts: ListPost[];
   withLead?: boolean;
+  enterRows?: boolean;
 }) {
   if (posts.length === 0) {
     return (
@@ -172,7 +212,7 @@ export function PostList({
     <div>
       {lead && <PostLead post={lead} />}
 
-      {rows.map(post => {
+      {rows.map((post, index) => {
         const key = monthKey(post.date);
         const newMonth = key !== lastMonth;
         lastMonth = key;
@@ -180,7 +220,7 @@ export function PostList({
         return (
           <div key={post.id}>
             {newMonth && <MonthRule date={post.date} />}
-            <PostRow post={post} />
+            <PostRow post={post} enterIndex={enterRows ? index : null} />
           </div>
         );
       })}

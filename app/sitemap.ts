@@ -9,19 +9,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const baseUrl = SITE_URL
 
-  // Static pages
+  // Static pages. `/` is deliberately absent: it 308-redirects to /about, and
+  // a sitemap should list the URL that actually answers, not the redirect.
   const staticPages = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 1,
-    },
     {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
       changeFrequency: 'monthly' as const,
-      priority: 0.9,
+      priority: 1,
     },
     {
       url: `${baseUrl}/thoughts`,

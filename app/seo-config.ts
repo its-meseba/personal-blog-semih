@@ -1,42 +1,51 @@
 // SEO Configuration for the entire site
 
 import { atomAlternateTypes } from "@/lib/feed-links";
+import {
+  ROLE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TITLE,
+  SITE_URL,
+  author,
+} from "./author";
 
 export const seoConfig = {
-  siteName: "Mehmet Semih Babacan",
-  siteUrl: "https://semihbabacan.com",
-  siteDescription: "Software engineer with 3 years of experience and dual degrees in Computer Science & Industrial Engineering. Ex-CEO of Solace Technology, building AI-native products and scalable systems.",
+  siteName: SITE_NAME,
+  siteUrl: SITE_URL,
+  // One source: `app/author.ts`. Never retype the description here.
+  siteDescription: SITE_DESCRIPTION,
 
   // Author information
   author: {
-    name: "Mehmet Semih Babacan",
+    name: author.name,
     email: "m.semihbabacan@gmail.com",
-    linkedin: "https://linkedin.com/in/mehmetsemihbabacan",
-    github: "https://github.com/its-meseba",
+    linkedin: author.links.linkedin,
+    github: author.links.github,
     twitter: "@semihbabacan",
     location: "Istanbul, Turkey",
   },
 
   // Default metadata for pages
-  defaultTitle: "Mehmet Semih Babacan - Software Engineer & Tech Entrepreneur",
-  titleTemplate: "%s | Mehmet Semih Babacan",
+  defaultTitle: SITE_TITLE,
+  titleTemplate: `%s | ${SITE_NAME}`,
+  role: ROLE,
 
   // Keywords for different page types
   keywords: {
     general: [
       "Mehmet Semih Babacan",
-      "software engineer",
-      "full stack developer",
-      "AI engineer",
-      "machine learning",
+      "AI technical product manager",
+      "AI product management",
+      "AI agents",
+      "agentic coding",
       "TypeScript",
       "Python",
       "React",
       "Next.js",
       "entrepreneur",
-      "startup founder",
-      "blockchain",
-      "smart contracts",
+      "developer tooling",
+      "LLM products",
       "Istanbul",
       "Turkey"
     ],
@@ -76,7 +85,7 @@ export const seoConfig = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Mehmet Semih Babacan",
+    siteName: SITE_NAME,
     images: {
       default: "/opengraph-image",
       width: 1200,
@@ -89,14 +98,6 @@ export const seoConfig = {
     card: "summary_large_image",
     creator: "@semihbabacan",
     site: "@semihbabacan",
-  },
-
-  // Verification codes (to be replaced with actual codes)
-  verification: {
-    google: "your-google-verification-code",
-    bing: "your-bing-verification-code",
-    yandex: "your-yandex-verification-code",
-    yahoo: "your-yahoo-verification-code",
   },
 
   // Robots configuration for different environments

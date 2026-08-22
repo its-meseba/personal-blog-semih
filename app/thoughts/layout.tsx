@@ -1,21 +1,24 @@
 import { atomAlternateTypes } from "@/lib/feed-links";
-import { generateThoughtsSchema } from "../structured-data";
+import { blogSchema, breadcrumbSchema } from "../structured-data";
+import { SITE_NAME, SITE_SUBJECT, SITE_URL } from "../author";
+import { JsonLd } from "../components/JsonLd";
 
 export const metadata = {
   title: "Thoughts",
-  description: "Insights on software engineering, AI, entrepreneurship, and technology innovation by Mehmet Semih Babacan",
+  // One source: `app/author.ts`.
+  description: `${SITE_SUBJECT}, by ${SITE_NAME}.`,
   openGraph: {
-    title: "Thoughts | Mehmet Semih Babacan",
-    description: "Insights on software engineering, AI, entrepreneurship, and technology innovation",
-    url: "https://semihbabacan.com/thoughts",
+    title: `Thoughts | ${SITE_NAME}`,
+    description: SITE_SUBJECT,
+    url: `${SITE_URL}/thoughts`,
     type: "website",
   },
   twitter: {
-    title: "Thoughts | Mehmet Semih Babacan",
-    description: "Insights on software engineering, AI, entrepreneurship, and technology innovation",
+    title: `Thoughts | ${SITE_NAME}`,
+    description: SITE_SUBJECT,
   },
   alternates: {
-    canonical: "https://semihbabacan.com/thoughts",
+    canonical: `${SITE_URL}/thoughts`,
     // The writing index is where a reader looks for the feed; declaring
     // `alternates` here would otherwise drop the root layout's autodiscovery.
     types: atomAlternateTypes(),
@@ -29,11 +32,12 @@ export default function ThoughtsLayout({
 }) {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(generateThoughtsSchema()),
-        }}
+      <JsonLd data={blogSchema()} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: SITE_NAME, url: SITE_URL },
+          { name: "Thoughts", url: `${SITE_URL}/thoughts` },
+        ])}
       />
       {children}
     </>

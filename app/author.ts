@@ -6,10 +6,10 @@
 // still called him a software engineer. Everything now reads from here, so the
 // positioning can only be changed in one place.
 
-import { SITE_URL } from "@/lib/post-types";
+import { OG_DEFAULT_IMAGE, SITE_URL } from "@/lib/post-types";
 
 export const SITE_NAME = "Mehmet Semih Babacan";
-export { SITE_URL };
+export { OG_DEFAULT_IMAGE, SITE_URL };
 
 /** The one-line positioning. Rendered under the name on bylines. */
 export const ROLE = "AI Technical Product Manager";
@@ -53,7 +53,6 @@ export const AUTHOR_SAME_AS = [
   author.links.linkedin,
   author.links.github,
   author.links.twitter,
-  "https://www.researchgate.net/profile/Mehmet-Semih-Babacan",
 ];
 
 // Calculate estimated reading time based on word count

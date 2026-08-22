@@ -19,7 +19,7 @@ import { getAllSeries } from "@/app/series";
 import { atomAlternateTypes } from "@/lib/feed-links";
 import { PostList, type ListPost } from "@/app/components/post-list";
 import { getSeriesBySlug } from "@/lib/content";
-import { SITE_URL } from "@/lib/post-types";
+import { OG_DEFAULT_IMAGE, SITE_URL } from "@/lib/post-types";
 
 export const revalidate = 60;
 
@@ -90,12 +90,22 @@ export async function generateMetadata({
           : undefined,
       ),
     },
+    // Declaring `openGraph` here replaces the root one wholesale, images
+    // included — so the site-wide card has to be restated.
     openGraph: {
       type: "website",
       url,
       siteName: "Mehmet Semih Babacan",
       title: series.name,
       description,
+      images: [
+        {
+          url: OG_DEFAULT_IMAGE,
+          width: 1200,
+          height: 630,
+          alt: series.name,
+        },
+      ],
     },
   };
 }

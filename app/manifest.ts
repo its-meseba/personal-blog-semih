@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next'
 
-import { SITE_DESCRIPTION, SITE_TITLE } from './author'
+import { OG_DEFAULT_IMAGE, SITE_DESCRIPTION, SITE_TITLE } from './author'
 import { LIGHT, THEME_COLOR } from './styles/tokens'
 
 export default function manifest(): MetadataRoute.Manifest {
@@ -25,7 +25,7 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     screenshots: [
       {
-        src: '/opengraph-image',
+        src: OG_DEFAULT_IMAGE,
         type: 'image/png',
         sizes: '1200x630',
         form_factor: 'wide',

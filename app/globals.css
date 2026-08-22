@@ -200,9 +200,12 @@
           pathname change and replays `page-enter` below - the same
           cross-fade-plus-a-few-pixels, ~200ms, no library.
 
-   `[data-motion-ready]` is set on <html> once, after hydration, so the very
-   first document paint never starts at `opacity: 0` (that would push out
-   LCP). Only navigations animate.
+   `[data-animate]` is decided during render and set only on the wrapper for a
+   route the client router has actually navigated to, so it is present from
+   that element's very first style resolution. The initially hydrated document
+   never carries it: its first paint cannot start at `opacity: 0` (that would
+   push out LCP), and nothing is animated after it has been painted. Only
+   navigations animate.
    ========================================================================== */
 
 @view-transition {
@@ -242,7 +245,7 @@
 
 /* --- soft navigation ---------------------------------------------------- */
 
-:root[data-motion-ready] .route-motion {
+.route-motion[data-animate] {
   animation: page-enter var(--dur-base) var(--ease-console) both;
 }
 

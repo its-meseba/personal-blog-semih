@@ -2,6 +2,7 @@
 
 import { atomAlternateTypes } from "@/lib/feed-links";
 import {
+  OG_DEFAULT_IMAGE,
   ROLE,
   SITE_DESCRIPTION,
   SITE_NAME,
@@ -87,7 +88,7 @@ export const seoConfig = {
     locale: "en_US",
     siteName: SITE_NAME,
     images: {
-      default: "/opengraph-image",
+      default: OG_DEFAULT_IMAGE,
       width: 1200,
       height: 630,
     }

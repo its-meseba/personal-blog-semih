@@ -10,7 +10,7 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: "Series",
   description:
-    "Bodies of work rather than scattered posts: every series on semihbabacan.com.",
+    "Bodies of work rather than scattered posts: every series on mehmetsemihbabacan.com.",
   alternates: {
     canonical: `${SITE_URL}/series`,
     types: atomAlternateTypes(),

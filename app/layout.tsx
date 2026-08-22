@@ -10,7 +10,13 @@ import { Header } from "./header";
 import { Footer } from "./footer";
 import { RouteMotion } from "./components/route-motion";
 import { doge } from "./doge";
-import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL, author } from "./author";
+import {
+  OG_DEFAULT_IMAGE,
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+  SITE_URL,
+  author,
+} from "./author";
 
 // "Fire max" fonts (Archivo / Source Serif 4 / JetBrains Mono) are declared
 // in `app/styles/fonts.ts` and mounted as CSS variables below.
@@ -59,7 +65,7 @@ export const metadata = {
     description: SITE_DESCRIPTION,
     images: [
       {
-        url: "/opengraph-image",
+        url: OG_DEFAULT_IMAGE,
         width: 1200,
         height: 630,
         alt: SITE_TITLE,
@@ -70,7 +76,7 @@ export const metadata = {
     card: "summary_large_image",
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
-    images: ["/opengraph-image"],
+    images: [OG_DEFAULT_IMAGE],
     creator: "@semihbabacan",
   },
   alternates: {
@@ -124,11 +130,11 @@ export default async function RootLayout({
           src="https://datafa.st/js/script.js"
           strategy="afterInteractive"
         />
-        <link rel="alternate" hrefLang="en" href="https://semihbabacan.com" />
+        <link rel="alternate" hrefLang="en" href={SITE_URL} />
         <link
           rel="alternate"
           hrefLang="tr"
-          href="https://semihbabacan.com/tr"
+          href={`${SITE_URL}/tr`}
         />
         {/* Sitemap autodiscovery, alongside the Atom feed declared above. */}
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />

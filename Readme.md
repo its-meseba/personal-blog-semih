@@ -1,6 +1,6 @@
 # Mehmet Semih Babacan - Personal Thoughts
 
-This is the thoughts site that powers `semihbabacan.com`, built on
+This is the thoughts site that powers `mehmetsemihbabacan.com`, built on
 [next.js](https://nextjs.org/) and
 deployed to the cloud via [Vercel](https://vercel.com).
 

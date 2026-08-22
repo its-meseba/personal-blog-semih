@@ -22,7 +22,7 @@ const FIELD = LIGHT.accentField;
 const INK = LIGHT.accentInk;
 const PAPER = LIGHT.background;
 
-const SITE_DOMAIN = "semihbabacan.com";
+const SITE_DOMAIN = "mehmetsemihbabacan.com";
 
 // Satori needs real font binaries, so the OG cards use the .woff files copied
 // into `fonts/` by the postinstall hook rather than the next/font faces.

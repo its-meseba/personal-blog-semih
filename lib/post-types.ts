@@ -53,7 +53,15 @@ export type IndexedPost = Required<
     body: string;
   };
 
-export const SITE_URL = "https://semihbabacan.com";
+export const SITE_URL = "https://mehmetsemihbabacan.com";
+
+/**
+ * The site-wide share card (1200x630). Every surface without a card of its
+ * own — home, /about, /thoughts, series — points here. Posts keep their own
+ * generated card (`postOgPath`); this is the fallback, not a replacement.
+ */
+export const OG_DEFAULT_IMAGE = "/images/og-default.png";
+
 
 export const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 

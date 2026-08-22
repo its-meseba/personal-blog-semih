@@ -124,7 +124,7 @@ function FilterButton({
       aria-pressed={active}
       className={`whitespace-nowrap rounded-sm px-2.5 py-1.5 transition-colors duration-quick ease-console ${
         active
-          ? "bg-accent-field text-accent-ink"
+          ? "bg-accent-field font-bold text-accent-ink"
           : "text-muted hover:bg-surface-hover hover:text-fg"
       }`}
     >

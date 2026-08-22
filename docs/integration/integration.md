@@ -78,7 +78,7 @@ To add a new series, update [series.ts](file:///Users/mehmetsemihbabacan/dev/wor
 Add your post URL to [public/llms.txt](file:///Users/mehmetsemihbabacan/dev/work/lumio-studio/web-apps/personal-blog-semih/public/llms.txt):
 
 ```txt
-https://semihbabacan.com/2026/your-post-slug
+https://mehmetsemihbabacan.com/2026/your-post-slug
 ```
 
 ### What is llms.txt?
@@ -101,7 +101,7 @@ The sitemap is dynamically generated from `posts.json` by [sitemap.ts](file:///U
 
 **No manual update needed** - your post will automatically appear at:
 ```
-https://semihbabacan.com/sitemap.xml
+https://mehmetsemihbabacan.com/sitemap.xml
 ```
 
 With priority `0.6` and `monthly` change frequency.

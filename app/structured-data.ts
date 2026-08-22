@@ -17,7 +17,12 @@ import {
   SITE_SUBJECT,
   SITE_URL,
 } from "./author";
-import { postOgPath, postUrl, type IndexedPost } from "@/lib/post-types";
+import {
+  OG_DEFAULT_IMAGE,
+  postOgPath,
+  postUrl,
+  type IndexedPost,
+} from "@/lib/post-types";
 
 /** Site-absolute path to absolute URL. JSON-LD may not carry relative URLs. */
 function abs(path: string): string {
@@ -67,7 +72,7 @@ export function personSchema() {
     ...personNode(),
     alternateName: "Semih Babacan",
     description: SITE_DESCRIPTION,
-    image: abs("/opengraph-image"),
+    image: abs(OG_DEFAULT_IMAGE),
     alumniOf: [
       {
         "@type": "EducationalOrganization",

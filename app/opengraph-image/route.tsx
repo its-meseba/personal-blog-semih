@@ -5,6 +5,20 @@ import { getPosts } from "@/app/get-posts";
 import { readFileSync } from "fs";
 import { join } from "path";
 
+import { LIGHT } from "@/app/styles/tokens";
+
+/**
+ * "Fire max" index card: cream paper, near-black ink, and one full-bleed
+ * orange FIELD as the masthead — case (a) of the contrast rule in
+ * `app/styles/tokens.ts`. The orange never carries small type.
+ */
+const PAPER = LIGHT.background;
+const INK = LIGHT.text;
+const MUTED = LIGHT.muted;
+const FIELD = LIGHT.accentField;
+const FIELD_INK = LIGHT.accentInk;
+const RULE = LIGHT.borderStrong;
+
 const fontsDir = join(process.cwd(), "fonts");
 
 const inter300 = readFileSync(
@@ -25,19 +39,25 @@ export async function GET() {
   return new ImageResponse(
     (
       <div
-        tw="flex p-10 h-full w-full bg-white flex-col"
-        style={font("Inter 300")}
+        tw="flex h-full w-full flex-col"
+        style={{ ...font("Inter 300"), backgroundColor: PAPER, color: INK }}
       >
-        <header tw="flex text-[36px] w-full">
-          <div tw="font-bold" style={font("Inter 600")}>
-            M. Semih Babacan
-          </div>
+        <header
+          tw="flex text-[36px] w-full items-center px-10 py-8"
+          style={{ backgroundColor: FIELD, color: FIELD_INK }}
+        >
+          <div style={font("Inter 600")}>M. Semih Babacan</div>
           <div tw="grow" />
-          <div tw="text-[28px]">semihbabacan.com</div>
+          <div tw="text-[28px]" style={font("Roboto Mono 400")}>
+            semihbabacan.com
+          </div>
         </header>
 
-        <main tw="flex mt-10 flex-col w-full" style={font("Roboto Mono 400")}>
-          <div tw="flex w-full text-[26px] text-gray-400 mb-3">
+        <main
+          tw="flex px-10 pt-10 pb-10 flex-col w-full"
+          style={font("Roboto Mono 400")}
+        >
+          <div tw="flex w-full text-[26px] mb-3" style={{ color: MUTED }}>
             <div tw="w-24">date</div>
             <div tw="grow">title</div>
             <div>views</div>
@@ -46,16 +66,19 @@ export async function GET() {
           {posts.map((post, i) => (
             <div
               key={post.id}
-              tw="flex py-6 text-[26px] border-gray-300 border-t w-full"
+              tw="flex py-6 text-[26px] border-t w-full"
+              style={{ borderColor: RULE }}
             >
-              <div tw="flex text-gray-400 w-24">
+              <div tw="flex w-24" style={{ color: MUTED }}>
                 {posts[i - 1] === undefined ||
                   getYear(post.date) !== getYear(posts[i - 1].date)
                   ? getYear(post.date)
                   : ""}
               </div>
               <div tw="flex grow">{post.title}</div>
-              <div tw="flex text-gray-400 pl-7">{post?.viewsFormatted}</div>
+              <div tw="flex pl-7" style={{ color: MUTED }}>
+                {post?.viewsFormatted}
+              </div>
             </div>
           ))}
         </main>

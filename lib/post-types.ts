@@ -22,11 +22,22 @@ export type PostFrontmatter = {
   status: PostStatus;
   /** Optional cover image, site-absolute (`/images/blog/<slug>/cover.png`). */
   cover?: string;
+  /**
+   * Absolute URL of the ORIGINAL publication, for the rare post that appeared
+   * somewhere else first. Set it and this site stops claiming authorship in
+   * search: the page's `<link rel="canonical">` points at the other URL.
+   *
+   * Leave it out for everything written here — omitted means self-canonical,
+   * which is what every post should be. Mirrors (Substack, LinkedIn, dev.to)
+   * are NOT a reason to set this: the site is the source of truth, so the
+   * mirror carries our canonical, never the other way round.
+   */
+  canonical?: string;
 };
 
 /** A validated post plus everything derived from the file. */
 export type IndexedPost = Required<Pick<PostFrontmatter, "slug" | "title" | "description" | "date" | "status">> &
-  Pick<PostFrontmatter, "series" | "cover"> & {
+  Pick<PostFrontmatter, "series" | "cover" | "canonical"> & {
     /** Alias of `slug`; the historical field name used across the app. */
     id: string;
     tags: string[];
@@ -57,6 +68,19 @@ export function postPath(post: Pick<PostFrontmatter, "slug" | "date">): string {
 export function postUrl(post: Pick<PostFrontmatter, "slug" | "date">): string {
   return `${SITE_URL}${postPath(post)}`;
 }
+
+/**
+ * Where this post's search credit belongs: its own URL, unless the post
+ * declares that it was first published elsewhere.
+ */
+export function postCanonicalUrl(
+  post: Pick<PostFrontmatter, "slug" | "date" | "canonical">,
+): string {
+  return post.canonical ?? postUrl(post);
+}
+
+/** A `canonical` override must be an absolute http(s) URL, or it is a typo. */
+export const ABSOLUTE_URL_RE = /^https?:\/\/[^\s]+$/;
 
 /** Per-post OG card route. Every published post has one. */
 export function postOgPath(slug: string): string {

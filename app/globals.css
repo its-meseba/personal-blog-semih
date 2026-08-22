@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   Console design system - token layer
+   "Fire max" design system - token layer
 
    Values mirror `app/styles/tokens.ts` (which exists for the places that
    cannot read CSS: Satori OG routes, the inlined `theme-effect.ts`).
    Colours are stored as space-separated RGB channels so Tailwind can apply
    opacity modifiers: `rgb(var(--c-accent) / 0.35)`, `bg-surface/60`.
 
-   Dark is the primary theme. Light is the alternate. The `.dark` class is put
+   Light (cream paper) is the primary register. Dark is the alternate. The `.dark` class is put
    on <html> by `app/theme-effect.ts` before paint, so there is no flash.
    ========================================================================== */
 
@@ -18,34 +18,43 @@
   :root {
     color-scheme: light;
 
-    /* --- surfaces ------------------------------------------------------- */
-    --c-background: 255 255 255; /* #FFFFFF */
-    --c-surface: 245 246 248; /* #F5F6F8 */
-    --c-surface-raised: 255 255 255; /* #FFFFFF */
-    --c-surface-hover: 236 238 242; /* #ECEEF2 */
+    /* --- surfaces (cream paper) ----------------------------------------- */
+    --c-background: 251 247 241; /* #FBF7F1 */
+    --c-surface: 243 237 227; /* #F3EDE3 */
+    --c-surface-raised: 255 253 249; /* #FFFDF9 */
+    --c-surface-hover: 235 227 214; /* #EBE3D6 */
 
     /* --- lines ---------------------------------------------------------- */
-    --c-border: 228 230 234; /* #E4E6EA */
-    --c-border-strong: 203 208 216; /* #CBD0D8 */
+    --c-border: 224 215 200; /* #E0D7C8 */
+    --c-border-strong: 198 185 164; /* #C6B9A4 */
 
-    /* --- text ----------------------------------------------------------- */
-    --c-text: 16 18 21; /* #101215 */
-    --c-muted: 92 99 109; /* #5C636D */
-    --c-faint: 134 141 151; /* #868D97 */
+    /* --- text (near-black ink) ------------------------------------------ */
+    --c-text: 22 19 15; /* #16130F */
+    --c-muted: 95 87 76; /* #5F574C */
+    --c-faint: 123 114 100; /* #7B7264 */
 
-    /* --- accent (signal blue) ------------------------------------------- */
-    --c-accent: 24 88 199; /* #1858C7 */
-    --c-accent-hover: 15 68 160; /* #0F44A0 */
-    --c-accent-subtle: 232 240 254; /* #E8F0FE */
-    --c-accent-contrast: 255 255 255; /* #FFFFFF */
+    /* --- accent ---------------------------------------------------------
+       `--c-accent` is the ONLY text-legal accent (deep ember, 6.16:1 on the
+       cream ground). The signature hot orange #FF5A1F is 2.92:1 there, so it
+       is confined to `--c-accent-field` (fill under near-black ink) and
+       `--c-accent-mark` (rules, bars, focus, selection - never a glyph).
+       See the contrast rule in `app/styles/tokens.ts`. -------------------- */
+    --c-accent: 168 54 7; /* #A83607 */
+    --c-accent-hover: 126 39 4; /* #7E2704 */
+    --c-accent-contrast: 255 248 242; /* #FFF8F2 */
+    --c-accent-field: 255 90 31; /* #FF5A1F */
+    --c-accent-field-hover: 232 74 18; /* #E84A12 */
+    --c-accent-ink: 22 19 15; /* #16130F */
+    --c-accent-mark: 255 90 31; /* #FF5A1F */
+    --c-accent-chip: 255 231 218; /* #FFE7DA */
 
     /* --- reading measure ------------------------------------------------ */
     --measure: 68ch;
 
-    /* --- legacy aliases (pre-Console CSS still reads these) -------------- */
-    --foreground-rgb: 16, 18, 21;
-    --background-rgb: 255, 255, 255;
-    --accent-rgb: 24, 88, 199;
+    /* --- legacy aliases (pre-token CSS still reads these) ---------------- */
+    --foreground-rgb: 22, 19, 15;
+    --background-rgb: 251, 247, 241;
+    --accent-rgb: 168, 54, 7;
 
     -webkit-tap-highlight-color: transparent;
     /* note: must keep in sync with `theme-color` in `theme-effect.ts`
@@ -56,26 +65,32 @@
   :root.dark {
     color-scheme: dark;
 
-    --c-background: 12 13 16; /* #0C0D10 */
-    --c-surface: 22 24 29; /* #16181D */
-    --c-surface-raised: 28 31 38; /* #1C1F26 */
-    --c-surface-hover: 32 36 44; /* #20242C */
+    --c-background: 18 17 16; /* #121110 */
+    --c-surface: 27 25 23; /* #1B1917 */
+    --c-surface-raised: 34 31 28; /* #221F1C */
+    --c-surface-hover: 42 38 34; /* #2A2622 */
 
-    --c-border: 34 37 43; /* #22252B */
-    --c-border-strong: 46 50 58; /* #2E323A */
+    --c-border: 42 38 34; /* #2A2622 */
+    --c-border-strong: 58 52 46; /* #3A342E */
 
-    --c-text: 230 232 236; /* #E6E8EC */
-    --c-muted: 138 144 153; /* #8A9099 */
-    --c-faint: 92 98 107; /* #5C626B */
+    --c-text: 242 235 224; /* #F2EBE0 */
+    --c-muted: 167 156 141; /* #A79C8D */
+    --c-faint: 131 122 108; /* #837A6C */
 
-    --c-accent: 47 129 247; /* #2F81F7 */
-    --c-accent-hover: 88 155 255; /* #589BFF */
-    --c-accent-subtle: 22 35 58; /* #16233A */
-    --c-accent-contrast: 255 255 255; /* #FFFFFF */
+    /* On the dark register orange IS text-legal: #FF7A45 is 7.29:1 and the
+       signature #FF5A1F itself reaches 6.05:1. */
+    --c-accent: 255 122 69; /* #FF7A45 */
+    --c-accent-hover: 255 154 110; /* #FF9A6E */
+    --c-accent-contrast: 22 19 15; /* #16130F */
+    --c-accent-field: 255 90 31; /* #FF5A1F */
+    --c-accent-field-hover: 255 111 54; /* #FF6F36 */
+    --c-accent-ink: 22 19 15; /* #16130F */
+    --c-accent-mark: 255 90 31; /* #FF5A1F */
+    --c-accent-chip: 46 26 16; /* #2E1A10 */
 
-    --foreground-rgb: 230, 232, 236;
-    --background-rgb: 12, 13, 16;
-    --accent-rgb: 47, 129, 247;
+    --foreground-rgb: 242, 235, 224;
+    --background-rgb: 18, 17, 16;
+    --accent-rgb: 255, 122, 69;
 
     background-color: rgb(var(--c-background));
   }
@@ -101,12 +116,14 @@
   }
 
   ::selection {
-    background-color: rgb(var(--c-accent) / 0.28);
+    /* non-text mark (c): the signature orange as a wash behind ink */
+    background-color: rgb(var(--c-accent-mark) / 0.32);
     color: rgb(var(--c-text));
   }
 
   :focus-visible {
-    outline: 2px solid rgb(var(--c-accent));
+    /* non-text mark (c) */
+    outline: 2px solid rgb(var(--c-accent-mark));
     outline-offset: 2px;
     border-radius: 3px;
   }
@@ -214,27 +231,28 @@
     color: rgb(var(--c-text));
   }
 
-  .prose-console ul,
-  .prose-console ol {
+  .prose-console :where(ul),
+  .prose-console :where(ol) {
     margin: 0 0 1.5rem;
     padding-left: 1.5rem;
   }
 
-  .prose-console ul {
+  .prose-console :where(ul) {
     list-style: disc;
   }
 
-  .prose-console ol {
+  .prose-console :where(ol) {
     list-style: decimal;
   }
 
-  .prose-console li {
+  .prose-console :where(li) {
     margin-bottom: 0.5rem;
     padding-left: 0.25rem;
   }
 
-  .prose-console li::marker {
-    color: rgb(var(--c-faint));
+  .prose-console ul li::marker {
+    /* non-text mark (c) */
+    color: rgb(var(--c-accent-mark));
   }
 
   /* --- links ----------------------------------------------------------- */
@@ -255,7 +273,7 @@
   }
 
   /* --- pull quote / blockquote ----------------------------------------- */
-  .prose-console blockquote,
+  .prose-console :where(blockquote),
   .pull-quote {
     font-family: var(--font-serif), ui-serif, Georgia, Cambria, "Times New Roman", serif;
     font-size: 1.1875rem;
@@ -263,7 +281,8 @@
     color: rgb(var(--c-text));
     margin: 2.5rem 0;
     padding: 0.25rem 0 0.25rem 1.5rem;
-    border-left: 2px solid rgb(var(--c-accent));
+    /* non-text mark (c): a hot rule, never type */
+    border-left: 3px solid rgb(var(--c-accent-mark));
   }
 
   .prose-console blockquote p:last-child,
@@ -448,7 +467,8 @@ a:hover {
   left: 0;
   width: 0%;
   height: 2px;
-  background: rgb(var(--c-accent));
+  /* non-text mark (c) */
+  background: rgb(var(--c-accent-mark));
   z-index: 100;
   transition: width 100ms linear;
 }
@@ -476,7 +496,7 @@ a:hover {
     font-size: 1.25rem;
   }
 
-  .prose-console blockquote,
+  .prose-console :where(blockquote),
   .pull-quote {
     font-size: 1.0625rem;
     padding-left: 1.25rem;

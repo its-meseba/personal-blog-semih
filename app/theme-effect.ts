@@ -1,3 +1,6 @@
+// NOTE: this function is stringified into the document head, so it cannot
+// import anything. The two theme-color literals below MUST match THEME_COLOR
+// in `app/styles/tokens.ts` and `viewport.themeColor` in `app/layout.tsx`.
 export const themeEffect = function () {
   // `null` preference implies system (auto)
   const pref = localStorage.getItem("theme");
@@ -16,7 +19,7 @@ export const themeEffect = function () {
     document.documentElement.classList.add("dark");
     document.head
       .querySelector("meta[name=theme-color]")
-      ?.setAttribute("content", "#0c0d10");
+      ?.setAttribute("content", "#121110");
 
     requestAnimationFrame(() => {
       document.documentElement.classList.remove("pause-transitions");
@@ -27,7 +30,7 @@ export const themeEffect = function () {
     document.documentElement.classList.remove("dark");
     document.head
       .querySelector("meta[name=theme-color]")
-      ?.setAttribute("content", "#ffffff");
+      ?.setAttribute("content", "#FBF7F1");
     requestAnimationFrame(() => {
       document.documentElement.classList.remove("pause-transitions");
     });

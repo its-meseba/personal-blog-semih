@@ -59,6 +59,7 @@
     "dev": "next dev --turbopack -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
+    "substack": "node scripts/substack-draft.mjs",
     "postinstall": "node ./fonts/init.mjs"
   },
   "prettier": {

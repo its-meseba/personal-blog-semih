@@ -2,6 +2,8 @@ import "./globals.css";
 
 import Script from "next/script";
 import { fontVariables } from "./styles/fonts";
+import { atomAlternateTypes } from "@/lib/feed-links";
+import { THEME_COLOR } from "./styles/tokens";
 import { themeEffect } from "./theme-effect";
 import { Analytics } from "./analytics";
 import { Header } from "./header";
@@ -9,8 +11,8 @@ import { Footer } from "./footer";
 import { doge } from "./doge";
 import { generatePersonSchema, generateWebsiteSchema } from "./structured-data";
 
-// Console design system fonts (Sora / Source Serif 4 / JetBrains Mono) are
-// declared in `app/styles/fonts.ts` and mounted as CSS variables below.
+// "Fire max" fonts (Archivo / Source Serif 4 / JetBrains Mono) are declared
+// in `app/styles/fonts.ts` and mounted as CSS variables below.
 
 export const metadata = {
   title: {
@@ -88,11 +90,7 @@ export const metadata = {
       "tr-TR": "https://semihbabacan.com/tr",
     },
     // Feed autodiscovery. Posts override `canonical` with their own URL.
-    types: {
-      "application/atom+xml": [
-        { url: "/atom", title: "Mehmet Semih Babacan — Atom" },
-      ],
-    },
+    types: atomAlternateTypes(),
   },
   category: "technology",
   metadataBase: new URL("https://semihbabacan.com"),
@@ -100,10 +98,10 @@ export const metadata = {
 
 export const viewport = {
   themeColor: [
-    // keep in sync with THEME_COLOR in `app/styles/tokens.ts`
-    // and the two literals in `app/theme-effect.ts`
-    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
-    { media: "(prefers-color-scheme: dark)", color: "#0C0D10" },
+    // sourced from `app/styles/tokens.ts`; the two literals in
+    // `app/theme-effect.ts` must match (it is inlined and cannot import)
+    { media: "(prefers-color-scheme: light)", color: THEME_COLOR.light },
+    { media: "(prefers-color-scheme: dark)", color: THEME_COLOR.dark },
   ],
   width: "device-width",
   initialScale: 1,

@@ -2,8 +2,8 @@ import { postMetadata } from "@/lib/post-metadata";
 
 export const post = {
   slug: "agent-identity-crisis",
-  title: "The Identity Crisis of AI Agents",
-  description: "Every AI agent accessing your systems is like an unmanaged employee with no badge, no audit trail, and no boundaries. This is the security hole no one is talking about.",
+  title: "My agents are all logging in as me",
+  description: "Every agent I run authenticates with a human's credentials or a shared service account. The audit log records the wrong actor, and I don't think I'm unusual.",
   date: "2026-03-06",
   series: "Agentic Coding",
   tags: ["agents", "security", "identity"],
@@ -12,62 +12,185 @@ export const post = {
 
 export const metadata = postMetadata(post);
 
----
+I tried to count the agents touching my own systems last month. Honest answer: I don't think I got them all. There's the one that reads supplier feeds and writes prices. There's the one that buys stock when an order lands, with real money. There's whatever I spun up in a terminal on a Tuesday to reconcile two tables and never turned off.
 
-# The Identity Crisis of AI Agents
+Not one of them has an identity. They authenticate as me, or as a service account I created years ago and have never rotated. If a person worked that way in my company, borrowing my login, moving money, leaving no record of who did what, I would call it an incident. When my own code does it I call it automation and go to lunch.
 
-Most companies right now are worried about the wrong AI problem.
+## Counting is the first thing that goes wrong
 
-They're debating prompt engineering techniques, model selection, fine-tuning strategies. Meanwhile, something much more fundamental is broken, and almost nobody is talking about it.
+You can't inventory what was never registered. Agents don't get provisioned. They get written. Somebody needs a task done, wires up a loop with a model in it, hands it a token that already works, and ships. There's no form, no approval, no directory entry, nothing that shows up in a quarterly access review because there's nothing to review.
 
-Every AI agent accessing your systems today is, for all practical purposes, an unmanaged employee. No badge. No audit trail. No boundaries. And you probably don't even know how many of them are running.
+That's not a discipline problem. It's what happens when creating a new actor in your system costs one line of config and creating a new *identity* costs a ticket, a security review and two weeks.
 
----
+So the population grows and the register doesn't. My own count was a guess. I'd bet most counts are guesses.
 
-## The Observation
+The second-order effect is worse than the missing list. Offboarding works because a person maps to a set of accounts, and revoking the person revokes the set. An agent that runs on my credential inherits my access silently, which means it also inherits every grant I ever picked up and never gave back. The day I leave, either it dies with my account and something in production stops, or somebody keeps the account alive for it. The second one is the easy choice, and it's the one that gets made.
 
-Here's what's actually happening inside enterprises right now. A developer on the platform team spins up an agent to automate ticket triage. Someone in finance deploys a GPT-based workflow that reads invoices and hits the ERP API. A product manager connects an agent to the CRM to generate weekly summaries. Marketing has three different agent tools accessing the content management system.
+## The log records me, not the agent
 
-None of these agents have identities. Not in the way your IT security team thinks about identity. They don't exist in your directory. They don't have scoped permissions that expire. They don't show up in access reviews. When they authenticate to your systems, they're borrowing a human's credentials — or worse, using a shared service account that was provisioned in 2019 and has never been rotated.
+Here's the part I find genuinely uncomfortable, and it's the whole post in one picture.
 
-This is the norm, not the exception.
+<Diagram
+  title="Human, service and agent credentials, and what each one writes into the audit log"
+  caption="The agent row is the problem. It presents a human's session token, so the log attributes its actions to the human. Two actors, one name."
+>
+  <svg viewBox="0 0 700 265" className="min-w-[660px]" role="presentation">
+    <defs>
+      <marker
+        id="aic-arrow"
+        viewBox="0 0 10 10"
+        refX="9"
+        refY="5"
+        markerWidth="6"
+        markerHeight="6"
+        orient="auto-start-reverse"
+      >
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+      </marker>
+    </defs>
 
-If a human employee operated this way — no badge, accessing sensitive systems under someone else's login, with no record of what they did or why — you'd call that a security incident. When an AI agent does it, we call it innovation.
+    <text x="12" y="24" opacity="0.65">actor</text>
+    <text x="182" y="24" opacity="0.65">credential it presents</text>
+    <text x="462" y="24" opacity="0.65">what the audit log records</text>
 
----
+    <g stroke="rgb(var(--c-border-strong))" fill="rgb(var(--c-surface-raised))">
+      <rect x="12" y="52" width="118" height="34" rx="6" />
+      <rect x="182" y="52" width="208" height="34" rx="6" />
+      <rect x="462" y="52" width="208" height="34" rx="6" />
+      <rect x="12" y="112" width="118" height="34" rx="6" />
+      <rect x="182" y="112" width="208" height="34" rx="6" />
+      <rect x="462" y="112" width="208" height="34" rx="6" />
+      <rect x="12" y="172" width="118" height="34" rx="6" />
+    </g>
 
-## The Underlying Mechanism
+    <g stroke="rgb(var(--c-accent))" fill="rgb(var(--c-surface-raised))">
+      <rect x="182" y="172" width="208" height="34" rx="6" />
+      <rect x="462" y="172" width="208" height="34" rx="6" />
+    </g>
 
-The reason this is happening is architectural. Our entire identity infrastructure was built for two types of principals: humans and services. Humans get SSO, MFA, role-based access. Services get API keys and service accounts. Both are well-understood.
+    <g stroke="currentColor" opacity="0.55" markerEnd="url(#aic-arrow)">
+      <line x1="132" y1="69" x2="176" y2="69" />
+      <line x1="392" y1="69" x2="456" y2="69" />
+      <line x1="132" y1="129" x2="176" y2="129" />
+      <line x1="392" y1="129" x2="456" y2="129" />
+      <line x1="132" y1="189" x2="176" y2="189" />
+      <line x1="392" y1="189" x2="456" y2="189" />
+    </g>
 
-AI agents are neither.
+    <text x="26" y="73">human</text>
+    <text x="196" y="73">SSO plus MFA, session expires</text>
+    <text x="476" y="73">semih</text>
 
-An agent isn't a human. It doesn't respond to MFA prompts. It doesn't have judgment about whether an access request is appropriate. But it's also not a traditional service. It's autonomous. It makes decisions about what to access and when. It chains actions together in ways that weren't explicitly programmed. It can be instructed by external inputs — user prompts, other agents, even data it retrieves — to behave in ways its deployer never intended.
+    <text x="26" y="133">service</text>
+    <text x="196" y="133">API key, one scope, rotatable</text>
+    <text x="476" y="133">price-worker</text>
 
-We have no identity primitive for this. And that's the root of the problem.
+    <text x="26" y="193">agent</text>
+    <text x="196" y="193" fill="rgb(var(--c-accent))">semih's session token</text>
+    <text x="476" y="193" fill="rgb(var(--c-accent))">semih</text>
 
-This is what the team at [Orchid Security](https://www.orchid.security/) calls the "dark matter" of enterprise AI. Agents are proliferating across organizations, operating in the gaps between existing security controls, essentially invisible to the systems designed to enforce governance. You can't manage what you can't see. You can't audit what doesn't have an identity. And you can't scope permissions for an entity that doesn't exist in your access model.
+    <line
+      x1="12"
+      y1="228"
+      x2="670"
+      y2="228"
+      stroke="rgb(var(--c-border))"
+      strokeDasharray="4 4"
+    />
+    <text x="12" y="250" opacity="0.65">
+      rows 1 and 3 are different actors and the log cannot tell them apart
+    </text>
+  </svg>
+</Diagram>
 
----
+Every access-control system I've worked with answers one question: who did this. The answer has to be a principal that exists in the directory. When an agent presents my token, the honest answer to "who did this" is "semih", and that answer is wrong in a way nothing downstream can detect. Not the SIEM, not the review, not me reading the log six weeks later trying to work out why a price changed at 3am.
 
-## The Implication
+Rotating that credential doesn't help. Rotation changes the secret. It doesn't split the **actor**.
 
-Here's the thing that should make every product and engineering leader uncomfortable: the agent deployment problem is going to get worse by an order of magnitude before anyone's governance catches up.
+## We only ever built two kinds of principal
 
-We're entering the agentic era. The whole point is that agents act on behalf of humans, autonomously, at scale. Every major platform — Salesforce, ServiceNow, Microsoft, Google — is shipping agent capabilities. Your vendors are deploying agents. Your customers will deploy agents that interact with your product. Your own teams are deploying agents faster than your security team can inventory them.
+The reason this keeps happening is architectural, and it's older than any of the current models. Identity infrastructure was designed around two shapes:
 
-The enterprise deployment risk isn't theoretical. It's the same risk pattern we saw with shadow IT a decade ago, except shadow IT was humans using unauthorized SaaS tools. Shadow agents are autonomous software entities using authorized tools in unauthorized ways, under borrowed credentials, with no oversight.
+- a human, who gets SSO, MFA, role-based access, and a session that dies
+- a service, which gets a key, a narrow scope, and a rotation schedule
 
-And here's the counter-intuitive part: the companies that move fastest on AI adoption are the most exposed. The more agents you deploy, the larger your ungoverned attack surface. Speed without identity infrastructure isn't a competitive advantage. It's a liability with a delayed fuse.
+Both are well understood because both are predictable. A human is slow, present, and can be asked "are you sure". A service does exactly one thing forever and never surprises you.
 
-The companies that will actually scale agentic AI in production — in regulated industries, with real data, touching real systems — will be the ones that solve identity first. Not model selection. Not prompt optimization. Identity.
+An agent is neither, and that's not a philosophical point. It's operational. It won't answer an MFA prompt at 3am. It has no judgement about whether a request is appropriate. But it also isn't a fixed-function service, because it decides what to touch and in what order, and it chains actions that nobody wrote down in advance.
 
-Because an agent without an identity isn't an employee. It's an intruder you invited in.
+There's no primitive for that. So it gets stuffed into whichever of the two boxes has a working credential nearby, which is almost always the human one.
 
----
+## A service can't be talked into anything
 
-## The Clean Stop
+The difference that actually matters to me is instructability. My price worker does what its code says. You cannot persuade it. There's no text anywhere in the world that makes it place an order.
 
-The agentic era doesn't need better models. It needs better infrastructure. Agent identity is the unsexy, foundational layer that determines whether enterprise AI deployment is a transformation or a catastrophe. The companies building this layer are working on the problem that actually matters.
+An agent's inputs are instructions and data at the same time, and it can't reliably tell which is which. A ticket body, a supplier's product description, a page it fetched, another agent's output: any of it can carry something that reads like a command. That's not a bug someone will patch. It's the property that makes agents useful.
 
-*See also: [Get Shits Done: The Anti-Enterprise AI Workflow](https://semihbabacan.com/2026/get-shit-done) — for how to build AI systems the right way.*
+Put that next to the identity gap and the shape of the risk gets clear. An entity that can be influenced by whatever it reads is holding a credential that was scoped for an entity that can't. The scope was sized for the wrong threat.
+
+A scope is a bet about behaviour. When I granted my old shared account write access across three systems, the bet was that the code holding it does what the code says. That bet is still good for the price worker. It is not good for an agent whose next action depends on a paragraph of text a stranger wrote, and I never went back and re-priced it. Nobody does. The permission was granted once, for a threat model that quietly stopped applying.
+
+<Callout kind="warning" label="Where I actually am on this">
+  I have not solved the delegation case. When one of my agents calls another, the second one sees the first one's credential and I have no way to express "this action started as a human request, two hops back, and here's what that human was allowed to do". Everything below is about the first hop.
+</Callout>
+
+## What I do about it now
+
+None of this is a product recommendation. It's the four things I changed after I drew that diagram, in the order I changed them, cheapest first.
+
+<Steps>
+  <Step title="Give every agent its own credential">
+    One agent, one service account, its own name. No sharing, no borrowing mine. This alone is boring and it fixes the log: the actor column finally says something true.
+  </Step>
+  <Step title="Scope it to the job, then take things away">
+    I start from what the agent needs for the one task and grant that. Then I remove one permission and see what breaks. The one that never breaks was never needed.
+  </Step>
+  <Step title="Give it an expiry">
+    A credential with no end date outlives the reason it existed. The Tuesday-afternoon agent I mentioned is exactly the case. If its key had died in seven days I would never have had to remember it.
+  </Step>
+  <Step title="Cap the blast radius in money and volume">
+    Permissions answer what it can touch. They don't answer how much. My buying agent has a spend ceiling and a per-run item cap, and both are enforced outside the agent, because a limit the agent can reason about is a limit it can be argued out of.
+  </Step>
+</Steps>
+
+Step one is mostly a config change. This is what it looked like for one worker:
+
+<CodeCompare
+  label="Same worker, two identities. The second one shows up in the log as itself."
+  beforeLabel="before"
+  afterLabel="after"
+  before={`# shared account, created 2019, never rotated
+SERVICE_ACCOUNT=ops-automation@example
+SCOPES=datastore.user,secretmanager.admin,storage.admin
+EXPIRES=never
+SPEND_LIMIT=
+`}
+  after={`# one agent, one identity
+SERVICE_ACCOUNT=agent-price-sync@example
+SCOPES=datastore.user
+EXPIRES=7d
+SPEND_LIMIT=0
+`}
+/>
+
+The buying agent got its own account with a real spend limit and nothing else. Two accounts, two names in the log, two different things I can revoke at 3am without stopping the other one.
+
+<PullQuote cite="the line I keep coming back to">
+  An agent without an identity isn't an employee. It's an intruder I invited in.
+</PullQuote>
+
+## The uncomfortable part is the direction of travel
+
+The reason I'm writing this rather than quietly fixing my own config: my count was a guess in a system where I wrote every agent myself. That's the easy case.
+
+Soon it won't just be mine. Vendors are shipping agents into products I already pay for. Customers will point agents at my API and I will have no way to tell those calls from a person's. My own teams will add agents faster than anyone writes them down, because writing them down is the slow path and shipping is the fast one.
+
+The pattern rhymes with shadow IT, but it's worse in one specific way. Shadow IT was people using tools nobody approved. This is approved tools being used by actors nobody can name, with credentials that belong to someone else.
+
+And the ordering is nasty. The faster a company adopts, the bigger the ungoverned surface, and none of it shows up as a problem until it does. Speed without identity isn't an advantage. It's a **bill** with a delay on it.
+
+Going in, I thought this was a governance topic, the kind of thing a policy document handles. It isn't. It's a missing **primitive**, and until there's a real one, the only honest move is to stop pretending an agent is a person or a script and give it a name of its own.
+
+What I still don't know: whether per-agent service accounts hold up at a hundred agents, or whether I'm just doing manual IAM until something better exists. Ask me in a year.
+
+*Related: [Get Shit Done: The Anti-Enterprise AI Workflow](/2026/get-shit-done).*

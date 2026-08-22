@@ -1,4 +1,7 @@
 // SEO Configuration for the entire site
+
+import { atomAlternateTypes } from "@/lib/feed-links";
+
 export const seoConfig = {
   siteName: "Mehmet Semih Babacan",
   siteUrl: "https://semihbabacan.com",
@@ -184,6 +187,8 @@ export function generatePageMetadata({
     },
     alternates: {
       canonical: url,
+      // Keep feed autodiscovery alive on any page built through this helper.
+      types: atomAlternateTypes(),
     },
   };
 }

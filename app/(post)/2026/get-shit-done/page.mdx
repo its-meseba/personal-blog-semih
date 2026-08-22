@@ -2,8 +2,8 @@ import { postMetadata } from "@/lib/post-metadata";
 
 export const post = {
   slug: "get-shit-done",
-  title: "Get Shits Done: The Anti-Enterprise AI Workflow",
-  description: "A spec-driven development system that solves context rot — for solo developers who just want to build.",
+  title: "Get Shits Done, or how I stopped losing projects to context rot",
+  description: "Context rot is a memory problem, not a model problem. Here is the spec-driven loop I use to work around it as a solo builder.",
   date: "2026-03-04",
   series: "Agentic Coding",
   tags: ["claude-code", "workflow", "spec-driven"],
@@ -12,49 +12,169 @@ export const post = {
 
 export const metadata = postMetadata(post);
 
----
+Most AI workflow tools want my one-person project to cosplay as a fifty-person engineering org. Sprint ceremonies. Story points. Stakeholder syncs. Retrospectives that nobody reads, written for a "team" that is me and a laptop.
 
-**Observation**
+Get Shits Done, by TÂCHES, is the first one I have used that starts from the opposite assumption. The name is a joke and the joke is the positioning: you are one person, you want the thing built, you do not want to run a software company on the side. What it actually ships is a set of slash commands that force your work through spec files on disk before a single line gets written.
 
-There's a pattern in AI workflow tools. They try to make your solo AI workflow look like a 50-person engineering company. Sprint ceremonies. Story points. Stakeholder syncs. Retrospectives. Jira workflows.
+I care about it for one reason, and it is not the vibe. It is the only workflow I have tried that treats **context rot as an architecture problem** instead of a prompting problem.
 
-TÂCHES looked at this and said: this is enterprise theater for people who are just trying to build cool shit.
+## What context rot actually is
 
-So they built Get Shits Done. The name is intentional. The vibe is intentional. It's for people who want to describe what they want and have it built correctly — without pretending they're running a software company.
+Here is the failure I keep hitting, and I suspect you have hit it too.
 
----
+Hour one with a coding agent is great. It reads your files, it asks good questions, it writes code that matches your conventions. Hour four is a different model wearing the same name. It forgets a decision you made ninety messages ago. It re-introduces a bug you fixed together. It starts hedging and summarising, telling you what it "would" do instead of doing it. Nothing crashed. The output just quietly got worse.
 
-**Underlying Mechanism**
+That is context rot. As the window fills, the useful stuff competes with transcript sludge: tool output, retries, files you opened once, your own thinking-out-loud. The decisions that should be load-bearing sit somewhere in the middle of that pile, and the middle is exactly where attention is weakest.
 
-GSD solves one specific problem: context rot. That's the quality degradation that happens as Claude fills its context window. Long conversations get worse. The model starts "being more concise." Important context gets lost.
+The tempting fix is a bigger window. That has not worked for me. A bigger window means the same rot arrives later and hits harder, because by the time quality drops I have twice as much unrepeatable conversation to lose.
 
-The solution isn't bigger context windows. The solution is breaking work into small, atomic chunks.
+<Diagram
+  title="One long session versus one fresh window per plan, with the spec files on disk carrying state between them"
+  caption="Left to right: the same work, two shapes. On top, state lives in the transcript and decays with it. On the bottom, state lives in files and each window starts clean."
+>
+  <svg viewBox="0 0 700 340" className="min-w-[660px]" role="presentation">
+    <defs>
+      <marker id="gsd-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+      </marker>
+    </defs>
 
-The workflow goes like this:
+    <text x="10" y="20">ONE LONG SESSION</text>
+    <rect x="10" y="30" width="560" height="66" rx="6" fill="none" stroke="rgb(var(--c-border-strong))" />
+    <rect x="18" y="76" width="100" height="12" fill="rgb(var(--c-accent-mark))" opacity="0.20" />
+    <rect x="128" y="66" width="100" height="22" fill="rgb(var(--c-accent-mark))" opacity="0.32" />
+    <rect x="238" y="54" width="100" height="34" fill="rgb(var(--c-accent-mark))" opacity="0.46" />
+    <rect x="348" y="44" width="100" height="44" fill="rgb(var(--c-accent-mark))" opacity="0.62" />
+    <rect x="458" y="38" width="100" height="50" fill="rgb(var(--c-accent-mark))" opacity="0.80" />
+    <text x="68" y="112" textAnchor="middle">turn 1</text>
+    <text x="178" y="112" textAnchor="middle">turn 8</text>
+    <text x="288" y="112" textAnchor="middle">turn 20</text>
+    <text x="398" y="112" textAnchor="middle">turn 40</text>
+    <text x="508" y="112" textAnchor="middle">turn 70</text>
+    <line x1="580" y1="63" x2="660" y2="63" stroke="currentColor" markerEnd="url(#gsd-arrow)" />
+    <text x="600" y="55">rot</text>
+    <text x="10" y="136">every decision lives in the transcript, and the transcript is the thing decaying</text>
 
-**/gsd:map-codebase** — Already have code? This spawns parallel agents to analyze your stack, architecture, conventions, and concerns. Then when you start a new project, it knows your codebase. Questions focus on what you're adding, not what you've already built.
+    <line x1="10" y1="156" x2="690" y2="156" stroke="rgb(var(--c-border))" />
 
-**/gsd:new-project** — One command, one flow. The system asks questions until it understands your idea completely. Goals, constraints, tech preferences, edge cases. Then it creates: PROJECT.md, REQUIREMENTS.md, ROADMAP.md, STATE.md. You approve the roadmap. Then you're ready to build.
+    <text x="10" y="182">ONE WINDOW PER PLAN</text>
+    <rect x="10" y="192" width="118" height="46" rx="6" fill="none" stroke="rgb(var(--c-border-strong))" />
+    <rect x="18" y="222" width="102" height="8" fill="rgb(var(--c-accent-mark))" opacity="0.35" />
+    <text x="69" y="212" textAnchor="middle">plan 1a</text>
+    <rect x="158" y="192" width="118" height="46" rx="6" fill="none" stroke="rgb(var(--c-border-strong))" />
+    <rect x="166" y="222" width="102" height="8" fill="rgb(var(--c-accent-mark))" opacity="0.35" />
+    <text x="217" y="212" textAnchor="middle">plan 1b</text>
+    <rect x="306" y="192" width="118" height="46" rx="6" fill="none" stroke="rgb(var(--c-border-strong))" />
+    <rect x="314" y="222" width="102" height="8" fill="rgb(var(--c-accent-mark))" opacity="0.35" />
+    <text x="365" y="212" textAnchor="middle">plan 2a</text>
+    <rect x="454" y="192" width="118" height="46" rx="6" fill="none" stroke="rgb(var(--c-border-strong))" />
+    <rect x="462" y="222" width="102" height="8" fill="rgb(var(--c-accent-mark))" opacity="0.35" />
+    <text x="513" y="212" textAnchor="middle">plan 2b</text>
 
-**/gsd:discuss-phase** — Your roadmap has a sentence or two per phase. That's not enough context. This step captures your preferences before anything gets researched. It analyzes the phase, identifies gray areas, and asks until you're satisfied. Output: CONTEXT.md.
+    <line x1="69" y1="238" x2="69" y2="284" stroke="rgb(var(--c-border-strong))" strokeDasharray="3 3" markerStart="url(#gsd-arrow)" markerEnd="url(#gsd-arrow)" />
+    <line x1="217" y1="238" x2="217" y2="284" stroke="rgb(var(--c-border-strong))" strokeDasharray="3 3" markerStart="url(#gsd-arrow)" markerEnd="url(#gsd-arrow)" />
+    <line x1="365" y1="238" x2="365" y2="284" stroke="rgb(var(--c-border-strong))" strokeDasharray="3 3" markerStart="url(#gsd-arrow)" markerEnd="url(#gsd-arrow)" />
+    <line x1="513" y1="238" x2="513" y2="284" stroke="rgb(var(--c-border-strong))" strokeDasharray="3 3" markerStart="url(#gsd-arrow)" markerEnd="url(#gsd-arrow)" />
+    <text x="596" y="216">fresh each time</text>
 
-**/gsd:plan-phase** — The system researches how to implement this phase, creates 2-3 atomic task plans with XML structure, verifies plans against requirements. Each plan is small enough to execute in a fresh context window. No degradation.
+    <rect x="10" y="284" width="562" height="42" rx="6" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border-strong))" />
+    <text x="291" y="302" textAnchor="middle">PROJECT.md · REQUIREMENTS.md · ROADMAP.md</text>
+    <text x="291" y="318" textAnchor="middle">CONTEXT.md · STATE.md · the plan being executed</text>
+    <text x="596" y="308">state on disk</text>
+  </svg>
+</Diagram>
 
-The key insight: every plan is small enough to run in a fresh context. That solves context rot at the architectural level.
+## The workaround is boring: write it down
 
----
+If the transcript is the thing that rots, stop using the transcript as memory.
 
-**Implication**
+That is the whole trick, and it is old. We already solved this for humans. A team does not keep its architecture in one person's head, it keeps it in a doc, because people leave, forget, and go on holiday. An agent forgets every time the window turns over, which is a lot more often than a holiday.
 
-GSD is used by engineers at Amazon, Google, Shopify, and Webflow. Not because it's enterprise-y. Because it's effective.
+So, GSD makes you produce files: `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md` at the project level, then a `CONTEXT.md` per phase, then plans small enough that one of them fits comfortably in a clean window. Each execution reads the files it needs, does its slice, writes what changed, and dies. Nothing important is stored in a place that decays.
 
-The enterprise tools add complexity to your workflow. GSD adds complexity to the *system*, not your workflow. What you see: a few commands that just work. What happens behind the scenes: context engineering, XML prompt formatting, subagent orchestration, state management.
+<PullQuote>
+  If your agent's memory is the chat log, your project's memory is the chat log. That is the bug.
+</PullQuote>
 
-This is the opposite of Superpowers in some ways. Superpowers adds skills to every conversation. GSD isolates each task to avoid conversation bloat. Both solve the same problem — unreliable AI output — with opposite architectures.
+## The loop, command by command
 
-**Superpowers**: Keep everything in context, structure it with skills.  
-**GSD**: Don't keep anything, break work into atomic chunks.
+Four commands carry most of the value for me.
 
-Which approach works better depends on your use case. But the trend is clear: the next generation of AI workflows isn't about better prompts. It's about better *architecture*. Systems that force reliability through structure, not hope.
+<Steps>
+  <Step title="/gsd:map-codebase">
+    Only for existing code. It runs parallel agents over the repo and writes down the stack, the layout, the conventions, the parts that look fragile. The payoff shows up later: when I start a new piece of work, the questions are about what I am adding, not about what already exists. I answer fewer stupid questions per project.
+  </Step>
+  <Step title="/gsd:new-project">
+    One interview, one output set. It keeps asking until it can restate the idea back to me without gaps: goals, constraints, tech I refuse to use, edge cases I have not thought about. Out come `PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`. I approve the roadmap before anything gets built, which is the last cheap moment to change my mind.
+  </Step>
+  <Step title="/gsd:discuss-phase">
+    This is the step I would have skipped, and it is the one that earns its keep. A roadmap gives each phase a sentence or two. A sentence or two is not a spec, it is a wish. This step finds the grey areas in that sentence and makes me commit to preferences before any research happens. Output is `CONTEXT.md` for that phase.
+  </Step>
+  <Step title="/gsd:plan-phase">
+    Research, then two or three atomic plans in XML structure, then a check of those plans against the requirements. The sizing constraint is the point: each plan has to be executable in a fresh window with no leftovers from the last one.
+  </Step>
+</Steps>
 
-*See also: [Superpowers: The Skill System That Makes Claude Unstoppable](https://semihbabacan.com/2026/superpowers-skill) — for when you want skills to persist in context. [Soul.md](https://semihbabacan.com/2026/soul-md) — for the identity file approach.*
+There are more commands than this, and honestly I do not use most of them. `/gsd:execute-phase` runs the plan, `/gsd:verify-work` checks it, `/gsd:progress` tells me where I stopped. The rest are ceremony I have not needed yet as one person.
+
+## What the plan file has to carry
+
+The difference between a roadmap line and an executable plan is not length, it is whether a stranger could do the work from it. The agent in a fresh window is exactly that stranger.
+
+<CodeCompare
+  label="Same phase, two levels of specification. The second one survives a context reset. The first one only works while I am still in the room."
+  beforeLabel="roadmap line"
+  afterLabel="what execution needs"
+  before={`Phase 2: add auth`}
+  after={`Phase 2a: email + password auth
+
+decided in discuss-phase:
+  - sessions in an http-only cookie, no localStorage
+  - no social login in v1 (I do not want the consent screens yet)
+  - password reset is phase 2b, out of scope here
+
+done when:
+  - sign up, sign in, sign out work end to end
+  - a signed-out user hitting a private route lands on /login
+  - the failing-password test exists and passes`}
+/>
+
+Everything in the right-hand column is a decision I made once. Written down, it costs me nothing to re-supply. Left in the chat, it costs me the whole conversation.
+
+## How small is small enough
+
+"Atomic" is the kind of word that sounds like a rule and behaves like a vibe, so here is the version I actually use. A plan is small enough when I can name the finished state in one sentence and list the files it touches on one hand. If I cannot, it is two plans and I have not found the seam yet.
+
+The tell that I got it wrong is always the same. Halfway through execution the agent starts asking me questions that should have been answered in `CONTEXT.md`, or it goes off and refactors something adjacent because the plan gave it room to. Room in a plan is not freedom, it is ambiguity, and a fresh window fills ambiguity with whatever seems reasonable at the time.
+
+`STATE.md` is the piece I underrated at first. It is the resume point: what phase I am in, what is done, what is next. It sounds like bookkeeping and it is, but it is the file that lets me close the laptop mid-project on a Tuesday and start again on Saturday without re-deriving my own plan from memory. Before this I would open an old project, read my own code for twenty minutes, and guess at what past me had intended.
+
+## The tradeoff nobody advertises
+
+This is not free, and the pitch usually skips the invoice.
+
+You pay up front. The interview before `new-project` is long. `discuss-phase` will interrogate you about a phase you thought was obvious. For a two-hour throwaway script the overhead is worse than just talking to the model, and I do exactly that for throwaway scripts.
+
+You also pay in fluency. When the state lives in files, you cannot say "no, the other one" and be understood. The system knows what is written down. If a decision only ever happened out loud, it is gone at the next window boundary, and you get the confident wrong answer that comes from a plan missing a constraint.
+
+<Callout kind="warning" label="Where it bites">
+  A spec file is a snapshot of what you believed when you wrote it. If you change your mind mid-phase and only tell the chat, the files now lie, and the next fresh window will trust the files. My rule: if a decision changes, it goes back into the phase context before I let anything else run.
+</Callout>
+
+## Two opposite bets
+
+I wrote about Superpowers a while ago, and the two systems are worth holding side by side, because they answer the same question in opposite directions.
+
+Superpowers keeps things in context and structures them with skills, so the model always has the relevant expertise loaded. GSD keeps almost nothing in context and pushes state onto disk, so the model starts clean every time. One bets on better contents, the other bets on a smaller window.
+
+My read: they are not really rivals. Skills describe how to do a kind of work, specs describe what this particular work is. I would happily run a skill inside an execution window that GSD scoped for me. What I would not do is run a long unstructured session and expect either of them to save it.
+
+The thing both of them agree on, and this is the part I think matters beyond either tool, is that reliability is coming from structure now, not from prompt wording. I have stopped tuning sentences. I spend that time deciding what gets written to a file.
+
+## What I still don't know
+
+Honest answer: I have not run this on anything big enough to stress it. My projects are small, solo, and mine, which is the case GSD is built for, so of course it feels good. I do not know how the spec files behave with two people editing them, or over a codebase old enough to have opinions of its own, and I have not measured token cost against just talking to the model.
+
+What I do know is the failure I stopped having. I have not lost an afternoon to an agent quietly forgetting the plan since I started doing this, and that was happening to me weekly.
+
+If you want the other side of the argument, my write-up of [Superpowers](https://semihbabacan.com/2026/superpowers-skill) covers the keep-it-in-context approach, and [Soul.md](https://semihbabacan.com/2026/soul-md) covers the identity-file version of the same instinct.

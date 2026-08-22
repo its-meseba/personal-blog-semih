@@ -1,0 +1,220 @@
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "deepseek-agent-harness",
+  title: "I Read DeepSeek's Agent Harness So You Don't Have To",
+  description: "DeepSeek open-sourced the program that wraps its model: 245 packages, 1,234 TypeScript files, 724 design notes. The interesting decisions are all in the harness, and they are the same decisions you are about to make in your own AI product.",
+  date: "2026-08-22",
+  series: "AI Product Sense",
+  tags: ["agents", "architecture", "open-source"],
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
+
+DeepSeek quietly published `deepseek-harness` under MIT. I cloned it and read it properly: roughly 245 workspace packages, 1,234 TypeScript source files, and the 724 dated design notes its own agents left behind.
+
+I did this because the model layer is where everyone looks and the harness layer is where the product actually lives. If you ship anything with an LLM in it, the decisions in this repo are the decisions you are about to make, whether you make them on purpose or by accident.
+
+The counts above are my own, taken from the clone. This post is the part I would bring to a product review.
+
+## What a harness even is
+
+A model is a function. Text in, text out. It cannot read your files, call your API, or remember what it said yesterday. Everything you think of as "the AI doing things" is done by the program around it.
+
+That program is the harness. It holds four things the model does not have.
+
+<Diagram
+  title="The harness sits between the user and the model, holding the loop, the toolbox, the notebook and the rulebook"
+  caption="The model only ever sees text. Everything that makes an agent feel like an agent lives in the box on the left."
+>
+  <svg viewBox="0 0 660 280" className="min-w-[600px]" role="presentation">
+    <defs>
+      <marker id="dsh-arrow-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+    </defs>
+
+    <rect x="8" y="118" width="76" height="44" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="46" y="145" textAnchor="middle">you</text>
+    <line x1="88" y1="140" x2="104" y2="140" stroke="rgb(var(--c-border-strong))" markerEnd="url(#dsh-arrow-a)" />
+
+    <rect x="110" y="30" width="380" height="220" rx="10" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" strokeDasharray="4 4" />
+    <text x="300" y="22" textAnchor="middle" fill="rgb(var(--c-accent))">THE HARNESS</text>
+
+    <rect x="126" y="46" width="348" height="42" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="142" y="72" fill="rgb(var(--c-accent))">the loop</text>
+    <text x="238" y="72" fill="rgb(var(--c-muted))">model, tool, result, model again</text>
+
+    <rect x="126" y="96" width="348" height="42" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="142" y="122" fill="rgb(var(--c-accent))">the toolbox</text>
+    <text x="238" y="122" fill="rgb(var(--c-muted))">bash, files, web, subagents</text>
+
+    <rect x="126" y="146" width="348" height="42" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="142" y="172" fill="rgb(var(--c-accent))">the notebook</text>
+    <text x="238" y="172" fill="rgb(var(--c-muted))">append-only log of what happened</text>
+
+    <rect x="126" y="196" width="348" height="42" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="142" y="222" fill="rgb(var(--c-accent))">the rulebook</text>
+    <text x="238" y="222" fill="rgb(var(--c-muted))">what needs approval, what is caged</text>
+
+    <line x1="494" y1="130" x2="552" y2="130" stroke="rgb(var(--c-border-strong))" markerEnd="url(#dsh-arrow-a)" />
+    <text x="523" y="122" textAnchor="middle" fill="rgb(var(--c-muted))">prompt</text>
+    <line x1="552" y1="152" x2="494" y2="152" stroke="rgb(var(--c-border-strong))" markerEnd="url(#dsh-arrow-a)" />
+    <text x="523" y="172" textAnchor="middle" fill="rgb(var(--c-muted))">text</text>
+
+    <rect x="560" y="118" width="92" height="44" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="606" y="145" textAnchor="middle">model</text>
+  </svg>
+</Diagram>
+
+Swap the model and the product barely changes. Swap the harness and it is a different product. That asymmetry is the whole point of this post.
+
+## What is actually in there
+
+There is no `main()` in this codebase. A running `dsh` is a tree of about 80 plugins assembled at boot from stacked YAML patch files, and **the agent loop is a row in that tree**. So is the model adapter, the tool registry, and the session log. You replace any of them with a one-row edit and no fork.
+
+The cost is real and the repo does not hide it. Finding out who serves `ctx.fs` means grepping roughly 233 `package.json` files plus a 78-row patch, which is why `dsh --dump-config` exists as a first-class command. When your architecture needs a tool to tell you what your architecture is, you have bought flexibility with legibility.
+
+The session log is the truth, and **the model's memory is derived from it**. Every event is appended with a contiguous sequence number and nothing is ever deleted. What the model sees on the next call is folded out of that log by a function called `deriveMessages()`, not stored somewhere separate. The invariant they hold is: model-visible implies logged.
+
+This sounds like plumbing. It is the most product-relevant decision in the repo. Any request can be reconstructed after the fact, tests replay recorded sessions without API keys, and when something goes wrong you have the actual sequence instead of a theory.
+
+Compaction follows the same rule. When the conversation gets too long it appends a summary marked as *replacing* a range of events, and the old events stay on disk. The fold changes, the history does not, so your UI transcript survives while the model's window shrinks.
+
+Every tool call goes through one guarded pipeline, and **policy runs before execution**, not after. Guards are deny-only by design: no guard can force-allow a call another guard denied. If a tool asks for approval and no approval service is mounted, the call is denied rather than allowed. That last detail is the kind of thing I look for. Fail-closed is a two-line decision that separates a system you would let touch production from one you would not.
+
+Turns end for a reason and **the reason is written down**: completed, max-tokens, blocked, error, aborted. A closed set, appended to the log. Compare that to the usual "the agent stopped, probably fine."
+
+<Diagram
+  title="One step of the loop: model, tool calls, guard, execute, and every outcome appended to the session log"
+  caption="Nothing reaches the model that was not written down first, and nothing runs that the guard did not see."
+>
+  <svg viewBox="0 0 660 320" className="min-w-[620px]" role="presentation">
+    <defs>
+      <marker id="dsh-arrow-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+    </defs>
+
+    <rect x="20" y="50" width="80" height="44" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="60" y="77" textAnchor="middle">step</text>
+    <line x1="104" y1="72" x2="136" y2="72" stroke="rgb(var(--c-border-strong))" markerEnd="url(#dsh-arrow-b)" />
+
+    <rect x="140" y="50" width="90" height="44" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="185" y="77" textAnchor="middle">model</text>
+    <line x1="234" y1="72" x2="266" y2="72" stroke="rgb(var(--c-border-strong))" markerEnd="url(#dsh-arrow-b)" />
+
+    <rect x="270" y="50" width="100" height="44" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border-strong))" />
+    <text x="320" y="77" textAnchor="middle">tool calls?</text>
+    <line x1="374" y1="72" x2="406" y2="72" stroke="rgb(var(--c-border-strong))" markerEnd="url(#dsh-arrow-b)" />
+
+    <rect x="410" y="50" width="80" height="44" rx="8" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" />
+    <text x="450" y="77" textAnchor="middle" fill="rgb(var(--c-accent))">guard</text>
+    <line x1="494" y1="72" x2="526" y2="72" stroke="rgb(var(--c-border-strong))" markerEnd="url(#dsh-arrow-b)" />
+
+    <rect x="530" y="50" width="100" height="44" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="580" y="77" textAnchor="middle">execute</text>
+
+    <polyline points="580,98 580,128 460,128" fill="none" stroke="rgb(var(--c-border-strong))" markerEnd="url(#dsh-arrow-b)" />
+
+    <rect x="140" y="150" width="380" height="46" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-accent))" />
+    <text x="330" y="178" textAnchor="middle" fill="rgb(var(--c-accent))">session log · append-only · sequence numbered</text>
+
+    <polyline points="140,173 60,173 60,98" fill="none" stroke="rgb(var(--c-border-strong))" markerEnd="url(#dsh-arrow-b)" />
+
+    <polyline points="320,98 320,250 336,250" fill="none" stroke="rgb(var(--c-border-strong))" markerEnd="url(#dsh-arrow-b)" />
+    <text x="330" y="232" fill="rgb(var(--c-muted))">no calls</text>
+
+    <rect x="340" y="228" width="290" height="46" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="485" y="248" textAnchor="middle">turn ends, reason written down</text>
+    <text x="485" y="264" textAnchor="middle" fill="rgb(var(--c-muted))">completed · max-tokens · blocked · error · aborted</text>
+
+    <line x1="485" y1="228" x2="485" y2="202" stroke="rgb(var(--c-border-strong))" markerEnd="url(#dsh-arrow-b)" />
+  </svg>
+</Diagram>
+
+Steering lands mid-task, which I did not expect. New prompts queue as `next-turn`, corrections queue as `next-step` and reach the model at the next step boundary instead of after the whole task finishes. Anyone who has watched an agent confidently go the wrong way for four minutes knows why that lane exists.
+
+Subagents are children with their own sessions, in-process or as a separate OS process. The genuinely funny part: DeepSeek ships providers that spawn **Claude Code and Codex as subagents**. They treat competing products as pluggable workers. Those providers register dormant and you have to copy a preset and remove a `disabled` flag to enable them, but the seam is there.
+
+The repo says it was built primarily by coding agents, and the evidence is structural. 724 dated decision notes in about ten weeks, each with problem, decision, alternatives, consequences, each mirrored in Chinese. `CLAUDE.md` is a symlink to `AGENTS.md` so one instruction file serves three different agent products. Rules are 36 verify scripts in CI rather than paragraphs asking nicely.
+
+<Callout kind="warning" label="The detail most write-ups skip">
+The sandbox governs **file writes only**. Read-only, workspace-write, full access, enforced by the actual kernel (bwrap or Landlock on Linux, Seatbelt on macOS) rather than by asking the model politely. Network access is explicitly outside that vocabulary. So an agent you have confined to a directory can still call anything on the internet, and if that surprises you, it should shape how you scope your own permissions model.
+</Callout>
+
+Honest answer on maturity: it is `0.1.0-rc.8`, a self-declared developer preview, on-disk formats pinned at version 0 with no migration path, no auth layer, and a `BENCHMARK.md` that is 231 bytes of "run it yourself." I read code and docs. I did not measure latency, token cost, or sandbox overhead, so I cannot tell you how it performs. Take everything above as an architecture review, not a benchmark.
+
+## What this means if you build AI products
+
+The engine is becoming something you rent. Every frontier lab sells text-to-text by the token, prices keep falling, and any of them sits behind one adapter. That is evidence from this repo: the adapter is a row in a config file, and swapping it is a one-row YAML edit.
+
+The inference I draw from it, and it is inference, is this.
+
+<PullQuote cite="the part I would defend in a product review">
+The value is in the loop, not the engine.
+</PullQuote>
+
+Your users experience your tools, your memory, your rules, your interface, and how well the loop is tuned. They do not experience the model directly. If your roadmap is mostly "wait for the next model," you do not have a roadmap.
+
+Three consequences I would argue for.
+
+Guardrails are **a feature, not friction**. Sandbox modes, one-shot approvals, explicit stop reasons, fail-closed defaults. The agent product that gets to touch production is the one whose guard the buyer trusts, and you cannot retrofit trust after an incident.
+
+A durable log is auditability, and **auditability is what companies buy**. Consumer users rarely care that every decision is reconstructable. A compliance officer cares about nothing else. Building the log early costs a week. Adding it after you have sold to an enterprise costs a quarter.
+
+Replaceability is **survival, not elegance**. If your product is welded to one vendor's API shape, a pricing change or a better model elsewhere is an existential event. If it is an adapter, it is a config change. This is advice for products whose core input is a fast-moving commodity. Do not generalise it to your whole business.
+
+Where the analogy breaks: a harness has near-zero marginal cost per copy and its moat is trust plus integration depth, not capital or distribution. A restaurant swapping suppliers daily would die. A harness swapping models daily is doing its job.
+
+## The checklist I now run every agent design through
+
+First question, and most teams skip it: **do you need a loop at all?**
+
+A loop earns its cost when the next action genuinely depends on what the last one returned. If your flow is "classify, look up three things, write an answer," that is a pipeline, and a pipeline is cheaper, faster, and far easier to reason about. I have seen more damage from loops that should not exist than from pipelines that should have been loops.
+
+If you do need one, the shape is the one in the second diagram above, and these are the questions I ask the team.
+
+1. What ends a turn, and is that list closed and written down? "It stops when it is done" is not an answer.
+2. What is the step cap, and what happens when you hit it? Escalating to a human is a fine answer. Silently truncating is not.
+3. Where does a human sit: auto, approve, or escalate? Draw the line by consequence, not by confidence score.
+4. Can a correction reach the model mid-task, or does the user wait for the wrong answer to finish?
+5. What is written to disk, and could you reconstruct any decision from it a month later?
+6. Which side effects are repeatable, and which would be a disaster twice?
+7. Can the model talk its way past your guards? If a guard is a prompt instruction, it can. If it is code, it cannot.
+8. When the context fills up, what gets dropped, and who decided?
+
+Then there are five failure modes I check for specifically, because I have watched each one ship.
+
+The first is **a side effect that is not safe to repeat**. Your queue retries on any non-2xx. If the send succeeds and the code *after* the send throws, the retry does it again. Anything that emails, charges, or posts needs a durable "I already did this" record, written before the call and checked before the next attempt.
+
+The second is having no real record of what was decided. If your only audit trail is an analytics event that silently swallows HTTP errors, you do not have an audit trail, you have a hope.
+
+The third is **guards that live in the prompt**. Instructions are suggestions. If the rule matters, it belongs in code that runs after the model, not in text the model reads and may argue with.
+
+<CodeCompare
+  label="Same rule, two places. The left one is negotiable, and the model is a very good negotiator."
+  beforeLabel="in the prompt"
+  afterLabel="in the pipeline"
+  before={`You must never run destructive
+shell commands. Always ask the
+user before deleting anything.
+If unsure, stop and explain.`}
+  after={`registerGuard('tools/pre-execute', (call) => {
+  if (!isDestructive(call)) return 'allow';
+  return approvalService
+    ? 'ask'
+    : 'deny';   // no approver mounted, fail closed
+});`}
+/>
+
+The fourth is silent degradation. A helper that catches every exception and returns a default will keep your dashboard green while the product quietly gets dumber. Every swallowed exception earns a logged warning at minimum.
+
+The fifth is **evals that score the label and never the sentence**. Most teams measure "did it pick the right category" and never measure "was the thing we actually sent correct." The second one is what the customer reads.
+
+None of this is exotic. It is the same list DeepSeek arrived at, written down as architecture instead of as a postmortem.
+
+## Where I landed
+
+I went in expecting a Claude Code clone with a Chinese label on it. What I found was a bet: that the harness, not the model, is the durable part, and that the way to prove it is to make every single piece replaceable including the loop itself. Whether that bet pays off depends on an ecosystem that does not exist yet. The surface is built and the plugins are not.

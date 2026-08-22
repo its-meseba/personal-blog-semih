@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { getSeries } from "@/lib/content";
+import { atomAlternateTypes } from "@/lib/feed-links";
 import { SITE_URL } from "@/lib/post-types";
 
 export const revalidate = 60;
@@ -10,7 +11,10 @@ export const metadata: Metadata = {
   title: "Series",
   description:
     "Bodies of work rather than scattered posts: every series on semihbabacan.com.",
-  alternates: { canonical: `${SITE_URL}/series` },
+  alternates: {
+    canonical: `${SITE_URL}/series`,
+    types: atomAlternateTypes(),
+  },
 };
 
 /** Index of series. Each one is its own reading order and its own feed. */

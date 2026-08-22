@@ -9,11 +9,14 @@ export async function Image({
   alt: originalAlt,
   width = null,
   height = null,
+  showCaption = true,
 }: {
   src: string;
   alt?: string;
-  width: number | null;
-  height: number | null;
+  width?: number | null;
+  height?: number | null;
+  /** `<Figure>` renders its own caption, so it turns this off. */
+  showCaption?: boolean;
 }) {
   const isDataImage = src.startsWith("data:");
   if (isDataImage) {
@@ -35,7 +38,9 @@ export async function Image({
             process.env.VERCEL_URL &&
             process.env.NODE_ENV === "production"
           ) {
-            const response = await fetch("https://" + process.env.VERCEL_URL + src);
+            const response = await fetch(
+              "https://" + process.env.VERCEL_URL + src
+            );
             if (response.ok) {
               imageBuffer = Buffer.from(await response.arrayBuffer());
             }
@@ -77,6 +82,10 @@ export async function Image({
       if (match != null) {
         alt = match[1];
         dividedBy = match[3] ? parseInt(match[3]) : 100;
+      } else {
+        // A single-word alt ("Portrait") never matches the "<alt> [50%]"
+        // shape; keep it rather than shipping an image with an empty alt.
+        alt = originalAlt;
       }
     } else {
       alt = originalAlt ?? null;
@@ -93,7 +102,7 @@ export async function Image({
           src={src}
         />
 
-        {alt && <Caption>{alt}</Caption>}
+        {showCaption && alt ? <Caption>{alt}</Caption> : null}
       </span>
     );
   }

@@ -14,6 +14,11 @@ import { Figure } from "app/(post)/components/figure";
 import { Snippet } from "app/(post)/components/snippet";
 import { Caption } from "app/(post)/components/caption";
 import { Callout } from "app/(post)/components/callout";
+import { Diagram } from "app/(post)/components/diagram";
+import { PullQuote } from "app/(post)/components/pull-quote";
+import { Steps, Step } from "app/(post)/components/steps";
+import { CodeCompare } from "app/(post)/components/code-compare";
+import { Embed } from "app/(post)/components/embed";
 import { YouTube } from "app/(post)/components/youtube";
 import { Ref, FootNotes, FootNote } from "app/(post)/components/footnotes";
 import { Blockquote as blockquote } from "app/(post)/components/blockquote";
@@ -43,6 +48,12 @@ export function useMDXComponents(components: {
     Snippet,
     Caption,
     Callout,
+    Diagram,
+    PullQuote,
+    Steps,
+    Step,
+    CodeCompare,
+    Embed,
     YouTube,
     Ref,
     FootNotes,

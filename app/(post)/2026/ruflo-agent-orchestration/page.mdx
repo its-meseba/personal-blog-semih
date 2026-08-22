@@ -2,8 +2,8 @@ import { postMetadata } from "@/lib/post-metadata";
 
 export const post = {
   slug: "ruflo-agent-orchestration",
-  title: "RuFlo: The Enterprise Operating System for Multi-Agent AI",
-  description: "The gap between one agent and a system of agents that work together is massive. Here is where orchestration platforms matter.",
+  title: "Why I treat agent orchestration as a distributed systems problem",
+  description: "RuFlo bets that coordinating many agents is a systems problem, not a prompt problem. I think the bet is right, and I also think most teams reach for it two months early.",
   date: "2026-03-08",
   series: "Agentic Coding",
   tags: ["agents", "orchestration", "enterprise"],
@@ -12,32 +12,165 @@ export const post = {
 
 export const metadata = postMetadata(post);
 
----
+Almost every team I talk to has one agent that works. One prompt, one tool loop, one job it does well enough that somebody demoed it and everybody clapped. Then they try to make five of those work together and the whole thing turns to mush. The usual fix is more prompt: a coordinator agent, a longer system message, a paragraph that starts with "you are the orchestrator". It holds for about a week.
 
-# RuFlo: The Enterprise Operating System for Multi-Agent AI
+So, my position up front. Coordinating many agents is a **state** problem wearing a prompt costume. Once you accept that, you stop writing coordinator prompts and start writing the boring things distributed systems people have been writing for forty years. RuFlo, the project formerly called Claude Flow, is the clearest bet on that reading I have seen packaged as a product, and this post is me arguing with it in public.
 
-Everyone's building AI agents. But here's what's rarely discussed: the gap between "one agent that does a thing" and "a system of agents that actually work together" is massive. Most teams hitting this wall do the same thing - they try to coordinate agents with prompts and hope for the best. It doesn't scale.
+## What the wall actually feels like
 
-This is where agent orchestration platforms matter. And one project is quietly building what's essentially an enterprise operating system for multi-agent AI: called RuFlo.
+The failure is never dramatic. Nobody's agent catches fire. What happens is that the tester agent checks code the coder agent already replaced, the reviewer approves a diff that no longer exists on disk, and the architect plans around a file that was deleted forty seconds ago. Every individual agent behaved correctly given what it could see. That is the tell. When each part is right and the whole is wrong, you are not looking at a reasoning failure, you are looking at a consistency failure.
 
-## The Underlying Mechanism
+Prompting cannot fix a consistency failure, because the prompt is not where the disagreement lives. The disagreement lives in the fact that five processes read five slightly different snapshots of the world and none of them knows it. You can make each agent smarter forever and the mush will not clear.
 
-RuFlo (formerly Claude Flow, now at v3.5) isn't just another wrapper around Claude. It's a fundamentally different architecture.
+<Callout kind="note" label="The rename">
+RuFlo was Claude Flow before it was RuFlo. I use the current name throughout, so if you go looking for older writing about it, search both.
+</Callout>
 
-The key insight: **coordination is a distributed systems problem**, not a prompt engineering problem.
+## What RuFlo is selling
 
-60+ specialized agents, not one big prompt. Instead of one Claude instance trying to do everything, RuFlo runs specialized agents - coder, tester, reviewer, architect, security - that coordinate through fault-tolerant consensus mechanisms (Raft, BFT, Gossip, CRDT). This isn't prompt routing. This is actual swarm intelligence.
+I want to be careful here, because I have read the project's own description of its architecture and I have not benchmarked it. What follows is the pitch, marked as the pitch.
 
-## The Implication
+RuFlo describes a fleet of specialised agents rather than one general one: a coder, a tester, a reviewer, an architect, a security role, and dozens more beyond those. They are not supposed to coordinate by talking to each other in prose. They coordinate through consensus and replication primitives with names you would recognise from a database paper: Raft, byzantine fault tolerance, gossip, CRDTs. On top of that sit the things that make a procurement team relax, which is to say a security layer, audit trails, and a claims mechanism for passing work between a human and an agent.
 
-The orchestration layer is becoming the moat.
+The interesting part is not the agent count. A catalogue of roles is cheap, and I would not choose a platform on it. The interesting part is the choice of vocabulary. Picking Raft over "the coordinator decides" is a statement that the hard problem is agreeing on what happened, not deciding what to do next.
 
-The bottleneck shifts from "which model" to "which agent should do what." As models commoditize, orchestration becomes the differentiator.
+<PullQuote cite="my one-line summary of the bet">
+Agreeing on what happened is harder than deciding what to do next.
+</PullQuote>
 
-Enterprise adoption requires trust mechanisms that most hobbyist tools ignore. RuFlo's security layer, claims system for human-agent coordination, and audit trails aren't optional - they're mandatory for actual production use.
+## Where the coordination cost actually lives
 
-## The Clean Stop
+Here is the shape of it. If your agents talk to each other, every new agent has to be introduced to every existing agent. Four agents means six conversations. Ten agents means forty-five. Nobody sits down and designs that, it just grows, one helpful handoff at a time, until adding an eleventh agent means touching every prompt you own.
 
-The multi-agent orchestration race isn't about who has the best single model. It's about who can coordinate the most agents effectively. RuFlo's bet on distributed systems primitives might just be the right foundation.
+Route the same agents through one shared, versioned store and the count goes linear. Ten agents means ten connections, and the eleventh costs exactly one.
 
-The question isn't whether you need agent orchestration. It's whether you'll build it or buy it.
+<Diagram
+  title="Four agents coordinating two ways: peer to peer with six links, or through a shared store with four"
+  caption="Left: every agent knows every other agent, so links grow as n(n-1)/2. Right: every agent knows one store, so links grow as n. That second shape is the whole argument for an orchestration layer."
+>
+  <svg viewBox="0 0 640 272" className="min-w-[560px]" fill="none">
+    <g stroke="rgb(var(--c-border-strong))" strokeWidth="1.5" strokeLinecap="round">
+      <line x1="70" y1="60" x2="230" y2="60" />
+      <line x1="70" y1="200" x2="230" y2="200" />
+      <line x1="70" y1="60" x2="70" y2="200" />
+      <line x1="230" y1="60" x2="230" y2="200" />
+      <line x1="70" y1="60" x2="230" y2="200" />
+      <line x1="230" y1="60" x2="70" y2="200" />
+    </g>
+
+    <g stroke="rgb(var(--c-accent))" strokeWidth="1.5" strokeLinecap="round">
+      <line x1="410" y1="60" x2="490" y2="130" />
+      <line x1="570" y1="60" x2="490" y2="130" />
+      <line x1="410" y1="200" x2="490" y2="130" />
+      <line x1="570" y1="200" x2="490" y2="130" />
+    </g>
+
+    <g fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border-strong))" strokeWidth="1.5">
+      <circle cx="70" cy="60" r="27" />
+      <circle cx="230" cy="60" r="27" />
+      <circle cx="70" cy="200" r="27" />
+      <circle cx="230" cy="200" r="27" />
+      <circle cx="410" cy="60" r="27" />
+      <circle cx="570" cy="60" r="27" />
+      <circle cx="410" cy="200" r="27" />
+      <circle cx="570" cy="200" r="27" />
+    </g>
+
+    <rect
+      x="443"
+      y="106"
+      width="94"
+      height="48"
+      rx="8"
+      fill="rgb(var(--c-surface-raised))"
+      stroke="rgb(var(--c-accent))"
+      strokeWidth="1.5"
+    />
+
+    <g textAnchor="middle">
+      <text x="70" y="64">coder</text>
+      <text x="230" y="64">test</text>
+      <text x="70" y="204">review</text>
+      <text x="230" y="204">arch</text>
+
+      <text x="410" y="64">coder</text>
+      <text x="570" y="64">test</text>
+      <text x="410" y="204">review</text>
+      <text x="570" y="204">arch</text>
+
+      <text x="490" y="126">shared</text>
+      <text x="490" y="142">state</text>
+
+      <text x="150" y="254">peer to peer: 6 links</text>
+      <text x="490" y="254">through a store: 4 links</text>
+    </g>
+  </svg>
+</Diagram>
+
+The store is not a message bus, and that distinction is where I watch home-grown attempts go wrong. A bus moves messages and forgets them. What you need is something that remembers, that can tell you the current version of a fact, and that can refuse a write when the writer was working from a stale read. That last clause is the whole product. An agent holding a stale read is exactly the reviewer approving a diff that no longer exists.
+
+## The handoff is the whole problem
+
+Look at the two ways a piece of work moves from one agent to the next. In the version most teams ship first, the handoff is a paragraph of prose stuffed into the next agent's context.
+
+<CodeCompare
+  label="The same handoff, twice. The right-hand version can be validated, replayed and refused. The left-hand one can only be re-read."
+  beforeLabel="prose handoff"
+  afterLabel="state handoff"
+  before={`coordinator.prompt = \`
+You are orchestrating a team.
+The coder just finished the auth
+refactor. Ask the tester to check
+it, then have the reviewer look
+at whatever the tester says.
+Use your judgement.
+\`;`}
+  after={`task = {
+  id: "auth-refactor-7",
+  produced_by: "coder",
+  base_version: 41,
+  artifacts: ["src/auth/*.ts"],
+  claim: { role: "tester",
+           expires_at: 1741_446_000 },
+  accept_if: "tests_pass",
+};`}
+/>
+
+The left-hand version carries no version number, so nothing can notice that the tester is working against revision 41 while the coder has already moved to 43. It carries no claim, so two agents can pick up the same task and neither will find out. It carries no acceptance condition, so "done" is decided by whichever model happens to answer. And when it fails at 3am you get a transcript, not a trace.
+
+The right-hand version is duller to read and that is the point. `base_version` makes stale work detectable. The claim makes duplicate work impossible instead of unlikely. `accept_if` moves the definition of done out of a model's opinion and into the system. None of this is clever. All of it is the difference between a demo and something you would leave running overnight.
+
+## When orchestration earns its complexity
+
+Okay, the honest part, because everything above reads like an advertisement and I do not want it to. An orchestration platform is a large piece of machinery, and plenty of teams adopt one while their real problem is still that a single agent has a bad prompt. Machinery does not fix that. It hides it, then bills you for the hiding.
+
+The test I use has four questions, and I want all four to come back yes before anybody installs anything.
+
+<Steps>
+  <Step title="Do two agents write to the same thing?">
+    Not read. Write. If your agents only read shared context and write to separate places, you have a fan-out job, and a fan-out job wants a queue, not a consensus protocol. The moment two roles can touch the same file, the same row, the same branch, you have a conflict problem, and conflicts want machinery.
+  </Step>
+  <Step title="Does the work outlive one session?">
+    A run that finishes inside one context window can keep its state in that context window. When work spans hours, restarts, or a human going home, the state has to live somewhere that survives the process. That somewhere is an orchestration layer, and if you refuse to adopt one you will write a worse version of it yourself.
+  </Step>
+  <Step title="Does anyone have to answer for what happened?">
+    In a side project, "the agent did something odd" is a shrug. In a regulated one it is an incident with a deadline. Audit trails, claims and permission boundaries stay optional right up until the first time somebody asks who approved a change, and after that they are the entire conversation.
+  </Step>
+  <Step title="Is the failure mode expensive?">
+    If a bad run costs a retry, prompt it and move on. If a bad run costs money, data, or a customer, you are buying insurance, and the complexity is the premium you pay for it.
+  </Step>
+</Steps>
+
+Four yeses and orchestration is the cheapest thing you can do. Three yeses and I would wait, because the fourth is usually about to arrive and you will feel it when it does. One or two, honest answer: you are decorating.
+
+<Callout kind="warning" label="The failure I expect most">
+Adopting an orchestration platform to compensate for agents that are individually unreliable. Consensus makes a fleet agree. It does not make the fleet right. Five agents agreeing on a bad plan is a well-coordinated bad plan, delivered faster, with a nicer audit trail attached.
+</Callout>
+
+## What I cannot tell you
+
+I have read RuFlo's description of its own architecture and I find the reasoning behind it convincing. I have not run it at scale, I have not measured its overhead, and I have not watched what a swarm does when the model underneath it has a bad day. Take the systems argument in this post as mine, and take the specific product claims as the project's, because that is what they are.
+
+The part I am confident about is the direction. If models keep converging, and I think they will, what separates a team that ships agents from a team that demos them is not model choice. It is whether they can say which agent did what, against which version, and who accepted it. That was never a prompt.
+
+The open question I have no answer for is build or buy. Buying gets you primitives you would take a year to write badly. Building keeps the coordination layer, which is the part most likely to become your moat, inside your own repo. I lean buy for the first year and build the pieces that hurt, but ask me again after somebody's swarm has failed in front of me.

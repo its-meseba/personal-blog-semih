@@ -13,3 +13,4 @@ fonts/*
 
 # build artifact
 tsconfig.tsbuildinfo
+.gstack/

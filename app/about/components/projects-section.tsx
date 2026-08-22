@@ -63,7 +63,7 @@ export function ProjectsSection({ title, projects }: ProjectsSectionProps) {
                       href={project.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs px-2 py-1 rounded-xs border border-accent/30 bg-accent-subtle text-accent hover:border-accent hover:text-accent-hover transition-colors"
+                      className="text-xs px-2 py-1 rounded-xs border border-accent-mark/40 bg-accent-chip text-accent hover:border-accent-mark hover:text-accent-hover transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >
                       Website

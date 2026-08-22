@@ -16,6 +16,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getAllSeries } from "@/app/series";
+import { atomAlternateTypes } from "@/lib/feed-links";
 import { PostList, type ListPost } from "@/app/components/post-list";
 import { getSeriesBySlug } from "@/lib/content";
 import { SITE_URL } from "@/lib/post-types";
@@ -47,6 +48,14 @@ function publishedPostsFor(slug: string): ListPost[] {
   }));
 }
 
+/**
+ * Whether `/series/<slug>/atom` will actually serve. That route is built from
+ * `getSeries()` (post-derived), so an empty series has no feed to link to.
+ */
+function hasFeed(slug: string): boolean {
+  return publishedPostsFor(slug).length > 0;
+}
+
 export async function generateStaticParams() {
   return getAllSeries().map(entry => ({ slug: entry.id }));
 }
@@ -72,11 +81,14 @@ export async function generateMetadata({
     description,
     alternates: {
       canonical: url,
-      types: {
-        "application/atom+xml": [
-          { url: seriesFeedPath(series.id), title: `${series.name} — Atom` },
-        ],
-      },
+      // The site feed is always advertised. The series atom route is
+      // post-derived and 404s for an empty series, so that one is added only
+      // once there is something to syndicate.
+      types: atomAlternateTypes(
+        hasFeed(series.id)
+          ? { url: seriesFeedPath(series.id), title: `${series.name} — Atom` }
+          : undefined,
+      ),
     },
     openGraph: {
       type: "website",
@@ -119,13 +131,17 @@ export default async function SeriesPage({
           <span>
             {posts.length} {posts.length === 1 ? "post" : "posts"}
           </span>
-          <span aria-hidden="true">/</span>
-          <Link
-            href={seriesFeedPath(series.id)}
-            className="text-accent transition-colors duration-quick ease-console hover:text-accent-hover"
-          >
-            Atom feed
-          </Link>
+          {posts.length > 0 && (
+            <>
+              <span aria-hidden="true">/</span>
+              <Link
+                href={seriesFeedPath(series.id)}
+                className="text-accent transition-colors duration-quick ease-console hover:text-accent-hover"
+              >
+                Atom feed
+              </Link>
+            </>
+          )}
           <span aria-hidden="true">/</span>
           <Link
             href="/thoughts"
@@ -151,14 +167,8 @@ export default async function SeriesPage({
             >
               everything else
             </Link>{" "}
-            in the meantime, or subscribe to the{" "}
-            <Link
-              href={seriesFeedPath(series.id)}
-              className="text-accent underline underline-offset-4 transition-colors duration-quick ease-console hover:text-accent-hover"
-            >
-              series feed
-            </Link>
-            .
+            in the meantime. This series gets its own feed once the first post
+            lands.
           </p>
         </div>
       )}

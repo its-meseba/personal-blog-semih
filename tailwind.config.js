@@ -1,7 +1,7 @@
 const plugin = require("tailwindcss/plugin");
 
 /**
- * Console design system.
+ * "Fire max" design system.
  *
  * Colours are declared as `rgb(var(--c-*) / <alpha-value>)` so that every
  * utility keeps working with an opacity modifier (`bg-surface/60`) while the
@@ -33,11 +33,26 @@ module.exports = {
         fg: token("text"),
         muted: token("muted"),
         faint: token("faint"),
+        /**
+         * Accent roles. `accent` (DEFAULT/hover/contrast) is the ONLY
+         * text-legal one: deep ember on cream, bright orange on the dark
+         * register. The signature hot orange #FF5A1F lives in `field` and
+         * `mark`, which are named so they cannot be used for type by
+         * accident - see the contrast rule in `app/styles/tokens.ts`.
+         */
         accent: {
           DEFAULT: token("accent"),
           hover: token("accent-hover"),
-          subtle: token("accent-subtle"),
           contrast: token("accent-contrast"),
+          /** full-bleed fill; only `text-accent-ink` may sit on it */
+          field: token("accent-field"),
+          "field-hover": token("accent-field-hover"),
+          /** near-black ink, the only type colour allowed on a field */
+          ink: token("accent-ink"),
+          /** non-text marks only: rules, bars, progress, focus, selection */
+          mark: token("accent-mark"),
+          /** tint behind a chip/tag; pair with `text-accent` or `text-fg` */
+          chip: token("accent-chip"),
         },
       },
 
@@ -118,8 +133,8 @@ module.exports = {
         panel: "0 1px 2px rgb(0 0 0 / 0.28), 0 8px 24px -12px rgb(0 0 0 / 0.35)",
         lifted: "0 2px 4px rgb(0 0 0 / 0.24), 0 16px 40px -16px rgb(0 0 0 / 0.45)",
         focus:
-          "0 0 0 2px rgb(var(--c-background) / 1), 0 0 0 4px rgb(var(--c-accent) / 1)",
-        "accent-glow": "0 0 0 1px rgb(var(--c-accent) / 0.35)",
+          "0 0 0 2px rgb(var(--c-background) / 1), 0 0 0 4px rgb(var(--c-accent-mark) / 1)",
+        "accent-glow": "0 0 0 1px rgb(var(--c-accent-mark) / 0.45)",
       },
 
       letterSpacing: {

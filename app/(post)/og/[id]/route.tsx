@@ -5,6 +5,7 @@ import { readFileSync } from "fs";
 import { join } from "path";
 
 import { getPublishedPosts, getPost } from "@/lib/content";
+import { LIGHT } from "@/app/styles/tokens";
 
 // Every published post gets a card, generated from the index — so a post can
 // never ship without one again.
@@ -12,29 +13,24 @@ export async function generateStaticParams() {
   return getPublishedPosts().map(post => ({ id: post.id }));
 }
 
-// Console palette (analysis/blog/design.md, Direction B).
-const BG = "#0C0D10";
-const SURFACE = "#16181D";
-const TEXT = "#E6E8EC";
-const MUTED = "#8A9099";
-const ACCENT = "#2F81F7";
+/**
+ * "Fire max" card: a full-bleed orange FIELD with near-black display type on
+ * top — case (a) of the contrast rule in `app/styles/tokens.ts` (5.94:1).
+ * Nothing on this card is set IN the hot orange; the orange is the ground.
+ */
+const FIELD = LIGHT.accentField;
+const INK = LIGHT.accentInk;
+const PAPER = LIGHT.background;
 
 const SITE_DOMAIN = "semihbabacan.com";
 
-// fonts
+// Satori needs real font binaries, so the OG cards use the .woff files copied
+// into `fonts/` by the postinstall hook rather than the next/font faces.
 const fontsDir = join(process.cwd(), "fonts");
 
-const inter300 = readFileSync(
-  join(fontsDir, "inter-latin-300-normal.woff")
-);
+const inter300 = readFileSync(join(fontsDir, "inter-latin-300-normal.woff"));
 
-const inter500 = readFileSync(
-  join(fontsDir, "inter-latin-500-normal.woff")
-);
-
-const inter600 = readFileSync(
-  join(fontsDir, "inter-latin-600-normal.woff")
-);
+const inter600 = readFileSync(join(fontsDir, "inter-latin-600-normal.woff"));
 
 const robotoMono400 = readFileSync(
   join(fontsDir, "roboto-mono-latin-400-normal.woff")
@@ -63,15 +59,24 @@ export async function GET(
     (
       <div
         tw="flex p-16 h-full w-full flex-col"
-        style={{ ...font("Inter 300"), backgroundColor: BG, color: TEXT }}
+        style={{ ...font("Inter 300"), backgroundColor: FIELD, color: INK }}
       >
         <header tw="flex text-[32px] w-full items-center">
-          <div style={{ ...font("Roboto Mono 400"), color: ACCENT }}>$</div>
-          <div tw="ml-4 font-bold" style={font("Inter 600")}>
+          <div
+            tw="flex px-3 py-1"
+            style={{
+              ...font("Roboto Mono 400"),
+              backgroundColor: INK,
+              color: PAPER,
+            }}
+          >
+            MSB
+          </div>
+          <div tw="ml-5" style={font("Inter 600")}>
             M. Semih Babacan
           </div>
           <div tw="grow" />
-          <div tw="text-[26px]" style={{ ...font("Roboto Mono 400"), color: MUTED }}>
+          <div tw="text-[26px]" style={font("Roboto Mono 400")}>
             {SITE_DOMAIN}
           </div>
         </header>
@@ -80,13 +85,13 @@ export async function GET(
           {post.series ? (
             <div
               tw="flex text-[24px] uppercase tracking-widest mb-6"
-              style={{ ...font("Roboto Mono 400"), color: ACCENT }}
+              style={font("Roboto Mono 400")}
             >
               {post.series}
             </div>
           ) : null}
 
-          <div tw="flex text-[64px] leading-tight" style={font("Inter 500")}>
+          <div tw="flex text-[68px] leading-tight" style={font("Inter 600")}>
             {post.title}
           </div>
 
@@ -94,8 +99,7 @@ export async function GET(
             tw="flex mt-10 pt-8 text-[26px]"
             style={{
               ...font("Roboto Mono 400"),
-              color: MUTED,
-              borderTop: `2px solid ${SURFACE}`,
+              borderTop: `3px solid ${INK}`,
             }}
           >
             {formatDate(post.date)} · {post.readTime}
@@ -110,10 +114,6 @@ export async function GET(
         {
           name: "Inter 300",
           data: inter300,
-        },
-        {
-          name: "Inter 500",
-          data: inter500,
         },
         {
           name: "Inter 600",

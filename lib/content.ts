@@ -11,6 +11,7 @@ import { join } from "node:path";
 import { calculateReadTime } from "@/app/author";
 import { getSeriesConfig, type Series } from "@/app/series";
 import {
+  ABSOLUTE_URL_RE,
   ISO_DATE_RE,
   POST_STATUSES,
   type IndexedPost,
@@ -186,6 +187,14 @@ function validateFrontmatter(
     return tag;
   });
 
+  const canonical = optionalString(input, "canonical", file);
+  if (canonical && !ABSOLUTE_URL_RE.test(canonical)) {
+    throw new PostValidationError(
+      file,
+      `\`canonical\` must be an absolute http(s) URL (got "${canonical}")`,
+    );
+  }
+
   return {
     slug,
     title: requireString(input, "title", file),
@@ -195,6 +204,7 @@ function validateFrontmatter(
     tags,
     status,
     cover: optionalString(input, "cover", file),
+    canonical,
   };
 }
 

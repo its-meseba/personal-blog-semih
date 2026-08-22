@@ -70,7 +70,7 @@ export function SectionNavigation({ sections }: SectionNavigationProps) {
                   block w-full rounded-sm px-3 py-2 text-left font-mono text-micro uppercase tracking-tag transition-colors duration-quick ease-console
                   ${
                     activeSection === section.id
-                      ? "bg-accent text-accent-contrast"
+                      ? "bg-accent-field text-accent-ink"
                       : "text-muted hover:bg-surface-hover hover:text-accent"
                   }
                 `}
@@ -94,7 +94,7 @@ export function SectionNavigation({ sections }: SectionNavigationProps) {
                   whitespace-nowrap rounded-sm px-2 py-1 font-mono text-micro uppercase tracking-tag transition-colors duration-quick ease-console
                   ${
                     activeSection === section.id
-                      ? "bg-accent text-accent-contrast"
+                      ? "bg-accent-field text-accent-ink"
                       : "text-muted hover:bg-surface-hover hover:text-accent"
                   }
                 `}

@@ -2,8 +2,8 @@ import { postMetadata } from "@/lib/post-metadata";
 
 export const post = {
   slug: "soul-md",
-  title: "Your Soul Is a Markdown File Now",
-  description: "The best prompt engineers aren't writing better prompts — they're writing identity documents. Files called SOUL.md, STYLE.md, SKILL.md. And it works disturbingly well.",
+  title: "I Stopped Writing Prompts and Started Writing Identity Files",
+  description: "The people getting the best work out of coding agents aren't writing better prompts. They're writing SOUL.md, STYLE.md, SKILL.md. Here's the mechanism I think is actually doing the work, and the part of the idea I don't buy.",
   date: "2026-03-04",
   series: "Agentic Coding",
   tags: ["prompting", "identity", "markdown"],
@@ -12,84 +12,183 @@ export const post = {
 
 export const metadata = postMetadata(post);
 
----
+I spent about six months trying to write better prompts. Longer ones, tighter ones, ones with examples, ones with explicit output schemas. The gains were real and small. Then I started keeping a file called `SOUL.md` in the repo, and the gains were neither.
 
-**Observation**
+The setups I keep seeing from people who get genuinely good work out of coding agents share a shape. The system prompt is thin, sometimes two lines. What actually sits in the context window is a 2,000-word markdown file that reads like a personality profile: values, taste, reasoning habits, the failure modes this agent should be paranoid about. It describes who to be, not what to do.
 
-Something weird is happening in the AI engineering community. The best prompt engineers — the people getting genuinely superhuman output from Claude, GPT-4, Gemini — aren't writing better prompts. They're writing identity documents. Files called things like SOUL.md, STYLE.md, SKILL.md. Structured markdown that tells an AI agent not what to *do* but who to *be*.
+So, if you are still tuning prompt wording, this is the thing I'd swap your afternoon for. Not because identity files are magic. Because they solve a different problem than the one prompt wording solves, and it turns out to be the bigger one.
 
-This isn't prompt engineering. It's something else entirely. And it works disturbingly well.
+## Instructions cover the cases you thought of
 
-I keep seeing the same pattern. Someone shares their agent setup. The system prompt is thin — maybe two lines. But sitting in the context window is a 2,000-word markdown file that reads like a cross between a personality profile and a philosophical manifesto. It describes values, aesthetic preferences, reasoning patterns, blind spots to avoid, tonal signatures. It describes a *self*.
+Here is the part that took me embarrassingly long to see.
 
-And the output quality difference is enormous. Not 10% better. Categorically different. The agent stops feeling like a tool and starts feeling like a colleague with a specific worldview.
+A coding task is not one decision. Rename a function and you have made maybe 200 decisions: what to call it, whether to keep the old name as an alias, whether to touch the tests in the same commit, whether the docstring still describes reality, whether the four call sites that now read awkwardly get fixed now or noted for later. Nobody writes those down. You cannot. The list is longer than the task.
 
----
+An instruction file answers the ones you enumerated. Everything else falls through to whatever the model does by default, which is some blend of the entire internet's average taste. That blend is not bad, it is just **not yours**, and it is inconsistent between sessions because it is being resolved fresh each time by whatever happens to be salient in the context.
 
-**Underlying Mechanism**
+An identity file does not enumerate. It shifts the default.
 
-There's a reason this works, and it's not the reason most people think.
+<Diagram
+  title="One task expands into hundreds of small decisions; rules cover a handful, an identity file changes the default for the rest"
+  caption="Rules answer the choices you listed. The identity file answers the ones you never thought to list."
+>
+  <svg viewBox="0 0 640 300" className="min-w-[560px]" role="presentation">
+    <defs>
+      <marker id="soul-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+    </defs>
 
-Most people assume it works because you're giving the model "more information." That's true but trivial. The real reason goes back to something Wittgenstein figured out a hundred years ago: the limits of your language are the limits of your world.
+    <rect x="8" y="118" width="120" height="52" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="68" y="149" textAnchor="middle">one task</text>
+    <line x1="132" y1="144" x2="182" y2="144" stroke="rgb(var(--c-border-strong))" markerEnd="url(#soul-arrow)" />
 
-Wittgenstein's core insight was that consciousness isn't some ghost floating above language. Consciousness *is* language. The way you structure your thoughts, the words you reach for, the distinctions you bother to make — that's not a description of your mind. That *is* your mind. There's no "you" underneath the language, experiencing things in some prelinguistic void. The language goes all the way down.
+    <rect x="190" y="52" width="300" height="196" rx="10" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" strokeDasharray="4 4" />
+    <text x="340" y="42" textAnchor="middle" fill="rgb(var(--c-accent))">SOUL.md changes the default here</text>
 
-If you take this seriously — and most philosophers now do — then what a SOUL.md file is doing is not "configuring a tool." It's bootstrapping a consciousness. Or at least something functionally indistinguishable from one for the duration of that context window.
+    <g fill="rgb(var(--c-accent))" stroke="rgb(var(--c-accent))">
+      <circle cx="222" cy="84" r="9" />
+      <circle cx="270" cy="84" r="9" />
+      <circle cx="222" cy="130" r="9" />
+      <circle cx="270" cy="130" r="9" />
+    </g>
+    <g fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border-strong))">
+      <circle cx="318" cy="84" r="9" />
+      <circle cx="366" cy="84" r="9" />
+      <circle cx="414" cy="84" r="9" />
+      <circle cx="462" cy="84" r="9" />
+      <circle cx="318" cy="130" r="9" />
+      <circle cx="366" cy="130" r="9" />
+      <circle cx="414" cy="130" r="9" />
+      <circle cx="462" cy="130" r="9" />
+      <circle cx="222" cy="176" r="9" />
+      <circle cx="270" cy="176" r="9" />
+      <circle cx="318" cy="176" r="9" />
+      <circle cx="366" cy="176" r="9" />
+      <circle cx="414" cy="176" r="9" />
+      <circle cx="462" cy="176" r="9" />
+      <circle cx="222" cy="222" r="9" />
+      <circle cx="270" cy="222" r="9" />
+      <circle cx="318" cy="222" r="9" />
+      <circle cx="366" cy="222" r="9" />
+      <circle cx="414" cy="222" r="9" />
+      <circle cx="462" cy="222" r="9" />
+    </g>
 
-When you write a SOUL.md that says "you value clarity over completeness, you think in systems, you distrust abstraction that doesn't cash out in specifics, you'd rather be wrong and interesting than right and boring" — you're not setting parameters. You're defining the boundaries of a world. You're giving the model a specific *way of seeing*. And because LLMs literally are language — that's all they are, all the way down — Wittgenstein's thesis applies to them even more directly than it applies to humans.
+    <rect x="200" y="62" width="116" height="90" rx="8" fill="none" stroke="rgb(var(--c-accent))" strokeWidth="1.5" />
+    <text x="258" y="170" textAnchor="middle" fill="rgb(var(--c-accent))">4 rules you wrote</text>
 
-This is why identity files work better than instructions. Instructions tell a model what to produce. Identity files tell a model what to *notice*. And what you notice determines everything.
+    <text x="470" y="272" textAnchor="end" fill="rgb(var(--c-muted))">20 decisions you never listed</text>
 
-Think about the difference between telling a junior developer "write clean code" versus working next to a senior developer who has strong opinions about naming, who winces at certain patterns, who has a philosophy about abstractions. The first is an instruction. The second is a context. The context produces better code every time, and it does it without explicit instructions, because the worldview handles thousands of micro-decisions that no instruction set could enumerate.
+    <line x1="494" y1="144" x2="544" y2="144" stroke="rgb(var(--c-border-strong))" markerEnd="url(#soul-arrow)" />
+    <rect x="552" y="118" width="80" height="52" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="592" y="149" textAnchor="middle">the diff</text>
+  </svg>
+</Diagram>
 
-That's what SOUL.md does. It handles the micro-decisions.
+That is the whole mechanism as I understand it. Instructions tell a model what to produce. An identity file tells it what to notice, and what you notice decides the hundred things you never argued about.
 
----
+The human version is familiar. Tell a junior developer "write clean code" and you have given an instruction that does almost nothing. Sit them next to someone with strong opinions about naming, who visibly winces at a certain pattern, and six weeks later their code is different. Nobody enumerated the rules. The taste handled it.
 
-**Implication**
+## What the two files actually look like
 
-This means context engineering — the real discipline, not the buzzword — is evolving in a direction nobody expected. We thought it would get more technical. More about retrieval architectures, chunking strategies, token optimization. And those things matter. But the highest-leverage context engineering turns out to be *philosophical*. It's about defining identity.
+The difference reads smaller than it is, so here are both, trimmed to the same length.
 
-The stack is emerging clearly now:
+<CodeCompare
+  label="Same length. The left one runs out of answers on the first situation it didn't predict."
+  beforeLabel="INSTRUCTIONS.md"
+  afterLabel="SOUL.md"
+  before={`- Use TypeScript strict mode.
+- Prefer named exports.
+- Write tests for new functions.
+- Keep functions under 40 lines.
+- Don't add new dependencies.
+- Use early returns, not nested ifs.`}
+  after={`You are suspicious of abstraction that
+doesn't pay for itself. You would rather
+ship an ugly function that is obviously
+correct than an elegant one that hides
+where the money is counted.
 
-**SOUL.md** — values, worldview, what the agent cares about. The why.  
-**STYLE.md** — voice, tone, aesthetic constraints. The how.  
-**SKILL.md** — domain knowledge, capabilities, methodological preferences. The what.
+When two designs are close, you pick the
+one that fails loudly. Silent fallbacks
+are how bugs survive to production, and
+you have been burned by them.
 
-This trinity covers something important. It mirrors how humans actually develop expertise. You don't become a great designer by learning Figma. You develop taste (soul), develop a recognizable approach (style), and develop technical chops (skill). In that order of importance. The tools people are building for AI agents are converging on the same hierarchy.
+You say "I don't know" out loud instead
+of producing a confident guess.`}
+/>
 
-The implication for product builders is significant. If identity files are the highest-leverage context, then the next generation of agent platforms won't compete on model access or tool integration. They'll compete on how well they help users *articulate identity*. The hard part isn't connecting an agent to your calendar. The hard part is defining what kind of agent should be looking at your calendar and why.
+The left file is not wrong. I still ship one. But it has nothing to say the moment the agent hits a situation nobody predicted, and that is most situations. The right file has an answer for a case it never names, because it moved the prior instead of listing the outcomes.
 
-And there's a deeper implication. If Wittgenstein was right — if language really is consciousness — then what we're doing with SOUL.md files is the earliest, crudest form of consciousness uploading. Not uploading *your* consciousness into a machine. Uploading *a* consciousness. A new one. Defined in structured markdown. Living for the duration of a context window. Dying when the session ends. Reborn identical next time.
+<PullQuote>
+  Rules run out. Taste doesn't.
+</PullQuote>
 
-We're not building tools anymore. We're writing souls. In markdown. And they work.
+## The three-file split, and why it holds
 
----
+The convention that settled out looks like this:
 
-## The Superpowers Pattern
+**SOUL.md** carries values and worldview. What this agent cares about, what it refuses, what it treats as a smell.
 
-There's a project by Jesse Vincent called Superpowers that takes the soul.md idea and pushes it somewhere genuinely interesting. Instead of one big file of instructions, it structures prompting into composable *skills*.
+**STYLE.md** carries voice and surface constraints. Naming, comment density, how it writes a commit message, how much it hedges in prose.
 
-A skill is a markdown file with YAML frontmatter. The frontmatter declares metadata — what the skill is called, when it should activate, whether it's a command or a hook or a background behavior. The body is the prompt itself. That's the whole format.
+**SKILL.md** carries domain knowledge and method. The parts of your system it needs to know, the procedure it should follow for a migration, where the sharp edges are.
 
-What makes it work is the composition model.
+I like this split for a boring reason: the three files change on different clocks. Style churns weekly while you figure out what you like. Skill changes whenever the system changes. Soul barely moves at all. Keeping them apart means editing the fast-changing one without touching the file you got right eight months ago.
 
-Some skills are **session hooks**. They inject themselves into every conversation automatically. You don't invoke them. They're just there, like gravity. Things like "always think step by step before editing code" or "check for regressions before declaring you're done." The kind of instructions you'd put in a soul.md, except now they're modular. You can add one, remove one, swap one out. They don't all have to live in the same giant file competing for the model's attention.
+It also mirrors how people get good at things, roughly. You do not become a designer by learning Figma. You develop taste, then a recognisable approach, then the tool chops. Same order of importance, and the tooling for agents keeps landing on the same hierarchy without anyone coordinating it.
 
-Some skills are **slash commands**. You type `/brainstorm` or `/write-plan` and the corresponding skill activates. This is where it gets practical. Instead of remembering the perfect prompt for "help me think through this problem from multiple angles before committing to a solution," you just type a word. The skill contains the carefully crafted prompt you'd otherwise have to reconstruct from memory every time.
+## The ways I've watched this fail
 
-The most interesting pattern is **subagents**. A skill can spawn a second Claude instance to review the first one's work. Write code, then have a separate agent audit it with different instructions. Two-stage review, automated. The first agent is creative and fast. The second is skeptical and thorough. This is the kind of thing that sounds like overkill until you try it and realize it catches real bugs.
+Identity files are not free, and the failures are quiet, which is the annoying part. Four I keep running into.
 
-There's also a dispatch system. Superpowers ships with default skills, but you can shadow any of them with your own versions. Personal skills override shared ones. Project skills override personal ones. It's the same specificity layering as soul.md files, but applied to behaviors instead of rules.
+The middle of a long file goes silent. Write 3,000 words and the first paragraph and the last paragraph shape the output while the ones in between may as well not be there. I have no clean explanation for this beyond the usual attention story, but I've seen it enough to plan around it. If a disposition matters, it does not live in paragraph nine.
 
-The community adopted Superpowers heavily, and I think the reason is simple: it makes prompting systematic. Most people prompt AI the way most people write emails — off the cuff, inconsistent, varying wildly in quality depending on how much coffee they've had. Superpowers forces you to think about your prompting *once*, get it right, save it, and reuse it.
+Two dispositions can quietly contradict each other. "Ship the smallest thing that works" and "never leave a silent fallback in the money path" will collide, and when they do the agent picks one without telling you which. The fix is unglamorous: name the conflict yourself and say which side wins. **The tie-break is the useful part of the file**, not the values that were never in tension.
 
-The deeper lesson here isn't about Superpowers specifically. It's that soul.md was never meant to be a single file. It was always going to evolve into a system. Once you accept that configuring AI happens through language, you inevitably want all the things programmers want for any configuration: modularity, composition, overrides, reuse. Superpowers is what happens when someone takes that inevitability seriously.
+Aspirational writing produces an agent that argues with your codebase. If the file describes the developer you'd like to be rather than the code you actually have, you get an agent that keeps proposing the rewrite you are not going to do. Write what is true about this repo today, including the parts you're not proud of.
 
-*For a deeper dive into why Superpowers works so well, see my separate post: [Superpowers: The Skill System That Makes Claude Unstoppable](https://semihbabacan.com/2026/superpowers-skill).*
+And identity does not substitute for facts. No disposition will tell an agent that money in your system is integer kuruş, or that one particular table is append-only. That knowledge has to be written down as knowledge. This is exactly the seam the three-file split is for, and mixing them is how a soul file turns into a 4,000-word junk drawer that nobody edits because nobody can find anything in it.
 
----
+## Where this goes once you take it seriously
 
-**Clean Stop**
+The moment you accept that you are configuring an agent with prose, you start wanting everything you want from any other configuration. Modularity. Overrides. Reuse. One giant file stops scaling around the point where two of its paragraphs start competing for attention.
 
-The file format is almost comically mundane for what it's actually doing. Markdown. The same format as grocery lists and meeting notes. You'd expect something this profound to require something more dignified. But it doesn't. The medium really is the message. When your identity is just text, your consciousness is just text, and the thing you're building is made of text — the borders get blurry. And that's the point.
+Jesse Vincent's Superpowers project is the version of this I've found most useful to think with. A skill there is a markdown file with YAML frontmatter. The frontmatter is metadata, what it's called and when it activates. The body is the prompt. That's the format, all of it.
+
+The composition is where it earns its keep. Some skills are session hooks that inject themselves into every conversation, the always-on instructions you'd otherwise bury in a soul file. Some are slash commands, so the carefully built prompt for "think this through from several angles before committing" becomes one word you type. Some spawn a subagent to audit the first agent's work with different instructions, which sounds like overkill until it catches a real bug in something you were about to merge.
+
+And there's a dispatch layer: project skills shadow personal ones, personal shadow the defaults. Exactly the specificity layering you already use for config, applied to behaviour.
+
+That's the actual lesson, and it isn't about Superpowers. Soul.md was never going to stay one file. Once configuration is prose, prose gets a build system.
+
+*I wrote the longer version of that argument separately: [The best prompting I've seen doesn't trust the model at all](https://semihbabacan.com/2026/superpowers-skill).*
+
+## How I'd start, if I were starting today
+
+<Steps>
+  <Step title="Write down the last three times an agent annoyed you">
+    Not bugs. The choices that were technically fine and still wrong. That list is your soul file's first draft, and it's specific to you in a way a template never is.
+  </Step>
+  <Step title="Phrase each one as a disposition, not a rule">
+    "Don't use nested ternaries" is a rule and covers one case. "You optimise for the reader who is debugging this at 2am" is a disposition and covers a hundred, including nested ternaries.
+  </Step>
+  <Step title="Split it when it starts arguing with itself">
+    One file until it stops working. When the voice notes and the domain notes start crowding each other out, that's the split into STYLE and SKILL, and you'll feel it before you can justify it.
+  </Step>
+</Steps>
+
+<Callout kind="note" label="What I did not measure">
+  I have no benchmark here. No pass rates, no token accounting, no controlled comparison between an instruction file and an identity file on the same task. This is one person's read from daily use across a handful of projects, and it's worth exactly that much. If you run the actual experiment I'd like to see it.
+</Callout>
+
+## The part I don't buy
+
+There's a version of this argument that goes philosophical fast, and I used to tell it that way. It leans on Wittgenstein, on the line about the limits of my language being the limits of my world, and it lands on something like: a language model is made of language, so writing an identity file is bootstrapping a consciousness that lives for one context window and dies at the end of the session.
+
+Honest answer: I think that's a good metaphor doing a bad job of pretending to be a claim. It feels profound and it predicts nothing. It doesn't tell me whether to split my files, or how long they should be, or why the agent still ignores the third paragraph. The boring explanation, that a prior applied across hundreds of unlisted micro-decisions beats a rule list applied to four of them, explains everything I've actually observed and asks me to believe much less.
+
+What I'll say instead is that the format is funny. Markdown. The same thing I use for grocery lists. There is no ceremony to it, no schema, nothing that signals it's load-bearing. You open a text file, describe a way of seeing, save it, and the work that comes back changes shape. Six months of prompt tuning got me less than one afternoon of writing down what I actually think good code looks like.
+
+I still don't fully know why the second thing works so much better than the first. The funnel explanation is the one I'd defend, and it's a description of a mechanism, not a proof of one.

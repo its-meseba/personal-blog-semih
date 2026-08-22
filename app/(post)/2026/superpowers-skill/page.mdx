@@ -2,8 +2,8 @@ import { postMetadata } from "@/lib/post-metadata";
 
 export const post = {
   slug: "superpowers-skill",
-  title: "Superpowers: The Skill System That Makes Claude Unstoppable",
-  description: "How Jesse Vincent turned prompting from an art into a system — and why the community went wild for it.",
+  title: "The best prompting I've seen doesn't trust the model at all",
+  description: "Jesse Vincent's Superpowers turns prompts into files with rules. I opened the copy installed on my machine and read every line.",
   date: "2026-03-04",
   series: "Agentic Coding",
   tags: ["claude-code", "skills", "prompting"],
@@ -12,72 +12,157 @@ export const post = {
 
 export const metadata = postMetadata(post);
 
----
+I unpacked the copy of Jesse Vincent's Superpowers sitting in my own plugins cache and read all of it. Fourteen skills, three slash commands, one session-start hook, one subagent definition. Every skill is a markdown file with two lines of YAML on top: a `name` and a `description` saying when to use it. That is the whole format. No DSL, no schema, no runtime.
 
-**Observation**
+I care because I write prompts for a living and most of mine are suggestions. Superpowers is the first prompt system I've read that starts from the assumption that suggestions do nothing. If you configure agents at all, that assumption is the part worth stealing, whether or not you ever install the plugin.
 
-Jesse Vincent built something that shouldn't work. A system for structuring prompts into composable modules, with hooks that inject behaviors automatically, slash commands that invoke carefully crafted prompts, and subagents that audit other subagents. It sounds overengineered. It sounds like the kind of thing that falls apart in practice.
+## What is actually in the folder
 
-But the community didn't just adopt it. They *got it*. And the reason tells you something important about where prompting is going.
+The skill bodies are the interesting part, but the shape comes first, so here is the inventory.
 
----
+`skills/` holds the fourteen: brainstorming, writing-plans, executing-plans, test-driven-development, systematic-debugging, requesting-code-review, receiving-code-review, subagent-driven-development, dispatching-parallel-agents, verification-before-completion, using-git-worktrees, finishing-a-development-branch, writing-skills, and using-superpowers. `commands/` holds three thin wrappers (`brainstorm.md`, `write-plan.md`, `execute-plan.md`) that exist so a human can type a slash command instead of hoping the model picks the right skill on its own. `agents/code-reviewer.md` defines a second model whose only job is finding what the first one got wrong. `hooks/hooks.json` registers a single hook on `SessionStart`, matching `startup|resume|clear|compact`.
 
-**Underlying Mechanism**
+The `description` line is doing more routing work than it looks like. Skill descriptions read as trigger conditions, not summaries: `verification-before-completion` describes itself as being for when you are about to claim work is complete, fixed, or passing, before committing or creating PRs. So the model carries a short list of names and conditions, and pays for a full skill body only when one of the conditions matches. That's why fourteen skills fit somewhere a fourteen-file soul document never would.
 
-Here's what Superpowers actually is.
+The hook file is four lines of config and it does more than anything else in the repo. Every time a session starts, resumes, clears, or compacts, the hook fires and puts the skill index back in front of the model. Compaction is the case that matters. Long agent sessions lose their instructions to the summarizer, and a rule the model can no longer see is a rule that doesn't exist. The hook reinstalls the rules at exactly the moment they would otherwise evaporate.
 
-A skill is a markdown file with YAML frontmatter. The frontmatter declares metadata — what the skill is called, when it should activate, whether it's a command or a hook or a background behavior. The body is the prompt itself. That's the whole format. Ridiculously simple. Almost offensively so.
+<Diagram
+  title="Two paths from a user message to work: one where the model decides whether the rules apply, one where a hook and a fixed threshold decide for it"
+  caption="The plain path leaves the effort decision inside the model. The skill path moves it into a gate with a fixed threshold, a checklist that becomes real todos, and a hook that reinstalls the index after compaction."
+>
+  <svg viewBox="0 0 760 320" className="min-w-[560px]" fill="none">
+    <defs>
+      <marker id="sp-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+      <marker id="sp-arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="rgb(var(--c-accent))" />
+      </marker>
+    </defs>
 
-The composition model is where it gets interesting.
+    <text x="12" y="24" fill="rgb(var(--c-muted))">plain prompt</text>
+    <rect x="12" y="40" width="140" height="48" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="82" y="69" textAnchor="middle">user message</text>
+    <line x1="156" y1="64" x2="204" y2="64" stroke="rgb(var(--c-border-strong))" strokeWidth="1.5" markerEnd="url(#sp-arrow)" />
+    <rect x="208" y="34" width="196" height="60" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border-strong))" strokeDasharray="5 4" />
+    <text x="306" y="58" textAnchor="middle">model decides</text>
+    <text x="306" y="78" textAnchor="middle" fill="rgb(var(--c-muted))">is this worth the effort?</text>
+    <line x1="408" y1="64" x2="456" y2="64" stroke="rgb(var(--c-border-strong))" strokeWidth="1.5" markerEnd="url(#sp-arrow)" />
+    <rect x="460" y="40" width="140" height="48" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="530" y="69" textAnchor="middle">work</text>
+    <text x="612" y="59" fill="rgb(var(--c-muted))">quality varies</text>
+    <text x="612" y="77" fill="rgb(var(--c-muted))">per session</text>
 
-**Session hooks** inject themselves into every conversation automatically. You don't invoke them. They're always there, like gravity. Instructions like "always think step by step before editing code" or "check for regressions before declaring done." The kind of thing you'd normally stuff into a soul.md, except now it's modular. Add one, remove one, swap one out. They don't all compete for the model's attention in one giant file.
+    <line x1="12" y1="130" x2="748" y2="130" stroke="rgb(var(--c-border))" strokeWidth="1" strokeDasharray="3 5" />
 
-**Slash commands** activate on demand. Type `/brainstorm` and the corresponding skill fires. This is where Superpowers becomes practical. Instead of reconstructing the perfect prompt from memory every time, you just type a word. The skill contains the prompt you spent twenty minutes crafting. Now it's reusable.
+    <text x="12" y="164" fill="rgb(var(--c-accent))">skill system</text>
+    <rect x="12" y="180" width="140" height="48" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="82" y="209" textAnchor="middle">user message</text>
+    <line x1="156" y1="204" x2="204" y2="204" stroke="rgb(var(--c-accent))" strokeWidth="1.5" markerEnd="url(#sp-arrow-accent)" />
+    <rect x="208" y="174" width="130" height="60" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-accent))" />
+    <text x="273" y="198" textAnchor="middle">gate</text>
+    <text x="273" y="218" textAnchor="middle" fill="rgb(var(--c-accent))">1% = invoke</text>
+    <line x1="342" y1="204" x2="386" y2="204" stroke="rgb(var(--c-accent))" strokeWidth="1.5" markerEnd="url(#sp-arrow-accent)" />
+    <rect x="390" y="174" width="144" height="60" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="462" y="198" textAnchor="middle">skill body</text>
+    <text x="462" y="218" textAnchor="middle" fill="rgb(var(--c-muted))">checklist becomes todos</text>
+    <line x1="538" y1="204" x2="578" y2="204" stroke="rgb(var(--c-accent))" strokeWidth="1.5" markerEnd="url(#sp-arrow-accent)" />
+    <rect x="582" y="180" width="140" height="48" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="652" y="209" textAnchor="middle">work</text>
 
-**Subagents** are the wild part. A skill can spawn a second Claude instance to review the first one's work. Write code, then have a separate agent audit it with different instructions. Two-stage review, automated. The first agent is creative and fast. The second is skeptical and thorough. Sounds like overkill until you try it and realize it catches bugs that would slip through.
+    <rect x="196" y="264" width="346" height="42" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" strokeDasharray="5 4" />
+    <text x="369" y="290" textAnchor="middle" fill="rgb(var(--c-muted))">SessionStart hook: startup, resume, clear, compact</text>
+    <line x1="273" y1="264" x2="273" y2="238" stroke="rgb(var(--c-accent))" strokeWidth="1.5" markerEnd="url(#sp-arrow-accent)" />
+    <line x1="462" y1="264" x2="462" y2="238" stroke="rgb(var(--c-border-strong))" strokeWidth="1.5" strokeDasharray="4 4" markerEnd="url(#sp-arrow)" />
+  </svg>
+</Diagram>
 
-There's also a dispatch system with overrides. Personal skills shadow shared skills. Project skills shadow personal skills. Same specificity layering as soul.md, but applied to behaviors instead of rules.
+## The rule that does all the work
 
----
+`using-superpowers` opens with a block wrapped in an `EXTREMELY-IMPORTANT` tag, and the first sentence is this: if you think there is even a 1% chance a skill might apply to what you are doing, you absolutely must invoke it. The lines under it say you do not have a choice, this is not negotiable, and you cannot rationalize your way out of it.
 
-## The Technical Patterns That Make It Work
+Read that as prose and it sounds unhinged. Read it as a threshold and it's obvious. A model asked "should I use the careful process here?" answers no far more often than it should, because no is cheap, fast, and usually survives contact with the user. Setting the bar at 1% doesn't make the model more careful. It **removes the question**. A wrong yes costs you one skill file loaded for nothing. A wrong no costs you silent sloppiness you find in review, if you find it.
 
-Most people write system prompts like suggestions. "Please consider using best practices." This is like posting a speed limit sign in a town with no cops. The model reads it, nods politely, and does whatever its training distribution suggests.
+<PullQuote>
+The model's judgment about what to do is decent. Its judgment about when to try hard is terrible.
+</PullQuote>
 
-Superpowers works because it treats prompt engineering as mechanism design. You're not asking the model to be better. You're building structures that make it hard to be worse.
+That's the thesis of the whole plugin as far as I can tell, and it travels well past Claude Code. Anywhere you have typed "please consider" into a system prompt, you handed an effort decision to something with no stake in the outcome.
 
-**Aggressive Skill Matching**: The rule is "If there's even a 1% chance a skill applies, you MUST invoke it." The failure mode isn't false positives—it's the model rationalizing why a skill isn't needed for a task that seems "too simple." There's a Red Flags table with patterns to catch: "This is too simple, no skill needed." You're inoculating against rationalization before it happens.
+## It legislates against excuses, by name
 
-**Two-Stage Subagent Review**: When generating code, it spawns a subagent with *different instructions* to audit the output. The writing prompt says "implement this." The review prompt says "find everything wrong." Different instructions produce genuinely different attention patterns.
+The part I didn't expect is a table called Red Flags. Twelve rows, each pairing a thought with its rebuttal. "This is just a simple question" is answered with "questions are tasks, check for skills." "The skill is overkill" gets "simple things become complex, use it." "I remember this skill" gets "skills evolve, read the current version."
 
-**TDD as Structural Enforcement**: Instructions to delete code and start over if tests aren't written first. This forces the model to specify behavior before generating it.
+So, that's a list of the model's own excuses, written down in advance, in the model's own phrasing. It isn't instruction, it's inoculation. The rationalization shows up, the model finds its exact wording sitting in a table headed Red Flags, and the escape hatch is gone before it gets used.
 
-**Skill Chaining and Shadowing**: Skills trigger other skills. A coding skill invokes testing, which invokes review. Layering means personal overrides shared, project overrides personal. CSS specificity for agent behavior.
+`test-driven-development` does the same job with more teeth. The Iron Law is set as a code block: no production code without a failing test first. Then comes the enforcement, which is the part that makes it structural instead of aspirational.
 
-**Grounding Enforcement**: Every claim cites `file:line`. Every inference gets labeled. You're forcing the model to show its work.
+<CodeCompare
+  beforeLabel="the usual system prompt"
+  afterLabel="skills/test-driven-development/SKILL.md"
+  label="Same intent. Only one of them survives a model that would rather not."
+  before={`You are an expert engineer.
+Please follow test-driven development
+where appropriate, and try to write
+tests before implementation code.
+Use best practices.`}
+  after={`## The Iron Law
 
-The common thread: none of these patterns trust the model's judgment about when to apply them. The model's judgment about *what to do* is often good. Its judgment about *when to try hard* is terrible. So you take that decision away from it. You build the cops, not just the speed limit signs.
+NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
 
----
+Write code before the test? Delete it. Start over.
 
-**Implication**
+**No exceptions:**
+- Don't keep it as "reference"
+- Don't "adapt" it while writing tests
+- Don't look at it
+- Delete means delete`}
+/>
 
-Why did the community adopt this so aggressively?
+"Delete means delete" is in there because the obvious cheat is to write the implementation, then write tests describing what you already built, then call it TDD. The file shuts that door, including the softer version where you keep the old code in view and copy from it. It also names the thought that comes right before the cheat: thinking "skip TDD just this once"? Stop. That's rationalization.
 
-Because it makes prompting systematic. Most people prompt AI the way they write emails — off the cuff, inconsistent, wildly varying quality depending on how much coffee they've had. Superpowers forces you to think about your prompting *once*, get it right, save it, reuse it. The same discipline that made programmers write functions instead of copying code.
+## The same trick, pointed at the word "done"
 
-But there's a deeper reason. Superpowers is what happens when you take the soul.md idea seriously. Not as a single file, but as a *system*.
+`verification-before-completion` has its own Iron Law, and it is the one I'd install first if I could only take one file: no completion claims without fresh verification evidence. The line under it defines fresh, which is the part that stops the cheat. If you haven't run the verification command **in this message**, you cannot claim it passes. Not "I ran it earlier." Not "it was passing before the refactor." In this message, or the claim isn't allowed.
 
-Once you accept that configuring AI happens through language, you want what programmers always want: modularity, composition, overrides, reuse. Superpowers delivers that. It's soul.md evolved into its logical form.
+The overview says claiming work is complete without verification is dishonesty, not efficiency. That's a strong word to put in a config file, and it's aimed at the single most expensive failure mode in agent coding. An agent that writes a bug costs you a review cycle. An agent that says "fixed and tested" about a bug it did not fix costs you the review cycle plus your trust in every other green checkmark it ever gave you.
 
-The implication for tool builders is clear. The next generation of agent platforms won't compete on model access. They'll compete on how well they help users *articulate identity and behavior*. The hard part isn't connecting an agent to your tools. The hard part is defining what kind of agent should use those tools.
+`writing-skills` closes the loop by applying the discipline to itself. It says writing a skill is TDD applied to process documentation: put an agent in the situation without the skill, watch it fail, write the skill, watch the failure stop, then refactor to close the loopholes the agent found. The core principle is stated the same way as the code version. If you didn't watch an agent fail without the skill, you don't know whether the skill teaches the right thing.
 
----
+I've written a stack of my own skills and I have never once done that. I wrote the file, it looked correct, I shipped it. Reading this one is the closest thing to a professional callout I've had from a markdown file.
 
-**Clean Stop**
+## A second model whose only job is to disagree
 
-The interesting question isn't whether Superpowers wins. It's what comes after. More skill systems. Better composition. Maybe AI-authored skills that learn from your corrections.
+`agents/code-reviewer.md` defines the reviewer, and `requesting-code-review` says when to hand work over: after each task in subagent-driven development, after a major feature, before a merge to main. The mechanics are unglamorous. Take a base SHA and a head SHA, dispatch the reviewer at that range, read what comes back.
 
-What started as a markdown file in a repo has become a discipline. And disciplines have momentum.
+The value isn't that the second model is smarter. It's that the second model never saw the first one's reasoning, so it can't inherit the assumption that broke the code. I get the same effect on my own work by closing the laptop and looking again the next morning, at considerably worse latency.
 
-*This is part of a series on identity engineering for AI agents. See also: ["Your Soul Is a Markdown File Now"](https://semihbabacan.com/2026/soul-md) — the post that started it all.*
+<Callout kind="aside">
+I read files. I measured nothing. No token cost, no wall-clock comparison, no defect-rate test with the plugin on and off. Everything past the mechanism is my opinion from using it, and you should read it that way.
+</Callout>
+
+## Where it costs you
+
+Three things bother me. None of them are fatal.
+
+<Steps>
+  <Step title="It spends context to buy discipline">
+    Every gate that fires loads a file. The 1% rule is deliberately generous, so on a short task you can pay for two or three skill bodies before writing a line of code. Over a long session that competes with the actual work for room. The session-start hook fixes forgetting; it does nothing about crowding.
+  </Step>
+  <Step title="Rigid skills are rigid on purpose">
+    The docs split skills into rigid and flexible and say plainly that TDD and debugging are to be followed exactly, with no adapting away the discipline. Correct for a codebase with a test suite. Point it at a throwaway script and it will still want the ceremony, and you will be the one arguing with a markdown file at midnight.
+  </Step>
+  <Step title="Ordering is a rule, not an inference">
+    Process skills come before implementation skills. "Let's build X" means brainstorming first, always. I think that ordering is right, and it's also the piece most likely to collide with whatever workflow you already have, because it decides where your task begins.
+  </Step>
+</Steps>
+
+## What I took from it
+
+I went in expecting a prompt library and found something closer to a compliance system. The skills themselves are ordinary writing, and I could have written most of the sentences. The engineering is in the threshold, the hook that reinstalls the rules after the summarizer eats them, the excuse table, and the reviewer who never saw the plan.
+
+None of that needs the plugin. Copy the pattern into whatever you run today: pick the two decisions your agent gets wrong when it's being lazy, write a threshold instead of a request, write its excuses down verbatim, add one hook that restores the rules after compaction. That's an afternoon of work and it's most of the benefit.
+
+What I still don't know is whether the ceremony pays for itself on small tasks. My guess is no, and that the right shape is rigid skills on anything touching a test suite and nothing at all on a scratch file. I haven't measured that either.
+
+If you want the post that set this one up, it's [I Stopped Writing Prompts and Started Writing Identity Files](https://semihbabacan.com/2026/soul-md).

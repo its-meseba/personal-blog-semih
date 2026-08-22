@@ -1,12 +1,16 @@
 /**
- * Console design system - font loading.
+ * "Fire max" design system - font loading.
  *
  * Three faces, loaded through `next/font/google` (self-hosted at build time,
  * no runtime request to fonts.googleapis.com, no layout-shift flash):
  *
- *   Sora            display / headings / UI labels   -> --font-display
+ *   Archivo         display / headings / UI labels   -> --font-display
  *   Source Serif 4  article body                     -> --font-serif
  *   JetBrains Mono  code, dates, meta, tags          -> --font-mono
+ *
+ * Archivo is a wide, high-contrast grotesk drawn for headlines and posters -
+ * it holds up at 800/900 for the broadside register the fire palette wants,
+ * and it keeps the tight, workmanlike feel next to Source Serif 4 body copy.
  *
  * Each exposes a CSS variable rather than a class, so Tailwind's
  * `font-display` / `font-serif` / `font-mono` utilities resolve to them and a
@@ -19,13 +23,13 @@
  * read from disk for Satori. Removing them breaks OG image generation.
  */
 
-import { JetBrains_Mono, Sora, Source_Serif_4 } from "next/font/google";
+import { Archivo, JetBrains_Mono, Source_Serif_4 } from "next/font/google";
 
-export const displayFont = Sora({
+export const displayFont = Archivo({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-display",
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   fallback: [
     "ui-sans-serif",
     "system-ui",

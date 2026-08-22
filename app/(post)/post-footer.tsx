@@ -128,7 +128,7 @@ export function SubscribeSlot() {
       <div className="mt-4 flex flex-wrap gap-2 font-mono text-meta uppercase tracking-tag">
         <Link
           href="/atom"
-          className="rounded-sm bg-accent px-3 py-2 text-accent-contrast transition-colors duration-quick ease-console hover:bg-accent-hover"
+          className="rounded-sm bg-accent-field px-3 py-2 text-accent-ink transition-colors duration-quick ease-console hover:bg-accent-field-hover"
         >
           Atom feed
         </Link>

@@ -9,7 +9,7 @@ import { getSeriesConfig } from "../series";
  */
 
 const TAG =
-  "inline-flex items-center rounded-xs border border-accent/30 bg-accent-subtle px-1.5 py-0.5 font-mono uppercase tracking-tag text-accent transition-colors duration-quick ease-console";
+  "inline-flex items-center rounded-xs border border-accent-mark/40 bg-accent-chip px-1.5 py-0.5 font-mono uppercase tracking-tag text-accent transition-colors duration-quick ease-console";
 
 export function SeriesTag({
   series,

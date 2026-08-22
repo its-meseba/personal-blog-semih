@@ -1,3 +1,4 @@
+import { atomAlternateTypes } from "@/lib/feed-links";
 import { generateThoughtsSchema } from "../structured-data";
 
 export const metadata = {
@@ -15,6 +16,9 @@ export const metadata = {
   },
   alternates: {
     canonical: "https://semihbabacan.com/thoughts",
+    // The writing index is where a reader looks for the feed; declaring
+    // `alternates` here would otherwise drop the root layout's autodiscovery.
+    types: atomAlternateTypes(),
   },
 };
 

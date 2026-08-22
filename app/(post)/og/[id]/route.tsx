@@ -1,13 +1,25 @@
 export const revalidate = 60;
 
 import { ImageResponse } from "next/og";
-import { getPosts } from "@/app/get-posts";
 import { readFileSync } from "fs";
 import { join } from "path";
 
+import { getPublishedPosts, getPost } from "@/lib/content";
+
+// Every published post gets a card, generated from the index — so a post can
+// never ship without one again.
 export async function generateStaticParams() {
-  return (await getPosts()).map(post => ({ id: post.id }));
+  return getPublishedPosts().map(post => ({ id: post.id }));
 }
+
+// Console palette (analysis/blog/design.md, Direction B).
+const BG = "#0C0D10";
+const SURFACE = "#16181D";
+const TEXT = "#E6E8EC";
+const MUTED = "#8A9099";
+const ACCENT = "#2F81F7";
+
+const SITE_DOMAIN = "semihbabacan.com";
 
 // fonts
 const fontsDir = join(process.cwd(), "fonts");
@@ -28,13 +40,21 @@ const robotoMono400 = readFileSync(
   join(fontsDir, "roboto-mono-latin-400-normal.woff")
 );
 
-export async function GET(_req: Request, props) {
-  const params = await props.params;
+const formatDate = (date: string) =>
+  new Date(`${date}T00:00:00Z`).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
 
-  const { id } = params;
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
 
-  const posts = await getPosts();
-  const post = posts.find(p => p.id === id);
+  const post = getPost(id);
   if (!post) {
     return new Response("Not found", { status: 404 });
   }
@@ -42,32 +62,43 @@ export async function GET(_req: Request, props) {
   return new ImageResponse(
     (
       <div
-        tw="flex p-10 h-full w-full bg-white flex-col"
-        style={font("Inter 300")}
+        tw="flex p-16 h-full w-full flex-col"
+        style={{ ...font("Inter 300"), backgroundColor: BG, color: TEXT }}
       >
-        <header tw="flex text-[36px] w-full">
-          <div tw="font-bold" style={font("Inter 600")}>
+        <header tw="flex text-[32px] w-full items-center">
+          <div style={{ ...font("Roboto Mono 400"), color: ACCENT }}>$</div>
+          <div tw="ml-4 font-bold" style={font("Inter 600")}>
             M. Semih Babacan
           </div>
           <div tw="grow" />
-          <div tw="text-[28px]">solace.com</div>
+          <div tw="text-[26px]" style={{ ...font("Roboto Mono 400"), color: MUTED }}>
+            {SITE_DOMAIN}
+          </div>
         </header>
 
-        <main tw="flex grow pb-3 flex-col items-center justify-center">
-          <div tw="flex">
+        <main tw="flex grow flex-col justify-center">
+          {post.series ? (
             <div
-              tw="bg-gray-100 p-8 text-7xl font-medium rounded-md text-center"
-              style={font("Inter 500")}
+              tw="flex text-[24px] uppercase tracking-widest mb-6"
+              style={{ ...font("Roboto Mono 400"), color: ACCENT }}
             >
-              {post.title}
+              {post.series}
             </div>
+          ) : null}
+
+          <div tw="flex text-[64px] leading-tight" style={font("Inter 500")}>
+            {post.title}
           </div>
 
           <div
-            tw="mt-5 flex text-3xl text-gray-500"
-            style={font("Roboto Mono 400")}
+            tw="flex mt-10 pt-8 text-[26px]"
+            style={{
+              ...font("Roboto Mono 400"),
+              color: MUTED,
+              borderTop: `2px solid ${SURFACE}`,
+            }}
           >
-            {post.date} – {post.viewsFormatted} views
+            {formatDate(post.date)} · {post.readTime}
           </div>
         </main>
       </div>

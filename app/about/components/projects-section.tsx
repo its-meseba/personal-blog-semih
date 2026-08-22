@@ -43,15 +43,15 @@ export function ProjectsSection({ title, projects }: ProjectsSectionProps) {
           >
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+                <h3 className="font-semibold text-fg">
                   {project.name}
                 </h3>
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-faint">
                   {expandedProject === index ? '−' : '+'}
                 </span>
               </div>
               
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-muted">
                 {project.role}
               </p>
 
@@ -63,7 +63,7 @@ export function ProjectsSection({ title, projects }: ProjectsSectionProps) {
                       href={project.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
+                      className="text-xs px-2 py-1 rounded-xs border border-accent/30 bg-accent-subtle text-accent hover:border-accent hover:text-accent-hover transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >
                       Website
@@ -78,7 +78,7 @@ export function ProjectsSection({ title, projects }: ProjectsSectionProps) {
                             href={githubUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs px-2 py-1 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                            className="rounded-xs border border-border bg-surface px-2 py-1 font-mono text-micro uppercase tracking-tag text-muted transition-colors duration-quick ease-console hover:border-border-strong hover:text-fg"
                             onClick={(e) => e.stopPropagation()}
                           >
                             GitHub {index + 1}
@@ -89,7 +89,7 @@ export function ProjectsSection({ title, projects }: ProjectsSectionProps) {
                           href={project.github}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs px-2 py-1 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                          className="rounded-xs border border-border bg-surface px-2 py-1 font-mono text-micro uppercase tracking-tag text-muted transition-colors duration-quick ease-console hover:border-border-strong hover:text-fg"
                           onClick={(e) => e.stopPropagation()}
                         >
                           GitHub
@@ -100,7 +100,7 @@ export function ProjectsSection({ title, projects }: ProjectsSectionProps) {
                 </div>
               )}
               
-              <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
+              <p className="text-fg text-sm leading-relaxed">
                 {project.description}
               </p>
 
@@ -110,18 +110,18 @@ export function ProjectsSection({ title, projects }: ProjectsSectionProps) {
                   <img
                     src={project.images[0]}
                     alt={project.name}
-                    className="w-full h-48 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
+                    className="w-full h-48 object-cover rounded-lg border border-border"
                   />
                 </div>
               )}
 
               {/* Expanded Details */}
               {expandedProject === index && (
-                <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="space-y-4 pt-4 border-t border-border">
                   {/* Image Gallery for Expanded Cards */}
                   {project.images && project.images.length > 1 && (
                     <div className="space-y-3">
-                      <h4 className="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                      <h4 className="font-medium text-fg text-sm">
                         Project Gallery:
                       </h4>
                       <div className="grid grid-cols-2 gap-3">
@@ -130,7 +130,7 @@ export function ProjectsSection({ title, projects }: ProjectsSectionProps) {
                             key={imageIndex}
                             src={image}
                             alt={`${project.name} ${imageIndex + 2}`}
-                            className="w-full h-32 object-cover rounded-lg border border-gray-200 dark:border-gray-700 hover:opacity-80 transition-opacity"
+                            className="w-full h-32 object-cover rounded-lg border border-border hover:opacity-80 transition-opacity"
                           />
                         ))}
                       </div>
@@ -138,21 +138,21 @@ export function ProjectsSection({ title, projects }: ProjectsSectionProps) {
                   )}
 
                   {project.detailedDescription && (
-                    <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
+                    <p className="text-fg text-sm leading-relaxed">
                       {project.detailedDescription}
                     </p>
                   )}
                   
                   {project.achievements && project.achievements.length > 0 && (
                     <div>
-                      <h4 className="font-medium text-gray-900 dark:text-gray-100 text-sm mb-2">
+                      <h4 className="font-medium text-fg text-sm mb-2">
                         Key Achievements:
                       </h4>
                       <ul className="space-y-1">
                         {project.achievements.map((achievement, achievementIndex) => (
                           <li 
                             key={achievementIndex}
-                            className="text-xs text-gray-600 dark:text-gray-400 pl-4 relative before:content-['•'] before:absolute before:left-0"
+                            className="text-xs text-muted pl-4 relative before:content-['•'] before:absolute before:left-0"
                           >
                             {achievement}
                           </li>
@@ -167,7 +167,7 @@ export function ProjectsSection({ title, projects }: ProjectsSectionProps) {
                 {project.technologies.map((tech, techIndex) => (
                   <span 
                     key={techIndex}
-                    className="text-xs px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded"
+                    className="text-xs px-2 py-1 bg-surface-hover text-fg rounded"
                   >
                     {tech}
                   </span>

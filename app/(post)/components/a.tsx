@@ -1,25 +1,22 @@
 import Link from "next/link";
 
+const LINK =
+  "text-accent underline decoration-accent/35 underline-offset-[3px] transition-colors duration-quick ease-console hover:text-accent-hover hover:decoration-accent";
+
 export function A({ children, className = "", href, ...props }) {
+  const cls = `${LINK} ${className}`;
+
   if (href[0] === "#") {
     return (
-      <a
-        href={href}
-        className={`border-b text-gray-600 border-gray-300 transition-[border-color] hover:border-gray-600 dark:text-white dark:border-gray-500 dark:hover:border-white ${className}`}
-        {...props}
-      >
+      <a href={href} className={cls} {...props}>
         {children}
       </a>
     );
-  } else {
-    return (
-      <Link
-        href={href}
-        className={`border-b text-gray-600 border-gray-300 transition-[border-color] hover:border-gray-600 dark:text-white dark:border-gray-500 dark:hover:border-white ${className}`}
-        {...props}
-      >
-        {children}
-      </Link>
-    );
   }
+
+  return (
+    <Link href={href} className={cls} {...props}>
+      {children}
+    </Link>
+  );
 }

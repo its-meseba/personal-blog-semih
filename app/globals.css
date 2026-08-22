@@ -1,321 +1,486 @@
-@import './components/post-card-gradients.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   Console design system - token layer
+
+   Values mirror `app/styles/tokens.ts` (which exists for the places that
+   cannot read CSS: Satori OG routes, the inlined `theme-effect.ts`).
+   Colours are stored as space-separated RGB channels so Tailwind can apply
+   opacity modifiers: `rgb(var(--c-accent) / 0.35)`, `bg-surface/60`.
+
+   Dark is the primary theme. Light is the alternate. The `.dark` class is put
+   on <html> by `app/theme-effect.ts` before paint, so there is no flash.
+   ========================================================================== */
+
 @layer base {
   :root {
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    -webkit-tap-highlight-color: transparent;
     color-scheme: light;
-    /* note: must keep in sync with `theme-color` in `theme-effect.ts` */
-    @apply bg-[#ffffff];
-    --foreground-rgb: 41, 41, 41;
+
+    /* --- surfaces ------------------------------------------------------- */
+    --c-background: 255 255 255; /* #FFFFFF */
+    --c-surface: 245 246 248; /* #F5F6F8 */
+    --c-surface-raised: 255 255 255; /* #FFFFFF */
+    --c-surface-hover: 236 238 242; /* #ECEEF2 */
+
+    /* --- lines ---------------------------------------------------------- */
+    --c-border: 228 230 234; /* #E4E6EA */
+    --c-border-strong: 203 208 216; /* #CBD0D8 */
+
+    /* --- text ----------------------------------------------------------- */
+    --c-text: 16 18 21; /* #101215 */
+    --c-muted: 92 99 109; /* #5C636D */
+    --c-faint: 134 141 151; /* #868D97 */
+
+    /* --- accent (signal blue) ------------------------------------------- */
+    --c-accent: 24 88 199; /* #1858C7 */
+    --c-accent-hover: 15 68 160; /* #0F44A0 */
+    --c-accent-subtle: 232 240 254; /* #E8F0FE */
+    --c-accent-contrast: 255 255 255; /* #FFFFFF */
+
+    /* --- reading measure ------------------------------------------------ */
+    --measure: 68ch;
+
+    /* --- legacy aliases (pre-Console CSS still reads these) -------------- */
+    --foreground-rgb: 16, 18, 21;
     --background-rgb: 255, 255, 255;
-    --accent-rgb: 26, 137, 23;
+    --accent-rgb: 24, 88, 199;
+
+    -webkit-tap-highlight-color: transparent;
+    /* note: must keep in sync with `theme-color` in `theme-effect.ts`
+       and THEME_COLOR in `app/styles/tokens.ts` */
+    background-color: rgb(var(--c-background));
   }
 
   :root.dark {
     color-scheme: dark;
-    /* note: must keep in sync with `theme-color` in `theme-effect.ts` */
-    @apply bg-[#121212];
-    --foreground-rgb: 230, 230, 230;
-    --background-rgb: 18, 18, 18;
-    --accent-rgb: 76, 175, 80;
+
+    --c-background: 12 13 16; /* #0C0D10 */
+    --c-surface: 22 24 29; /* #16181D */
+    --c-surface-raised: 28 31 38; /* #1C1F26 */
+    --c-surface-hover: 32 36 44; /* #20242C */
+
+    --c-border: 34 37 43; /* #22252B */
+    --c-border-strong: 46 50 58; /* #2E323A */
+
+    --c-text: 230 232 236; /* #E6E8EC */
+    --c-muted: 138 144 153; /* #8A9099 */
+    --c-faint: 92 98 107; /* #5C626B */
+
+    --c-accent: 47 129 247; /* #2F81F7 */
+    --c-accent-hover: 88 155 255; /* #589BFF */
+    --c-accent-subtle: 22 35 58; /* #16233A */
+    --c-accent-contrast: 255 255 255; /* #FFFFFF */
+
+    --foreground-rgb: 230, 232, 236;
+    --background-rgb: 12, 13, 16;
+    --accent-rgb: 47, 129, 247;
+
+    background-color: rgb(var(--c-background));
   }
 
+  /* set by `theme-effect.ts` around a theme switch so nothing cross-fades */
   :root.pause-transitions * {
     transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
   }
 
-  @supports (font-variation-settings: normal) {
-    :root {
-      font-family: "Inter var", -apple-system, BlinkMacSystemFont, sans-serif;
+  html {
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  }
+
+  body {
+    background-color: rgb(var(--c-background));
+    color: rgb(var(--c-text));
+    font-size: 1rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "kern", "liga";
+  }
+
+  ::selection {
+    background-color: rgb(var(--c-accent) / 0.28);
+    color: rgb(var(--c-text));
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--c-accent));
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid rgb(var(--c-border));
+  }
+
+  /* Nothing may push the page sideways on a 360px screen. */
+  img,
+  video,
+  iframe {
+    max-width: 100%;
+  }
+
+  img,
+  video {
+    height: auto;
+  }
+
+  /* Motion: everything here opts out under prefers-reduced-motion. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
     }
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
-  line-height: 1.7;
-  font-size: 16px;
+/* ==========================================================================
+   Component layer
+
+   `.prose-console` is the class the post layout applies to MDX output.
+   The MDX components in `app/(post)/components/` render most of these
+   elements with token utilities; these rules cover the raw HTML that MDX
+   emits without a component mapping (h4, tables in raw HTML, figure...).
+   ========================================================================== */
+
+@layer components {
+  /* --- article container ---------------------------------------------- */
+  .prose-console {
+    font-family: var(--font-serif), ui-serif, Georgia, Cambria, "Times New Roman", serif;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    letter-spacing: -0.003em;
+    color: rgb(var(--c-text));
+    max-width: var(--measure);
+  }
+
+  /* --- headings -------------------------------------------------------- */
+  .prose-console h1,
+  .prose-console h2,
+  .prose-console h3,
+  .prose-console h4 {
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    color: rgb(var(--c-text));
+    text-wrap: balance;
+  }
+
+  .prose-console h1 {
+    font-size: 2.25rem;
+    line-height: 1.15;
+    letter-spacing: -0.028em;
+    font-weight: 600;
+    margin: 0 0 1rem;
+  }
+
+  .prose-console h2 {
+    font-size: 1.75rem;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    margin: 4rem 0 1rem;
+    scroll-margin-top: 4rem;
+  }
+
+  .prose-console h3 {
+    font-size: 1.375rem;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    font-weight: 600;
+    margin: 2.5rem 0 0.75rem;
+    scroll-margin-top: 4rem;
+  }
+
+  .prose-console h4 {
+    font-size: 1.125rem;
+    line-height: 1.4;
+    font-weight: 600;
+    margin: 1.75rem 0 0.5rem;
+  }
+
+  /* --- body ------------------------------------------------------------ */
+  .prose-console p {
+    margin: 0 0 1.5rem;
+  }
+
+  .prose-console strong {
+    font-weight: 600;
+    color: rgb(var(--c-text));
+  }
+
+  .prose-console ul,
+  .prose-console ol {
+    margin: 0 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .prose-console ul {
+    list-style: disc;
+  }
+
+  .prose-console ol {
+    list-style: decimal;
+  }
+
+  .prose-console li {
+    margin-bottom: 0.5rem;
+    padding-left: 0.25rem;
+  }
+
+  .prose-console li::marker {
+    color: rgb(var(--c-faint));
+  }
+
+  /* --- links ----------------------------------------------------------- */
+  .prose-console a {
+    color: rgb(var(--c-text));
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: rgb(var(--c-accent) / 0.55);
+    transition: color 140ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      text-decoration-color 140ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .prose-console a:hover {
+    color: rgb(var(--c-accent));
+    text-decoration-color: rgb(var(--c-accent));
+    opacity: 1;
+  }
+
+  /* --- pull quote / blockquote ----------------------------------------- */
+  .prose-console blockquote,
+  .pull-quote {
+    font-family: var(--font-serif), ui-serif, Georgia, Cambria, "Times New Roman", serif;
+    font-size: 1.1875rem;
+    line-height: 1.55;
+    color: rgb(var(--c-text));
+    margin: 2.5rem 0;
+    padding: 0.25rem 0 0.25rem 1.5rem;
+    border-left: 2px solid rgb(var(--c-accent));
+  }
+
+  .prose-console blockquote p:last-child,
+  .pull-quote p:last-child {
+    margin-bottom: 0;
+  }
+
+  .prose-console blockquote cite,
+  .pull-quote cite {
+    display: block;
+    margin-top: 0.75rem;
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    font-style: normal;
+    color: rgb(var(--c-muted));
+  }
+
+  /* --- code ------------------------------------------------------------ */
+  .prose-console code,
+  .code-inline {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.875em;
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    background-color: rgb(var(--c-surface));
+    border: 1px solid rgb(var(--c-border));
+    color: rgb(var(--c-text));
+  }
+
+  .prose-console pre,
+  .code-block {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    margin: 2.5rem 0;
+    padding: 1.25rem;
+    border-radius: 10px;
+    background-color: rgb(var(--c-surface));
+    border: 1px solid rgb(var(--c-border));
+    overflow-x: auto;
+    tab-size: 2;
+  }
+
+  .prose-console pre code,
+  .code-block code {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    font-size: inherit;
+  }
+
+  /* filename strip that can sit above a code block */
+  .code-filename {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    color: rgb(var(--c-muted));
+    background-color: rgb(var(--c-surface-raised));
+    border: 1px solid rgb(var(--c-border));
+    border-bottom: 0;
+    border-radius: 10px 10px 0 0;
+    padding: 0.5rem 1rem;
+    margin: 2.5rem 0 0;
+  }
+
+  .code-filename + pre,
+  .code-filename + .code-block {
+    margin-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  /* --- figures --------------------------------------------------------- */
+  .prose-console figure,
+  .figure {
+    margin: 2.5rem 0;
+  }
+
+  .prose-console figure img,
+  .figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    border: 1px solid rgb(var(--c-border));
+    background-color: rgb(var(--c-surface));
+  }
+
+  .prose-console figcaption,
+  .figure figcaption,
+  .figure-caption {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: rgb(var(--c-muted));
+    margin-top: 0.75rem;
+    text-align: left;
+  }
+
+  /* --- tables ---------------------------------------------------------- */
+  .prose-console table,
+  .table-console {
+    width: 100%;
+    margin: 2.5rem 0;
+    border-collapse: collapse;
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.9375rem;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .prose-console th,
+  .table-console th {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgb(var(--c-muted));
+    text-align: left;
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid rgb(var(--c-border-strong));
+    white-space: nowrap;
+  }
+
+  .prose-console td,
+  .table-console td {
+    padding: 0.75rem;
+    border-bottom: 1px solid rgb(var(--c-border));
+    vertical-align: top;
+  }
+
+  .prose-console tbody tr:last-child td,
+  .table-console tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  /* --- metadata / tags -------------------------------------------------- */
+  .meta-mono {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    color: rgb(var(--c-muted));
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tag-console {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgb(var(--c-accent));
+  }
+
+  /* --- panel ----------------------------------------------------------- */
+  .panel-console {
+    background-color: rgb(var(--c-surface));
+    border: 1px solid rgb(var(--c-border));
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
 }
 
-/* ========================================
-   Medium-Style Article Typography
-   ======================================== */
+/* ==========================================================================
+   Shared component classes still referenced by pages.
+   `app/components/ReadingProgress.tsx` -> .reading-progress
+   ========================================================================== */
 
-/* Article body - serif font for reading */
-article {
-  font-family: Georgia, Cambria, "Times New Roman", Times, serif;
-  font-size: 21px;
-  line-height: 1.8;
-  letter-spacing: -0.003em;
-  color: rgb(var(--foreground-rgb));
-}
-
-/* Headings in articles - sans-serif */
-article h1,
-article h2,
-article h3,
-article h4 {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: rgb(var(--foreground-rgb));
-}
-
-article h1 {
-  font-size: 42px;
-  line-height: 1.2;
-  margin-top: 0;
-  margin-bottom: 8px;
-}
-
-article h2 {
-  font-size: 28px;
-  line-height: 1.3;
-  margin-top: 56px;
-  margin-bottom: 16px;
-  padding-top: 16px;
-}
-
-article h3 {
-  font-size: 22px;
-  line-height: 1.4;
-  margin-top: 42px;
-  margin-bottom: 12px;
-}
-
-article p {
-  margin-bottom: 28px;
-}
-
-article ul,
-article ol {
-  margin-left: 32px;
-  margin-bottom: 28px;
-}
-
-article li {
-  margin-bottom: 12px;
-  padding-left: 4px;
-}
-
-/* Blockquotes - Medium style */
-article blockquote {
-  font-style: italic;
-  font-size: 24px;
-  line-height: 1.6;
-  margin: 42px 0;
-  padding: 0 0 0 30px;
-  border-left: 3px solid rgb(var(--accent-rgb));
-  color: rgba(var(--foreground-rgb), 0.8);
-}
-
-article blockquote p {
-  margin-bottom: 0;
-}
-
-/* Code blocks */
-article pre,
-article code {
-  font-family: "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 16px;
-}
-
-article pre {
-  padding: 20px 24px;
-  border-radius: 8px;
-  overflow-x: auto;
-  margin: 32px 0;
-  background-color: rgba(var(--foreground-rgb), 0.04);
-  border: 1px solid rgba(var(--foreground-rgb), 0.08);
-}
-
-article code {
-  padding: 2px 6px;
-  border-radius: 4px;
-  background-color: rgba(var(--foreground-rgb), 0.06);
-  font-size: 18px;
-}
-
-article pre code {
-  padding: 0;
-  background-color: transparent;
-  font-size: 16px;
-}
-
-/* Links in articles */
-article a {
-  color: rgb(var(--foreground-rgb));
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: rgba(var(--foreground-rgb), 0.3);
-  transition: text-decoration-color 0.2s ease;
-}
-
-article a:hover {
-  text-decoration-color: rgb(var(--foreground-rgb));
-}
-
-/* ========================================
-   Non-Article Styles
-   ======================================== */
-
-/* General link styles (nav, etc) */
 a {
   color: inherit;
   text-decoration: none;
-  transition: opacity 0.2s ease;
+  transition: color 140ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 140ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 a:hover {
-  opacity: 0.7;
+  opacity: 0.75;
 }
-
-/* ========================================
-   Post List Card Styles
-   ======================================== */
-
-.post-card {
-  padding: 24px 0;
-  border-bottom: 1px solid rgba(var(--foreground-rgb), 0.1);
-}
-
-.post-card:last-child {
-  border-bottom: none;
-}
-
-.post-card-title {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
-  margin-bottom: 8px;
-  color: rgb(var(--foreground-rgb));
-}
-
-.post-card-title:hover {
-  opacity: 1;
-}
-
-.post-card-excerpt {
-  font-family: Georgia, Cambria, "Times New Roman", Times, serif;
-  font-size: 16px;
-  line-height: 1.6;
-  color: rgba(var(--foreground-rgb), 0.7);
-  margin-bottom: 12px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.post-card-meta {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 13px;
-  color: rgba(var(--foreground-rgb), 0.5);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.post-card-meta span {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* ========================================
-   Reading Progress Bar
-   ======================================== */
 
 .reading-progress {
   position: fixed;
   top: 0;
   left: 0;
   width: 0%;
-  height: 3px;
-  background: rgb(var(--accent-rgb));
+  height: 2px;
+  background: rgb(var(--c-accent));
   z-index: 100;
-  transition: width 0.1s ease-out;
+  transition: width 100ms linear;
 }
 
-/* ========================================
-   Author Card
-   ======================================== */
-
-.author-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 24px 0;
-}
-
-.author-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.author-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.author-name {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  color: rgb(var(--foreground-rgb));
-}
-
-.author-meta {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 13px;
-  color: rgba(var(--foreground-rgb), 0.5);
-}
-
-/* ========================================
+/* ==========================================================================
    Responsive
-   ======================================== */
+   ========================================================================== */
 
 @media (max-width: 768px) {
-  article {
-    font-size: 18px;
+  .prose-console {
+    font-size: 1rem;
     line-height: 1.7;
   }
 
-  article h1 {
-    font-size: 32px;
+  .prose-console h1 {
+    font-size: 1.875rem;
   }
 
-  article h2 {
-    font-size: 24px;
-    margin-top: 40px;
+  .prose-console h2 {
+    font-size: 1.5rem;
+    margin-top: 2.75rem;
   }
 
-  article h3 {
-    font-size: 20px;
+  .prose-console h3 {
+    font-size: 1.25rem;
   }
 
-  article blockquote {
-    font-size: 20px;
-    padding-left: 20px;
-    margin: 32px 0;
+  .prose-console blockquote,
+  .pull-quote {
+    font-size: 1.0625rem;
+    padding-left: 1.25rem;
+    margin: 2rem 0;
   }
 
-  .post-card-title {
-    font-size: 18px;
-  }
-
-  .post-card-excerpt {
-    font-size: 15px;
-  }
 }
-

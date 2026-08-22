@@ -30,19 +30,19 @@ export function EducationSection({ title, degrees, research }: EducationSectionP
             <div className="space-y-3">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+                  <h3 className="font-semibold text-fg">
                     {education.degree}
                   </h3>
-                  <p className="text-blue-600 dark:text-blue-400 font-medium">
+                  <p className="text-accent font-medium">
                     {education.institution}
                   </p>
                   {education.gpa && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    <p className="text-sm text-muted mt-1">
                       GPA: {education.gpa}
                     </p>
                   )}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 sm:text-right">
+                <div className="text-sm text-muted sm:text-right">
                   <p>{education.period}</p>
                   <p>{education.location}</p>
                 </div>
@@ -52,7 +52,7 @@ export function EducationSection({ title, degrees, research }: EducationSectionP
                 {education.highlights.map((highlight, highlightIndex) => (
                   <span 
                     key={highlightIndex}
-                    className="text-sm px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full"
+                    className="text-sm px-3 py-1 bg-surface-hover text-fg rounded-full"
                   >
                     {highlight}
                   </span>
@@ -65,7 +65,7 @@ export function EducationSection({ title, degrees, research }: EducationSectionP
         {research && (
           <AboutCard>
             <div className="space-y-3">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+              <h3 className="font-semibold text-fg">
                 {research.title}
               </h3>
               {research.publicationUrl ? (
@@ -73,12 +73,12 @@ export function EducationSection({ title, degrees, research }: EducationSectionP
                   href={research.publicationUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors italic block"
+                  className="text-accent hover:text-accent-hover transition-colors italic block"
                 >
                   "{research.publication}"
                 </a>
               ) : (
-                <p className="text-gray-700 dark:text-gray-300 italic">
+                <p className="text-fg italic">
                   "{research.publication}"
                 </p>
               )}

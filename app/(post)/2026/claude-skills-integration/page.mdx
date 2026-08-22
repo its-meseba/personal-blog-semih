@@ -1,12 +1,16 @@
-export const metadata = {
-  title: 'Portable Agentic Skills: When Developer Preferences Become Configuration Files',
-  description: 'Claude Code has the best agentic experience but costs ~$1k/month for heavy use. I built a Claude Skills-compatible system for Antigravity that makes AI coding preferences portable across platforms.',
-  openGraph: {
-    title: 'Portable Agentic Skills: When Developer Preferences Become Configuration Files',
-    description: 'Claude Code has the best agentic experience but costs ~$1k/month for heavy use. I built a Claude Skills-compatible system for Antigravity that makes AI coding preferences portable across platforms.',
-    images: [{ url: '/og/claude-skills-integration' }]
-  }
-}
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "claude-skills-integration",
+  title: "Portable Agentic Skills: When Developer Preferences Become Configuration Files",
+  description: "Claude Code has the best agentic experience but costs ~$1k/month for heavy use. I built a Claude Skills-compatible system for Antigravity that makes AI coding preferences portable across platforms.",
+  date: "2026-01-10",
+  series: "Agentic Coding",
+  tags: ["claude-code", "skills", "antigravity"],
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
 
 ![Claude Skills Integration](/images/blog/claude-skills-integration.png)
 

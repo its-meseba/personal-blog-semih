@@ -1,12 +1,16 @@
-export const metadata = {
-  title: 'When Agents Earn Money: The x402 Protocol',
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "x402-protocol-agents-earn-money",
+  title: "When Agents Earn Money: The x402 Protocol",
   description: "For the first time, AI agents can buy stuff. Not credit — actual micropayments. This changes everything about how we build software for agents.",
-  openGraph: {
-    title: 'When Agents Earn Money: The x402 Protocol',
-    description: "For the first time, AI agents can buy stuff. This changes everything about how we build software for agents.",
-    images: [{ url: '/og/x402-protocol' }]
-  }
-}
+  date: "2026-03-12",
+  series: "AI Product Sense",
+  tags: ["agents", "payments", "x402"],
+  status: "draft",
+};
+
+export const metadata = postMetadata(post);
 
 ---
 

@@ -2,43 +2,52 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
+
 import { author } from "../author";
 
 interface AuthorCardProps {
     showBio?: boolean;
     date?: string;
     readTime?: string;
+    /** Extra meta appended to the mono line (the view counter, today). */
+    children?: ReactNode;
 }
 
-export function AuthorCard({ showBio = false, date, readTime }: AuthorCardProps) {
+/**
+ * Byline. One mono meta line, separated by slashes rather than a run of
+ * middle dots, so date / read time / views read as one field group.
+ */
+export function AuthorCard({ showBio = false, date, readTime, children }: AuthorCardProps) {
     return (
-        <div className="author-card">
-            <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden shrink-0">
-                <Image
-                    src="/images/photo.jpeg"
-                    alt={author.name}
-                    width={48}
-                    height={48}
-                    className="w-full h-full object-cover"
-                    priority
-                />
-            </div>
-            <div className="author-info">
+        <div className="mt-rhythm flex items-center gap-3">
+            <Image
+                src="/images/photo.jpeg"
+                alt={author.name}
+                width={44}
+                height={44}
+                className="h-11 w-11 shrink-0 rounded-pill border border-border object-cover"
+                priority
+            />
+
+            <div className="min-w-0">
                 <Link
                     href="/about"
-                    className="author-name hover:underline"
+                    className="font-display text-ui font-medium text-fg transition-colors duration-quick ease-console hover:text-accent"
                 >
                     {author.name}
                 </Link>
-                <div className="author-meta">
+
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono text-meta tabular-nums text-faint">
                     {date && <span>{date}</span>}
-                    {date && readTime && <span className="mx-1">·</span>}
+                    {date && readTime && <span aria-hidden="true">/</span>}
                     {readTime && <span>{readTime}</span>}
+                    {children && <span aria-hidden="true">/</span>}
+                    {children}
                 </div>
+
                 {showBio && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        {author.bio}
-                    </p>
+                    <p className="mt-1 font-serif text-caption text-muted">{author.bio}</p>
                 )}
             </div>
         </div>

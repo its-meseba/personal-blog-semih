@@ -1,12 +1,16 @@
-export const metadata = {
-  title: 'From API to Agent: The Infrastructure Shift',
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "from-api-to-agent",
+  title: "From API to Agent: The Infrastructure Shift",
   description: "How AI agents are forcing a complete rethink of backend infrastructure — from stateless requests to stateful, memory-backed systems.",
-  openGraph: {
-    title: 'From API to Agent: The Infrastructure Shift',
-    description: "The database doesn't just store data anymore. It remembers.",
-    images: [{ url: '/og/from-api-to-agent' }]
-  }
-}
+  date: "2026-03-09",
+  series: "Agentic Coding",
+  tags: ["agents", "infrastructure", "memory"],
+  status: "draft",
+};
+
+export const metadata = postMetadata(post);
 
 ---
 

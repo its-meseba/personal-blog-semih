@@ -15,14 +15,14 @@ export function IntroSection({ title, description, additionalInfo, personalNote 
         <Image
           src="/images/photo.jpeg"
           alt="Mehmet Semih Babacan"
-          className="rounded-full bg-gray-100 self-center md:self-start shrink-0 grayscale hover:grayscale-0 transition-all duration-300"
+          className="rounded-full bg-surface self-center md:self-start shrink-0 grayscale hover:grayscale-0 transition-all duration-300"
           unoptimized
           width={160}
           height={160}
           priority
         />
         
-        <div className="space-y-4 text-gray-700 dark:text-gray-300">
+        <div className="space-y-4 text-fg">
           <p className="text-base leading-relaxed">
             {description}
           </p>
@@ -31,7 +31,7 @@ export function IntroSection({ title, description, additionalInfo, personalNote 
             {additionalInfo}
           </p>
           
-          <p className="text-base leading-relaxed font-medium text-gray-900 dark:text-gray-100">
+          <p className="text-base leading-relaxed font-medium text-fg">
             {personalNote}
           </p>
         </div>

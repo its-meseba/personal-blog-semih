@@ -13,4 +13,4 @@ https://semihbabacan.com/2026/claude-skills-integration
 https://semihbabacan.com/2026/native-mobile-development
 
 
-https://www.mehmetsemihbabacan.com/2026/ruflo-agent-orchestration - RuFlo: The Enterprise Operating System for Multi-Agent AI - Everyone's building AI agents. But here's what's rarely discussed: the gap between one agent and a system of agents that work together is massive.
+https://semihbabacan.com/2026/ruflo-agent-orchestration - RuFlo: The Enterprise Operating System for Multi-Agent AI - Everyone's building AI agents. But here's what's rarely discussed: the gap between one agent and a system of agents that work together is massive.

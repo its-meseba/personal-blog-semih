@@ -85,7 +85,7 @@ export async function Image({
     const factor = dividedBy / 100;
 
     return (
-      <span className="my-5 flex flex-col items-center">
+      <span className="my-block flex flex-col items-center">
         <ClientBlogImage
           width={width * factor}
           height={height * factor}

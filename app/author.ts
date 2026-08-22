@@ -19,13 +19,3 @@ export const calculateReadTime = (content: string): string => {
     const minutes = Math.ceil(words / wordsPerMinute);
     return `${minutes} min read`;
 };
-
-// Default read times for posts (add entries when creating new posts)
-export const defaultReadTimes: Record<string, string> = {
-    "gemini-flash-superiority": "17 min read",
-};
-
-// Get read time for a post
-export const getReadTime = (postId: string): string => {
-    return defaultReadTimes[postId] || "5 min read";
-};

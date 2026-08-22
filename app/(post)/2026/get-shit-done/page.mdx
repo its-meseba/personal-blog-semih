@@ -1,12 +1,16 @@
-export const metadata = {
-  title: 'Get Shits Done: The Anti-Enterprise AI Workflow',
-  description: 'A spec-driven development system that solves context rot — for solo developers who just want to build.',
-  openGraph: {
-    title: 'Get Shits Done: The Anti-Enterprise AI Workflow',
-    description: 'Building without the enterprise theater.',
-    images: [{ url: '/og/get-shit-done' }]
-  }
-}
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "get-shit-done",
+  title: "Get Shits Done: The Anti-Enterprise AI Workflow",
+  description: "A spec-driven development system that solves context rot — for solo developers who just want to build.",
+  date: "2026-03-04",
+  series: "Agentic Coding",
+  tags: ["claude-code", "workflow", "spec-driven"],
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
 
 ---
 
@@ -53,4 +57,4 @@ This is the opposite of Superpowers in some ways. Superpowers adds skills to eve
 
 Which approach works better depends on your use case. But the trend is clear: the next generation of AI workflows isn't about better prompts. It's about better *architecture*. Systems that force reliability through structure, not hope.
 
-*See also: [Superpowers: The Skill System That Makes Claude Unstoppable](https://www.mehmetsemihbabacan.com/2026/superpowers-skill) — for when you want skills to persist in context. [Soul.md](https://www.mehmetsemihbabacan.com/2026/soul-md) — for the identity file approach.*
+*See also: [Superpowers: The Skill System That Makes Claude Unstoppable](https://semihbabacan.com/2026/superpowers-skill) — for when you want skills to persist in context. [Soul.md](https://semihbabacan.com/2026/soul-md) — for the identity file approach.*

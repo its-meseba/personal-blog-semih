@@ -1,12 +1,16 @@
-export const metadata = {
-  title: 'Queued Messages vs /btw: The Claude Code Interaction Guide',
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "queued-messages-vs-btw-claude-code",
+  title: "Queued Messages vs /btw: The Claude Code Interaction Guide",
   description: "What's the difference between queuing a message and using /btw in Claude Code? A deep dive into the two ways to interact with AI coding assistants.",
-  openGraph: {
-    title: 'Queued Messages vs /btw: The Claude Code Interaction Guide',
-    description: "What's the difference between queuing a message and using /btw in Claude Code?",
-    images: [{ url: '/og/queued-vs-btw' }]
-  }
-}
+  date: "2026-03-14",
+  series: "Agentic Coding",
+  tags: ["claude-code", "workflow"],
+  status: "draft",
+};
+
+export const metadata = postMetadata(post);
 
 ---
 

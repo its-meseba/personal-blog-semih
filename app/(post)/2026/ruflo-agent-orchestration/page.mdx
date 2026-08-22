@@ -1,12 +1,16 @@
-export const metadata = {
-  title: 'RuFlo: The Enterprise Operating System for Multi-Agent AI',
-  description: 'The gap between one agent and a system of agents that work together is massive. Here is where orchestration platforms matter.',
-  openGraph: {
-    title: 'RuFlo: The Enterprise Operating System for Multi-Agent AI',
-    description: 'The gap between one agent and a system of agents that work together is massive.',
-    images: [{ url: '/og/ruflo-agent-orchestration' }]
-  }
-}
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "ruflo-agent-orchestration",
+  title: "RuFlo: The Enterprise Operating System for Multi-Agent AI",
+  description: "The gap between one agent and a system of agents that work together is massive. Here is where orchestration platforms matter.",
+  date: "2026-03-08",
+  series: "Agentic Coding",
+  tags: ["agents", "orchestration", "enterprise"],
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
 
 ---
 

@@ -17,11 +17,11 @@ export function AchievementsSection({ title, items }: AchievementsSectionProps) 
         {items.map((achievement, index) => (
           <AboutCard key={index}>
             <div className="space-y-3">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+              <h3 className="font-semibold text-fg">
                 {achievement.title}
               </h3>
               
-              <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
+              <p className="text-fg text-sm leading-relaxed">
                 {achievement.description}
               </p>
             </div>

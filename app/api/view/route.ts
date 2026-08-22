@@ -1,5 +1,5 @@
 import { db } from "@/app/firebase";
-import postsData from "@/app/posts.json";
+import { getPost } from "@/lib/content";
 import commaNumber from "comma-number";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
@@ -20,9 +20,10 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const post = postsData.posts.find(post => post.id === id);
+  // Drafts resolve too: they render in dev, so their header must not 400.
+  const indexed = getPost(id);
 
-  if (post == null) {
+  if (indexed == null) {
     return NextResponse.json(
       {
         error: {
@@ -33,6 +34,8 @@ export async function GET(req: NextRequest) {
       { status: 400 }
     );
   }
+
+  const { body: _body, ...post } = indexed;
 
   if (url.searchParams.get("incr") != null) {
     const views = await db.incrementView(id);
@@ -50,4 +53,3 @@ export async function GET(req: NextRequest) {
     });
   }
 }
-

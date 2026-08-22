@@ -18,7 +18,7 @@ export function BlogImage({ src, alt, width, height, className = "" }: BlogImage
         <div className="relative">
             {isLoading && (
                 <div
-                    className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-lg"
+                    className="absolute inset-0 animate-pulse rounded-card bg-surface motion-reduce:animate-none"
                     style={{ aspectRatio: `${width}/${height}` }}
                 />
             )}
@@ -27,7 +27,7 @@ export function BlogImage({ src, alt, width, height, className = "" }: BlogImage
                 alt={alt}
                 width={width}
                 height={height}
-                className={`${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+                className={`rounded-card ${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-base ease-console`}
                 onLoad={() => setIsLoading(false)}
             />
         </div>

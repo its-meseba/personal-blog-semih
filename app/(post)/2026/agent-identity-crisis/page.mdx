@@ -1,12 +1,16 @@
-export const metadata = {
-  title: 'The Identity Crisis of AI Agents',
-  description: 'Every AI agent accessing your systems is like an unmanaged employee with no badge, no audit trail, and no boundaries. This is the security hole no one is talking about.',
-  openGraph: {
-    title: 'The Identity Crisis of AI Agents',
-    description: 'The security hole no one is talking about.',
-    images: [{ url: '/og/agent-identity-crisis' }]
-  }
-}
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "agent-identity-crisis",
+  title: "The Identity Crisis of AI Agents",
+  description: "Every AI agent accessing your systems is like an unmanaged employee with no badge, no audit trail, and no boundaries. This is the security hole no one is talking about.",
+  date: "2026-03-06",
+  series: "Agentic Coding",
+  tags: ["agents", "security", "identity"],
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
 
 ---
 
@@ -66,4 +70,4 @@ Because an agent without an identity isn't an employee. It's an intruder you inv
 
 The agentic era doesn't need better models. It needs better infrastructure. Agent identity is the unsexy, foundational layer that determines whether enterprise AI deployment is a transformation or a catastrophe. The companies building this layer are working on the problem that actually matters.
 
-*See also: [Get Shits Done: The Anti-Enterprise AI Workflow](https://www.mehmetsemihbabacan.com/2026/get-shit-done) — for how to build AI systems the right way.*
+*See also: [Get Shits Done: The Anti-Enterprise AI Workflow](https://semihbabacan.com/2026/get-shit-done) — for how to build AI systems the right way.*

@@ -1,5 +1,5 @@
 export function HR() {
   return (
-    <div className="my-8 text-center after:content-['﹡﹡﹡'] after:text-sm after:text-center after:inline" />
+    <hr className="mx-auto my-block w-24 border-0 border-t border-border-strong" />
   );
 }

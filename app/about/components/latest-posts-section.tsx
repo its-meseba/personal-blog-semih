@@ -20,6 +20,7 @@ interface Post {
     id: string;
     title: string;
     date: string;
+    year: string;
     series?: string;
     excerpt?: string;
     readTime: string;
@@ -35,14 +36,14 @@ export function LatestPostsSection() {
         .slice(0, 2);
 
     return (
-        <section className="mb-12">
+        <section className="mb-section">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-gray-100">
+                <h2 className="font-display text-h3 font-semibold tracking-tight text-fg md:text-h2">
                     Latest Posts
                 </h2>
                 <Link
                     href="/thoughts"
-                    className="text-sm text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+                    className="font-mono text-meta uppercase tracking-tag text-muted transition-colors duration-quick ease-console hover:text-accent"
                 >
                     View all →
                 </Link>
@@ -53,12 +54,12 @@ export function LatestPostsSection() {
                     {[1, 2].map((i) => (
                         <div
                             key={i}
-                            className="bg-gray-50 dark:bg-gray-800/30 rounded-lg p-5 border border-gray-200 dark:border-gray-700 animate-pulse"
+                            className="rounded-card border border-border bg-surface p-5 animate-pulse"
                         >
-                            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-3"></div>
-                            <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
-                            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-3"></div>
-                            <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+                            <div className="h-4 bg-surface-hover rounded w-1/4 mb-3"></div>
+                            <div className="h-5 bg-surface-hover rounded w-3/4 mb-2"></div>
+                            <div className="h-4 bg-surface-hover rounded w-full mb-3"></div>
+                            <div className="h-3 bg-surface-hover rounded w-1/3"></div>
                         </div>
                     ))}
                 </div>
@@ -67,34 +68,34 @@ export function LatestPostsSection() {
                     {latestPosts.map((post) => (
                         <Link
                             key={post.id}
-                            href={`/2026/${post.id}`}
-                            className="group bg-gray-50 dark:bg-gray-800/30 rounded-lg p-5 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md transition-all duration-200"
+                            href={`/${post.year}/${post.id}`}
+                            className="group rounded-card border border-border bg-surface p-5 hover:border-border-strong transition-colors duration-quick ease-console"
                         >
                             {post.series && (
                                 <div className="mb-2">
                                     <SeriesBadge series={post.series} size="sm" />
                                 </div>
                             )}
-                            <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors mb-2 line-clamp-2">
+                            <h3 className="mb-2 line-clamp-2 font-display text-ui font-medium leading-snug text-fg transition-colors duration-quick ease-console group-hover:text-accent">
                                 {post.title}
                             </h3>
                             {post.excerpt && (
-                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+                                <p className="mb-3 line-clamp-2 font-serif text-ui text-muted">
                                     {post.excerpt}
                                 </p>
                             )}
-                            <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-500">
+                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-meta tabular-nums text-faint">
                                 <span>{formatDate(post.date)}</span>
-                                <span>·</span>
+                                <span aria-hidden="true">/</span>
                                 <span>{post.readTime}</span>
-                                <span>·</span>
+                                <span aria-hidden="true">/</span>
                                 <span>{post.viewsFormatted} views</span>
                             </div>
                         </Link>
                     ))}
                 </div>
             ) : (
-                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <div className="text-center py-8 text-muted">
                     No posts yet.
                 </div>
             )}

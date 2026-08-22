@@ -1,137 +1,114 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, useMemo, useState } from "react";
 import useSWR from "swr";
+
 import type { Post } from "./get-posts";
-import React from "react";
-import { SeriesBadge } from "./components/SeriesBadge";
-import { author } from "./author";
+import { PostList } from "./components/post-list";
+import { getSeriesConfig } from "./series";
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
-// Format date for display
-const formatDate = (dateStr: string): string => {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-};
+const ALL = "all";
 
+/**
+ * The writing index.
+ *
+ * Hierarchy, not a flat changelog: the newest post gets the lead treatment,
+ * the rest are month-grouped rows with a single rule per month. The series
+ * filter is a quiet segmented control rather than a row of coloured pills.
+ */
 export function Posts({ posts: initialPosts }: { posts: Post[] }) {
-  const [selectedSeries, setSelectedSeries] = useState<string>("all");
+  const [selectedSeries, setSelectedSeries] = useState<string>(ALL);
 
-  const { data: posts } = useSWR(
-    "/api/posts",
-    fetcher,
-    {
-      fallbackData: initialPosts,
-      refreshInterval: 5000,
-    }
-  );
+  // View counts stay live; this is the same request cadence as before.
+  const { data: posts } = useSWR("/api/posts", fetcher, {
+    fallbackData: initialPosts,
+    refreshInterval: 5000,
+  });
 
-  // Get unique series from posts
   const availableSeries = useMemo(() => {
-    const seriesSet = new Set<string>();
-    posts.forEach((post: Post) => {
-      if (post.series) seriesSet.add(post.series);
+    const seen = new Set<string>();
+    (posts as Post[]).forEach(post => {
+      if (post.series) seen.add(post.series);
     });
-    return Array.from(seriesSet);
+    return Array.from(seen);
   }, [posts]);
 
-  // Filter and sort posts by date (newest first)
   const filteredPosts = useMemo(() => {
-    let result = selectedSeries === "all"
-      ? posts
-      : posts.filter((post: Post) => post.series === selectedSeries);
+    const result =
+      selectedSeries === ALL
+        ? (posts as Post[])
+        : (posts as Post[]).filter(post => post.series === selectedSeries);
 
-    return [...result].sort((a, b) =>
-      new Date(b.date).getTime() - new Date(a.date).getTime()
+    return [...result].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
   }, [posts, selectedSeries]);
 
   return (
     <Suspense fallback={null}>
-      <main className="max-w-3xl mx-auto mb-10">
-        {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 tracking-tight" style={{ fontFamily: 'Inter, -apple-system, sans-serif' }}>
-            Blog
+      <main className="mx-auto w-full max-w-shell pb-chapter">
+        <header className="mb-block">
+          <h1 className="font-display text-display font-semibold tracking-tight text-fg">
+            Writing
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 text-lg">
-            Thoughts on building, leading, and innovating in tech.
+          <p className="mt-3 max-w-measure font-serif text-lead text-muted">
+            Notes on agents, AI products, and the way software gets built when
+            the tooling writes back.
           </p>
-        </div>
+        </header>
 
-        {/* Series Filter Pills */}
         {availableSeries.length > 0 && (
-          <div className="flex gap-2 mb-8 flex-wrap">
-            <button
-              onClick={() => setSelectedSeries("all")}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-                ${selectedSeries === "all"
-                  ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                }`}
-            >
-              All
-            </button>
-            {availableSeries.map((series) => (
-              <button
-                key={series}
-                onClick={() => setSelectedSeries(series)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-                  ${selectedSeries === series
-                    ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                  }`}
-              >
-                {series}
-              </button>
-            ))}
-          </div>
+          <nav
+            aria-label="Filter by series"
+            className="mb-block -mx-6 overflow-x-auto px-6 sm:mx-0 sm:overflow-visible sm:px-0"
+          >
+            <div className="inline-flex min-w-max items-center gap-0.5 rounded-lg border border-border bg-surface p-1 font-mono text-micro uppercase tracking-tag">
+              <FilterButton
+                label="All"
+                active={selectedSeries === ALL}
+                onClick={() => setSelectedSeries(ALL)}
+              />
+              {availableSeries.map(name => (
+                <FilterButton
+                  key={name}
+                  label={getSeriesConfig(name)?.name ?? name}
+                  active={selectedSeries === name}
+                  onClick={() => setSelectedSeries(name)}
+                />
+              ))}
+            </div>
+          </nav>
         )}
 
-        {/* Post Cards */}
-        {filteredPosts.length > 0 ? (
-          <div className="space-y-0">
-            {filteredPosts.map((post: Post) => (
-              <article key={post.id} className="post-card">
-                <Link href={`/2026/${post.id}`} className="block group">
-                  <h2 className="post-card-title group-hover:opacity-70 transition-opacity">
-                    {post.title}
-                  </h2>
-                  {post.excerpt && (
-                    <p className="post-card-excerpt">
-                      {post.excerpt}
-                    </p>
-                  )}
-                  <div className="post-card-meta">
-                    <span>{formatDate(post.date)}</span>
-                    <span>·</span>
-                    <span>{post.readTime}</span>
-                    <span>·</span>
-                    <span>{post.viewsFormatted} views</span>
-                    {post.series && (
-                      <>
-                        <span>·</span>
-                        <SeriesBadge series={post.series} size="sm" />
-                      </>
-                    )}
-                  </div>
-                </Link>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <div className="py-10 text-center text-gray-500 dark:text-gray-400">
-            No posts found.
-          </div>
-        )}
+        <PostList posts={filteredPosts} />
       </main>
     </Suspense>
+  );
+}
+
+function FilterButton({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`whitespace-nowrap rounded-sm px-2.5 py-1.5 transition-colors duration-quick ease-console ${
+        active
+          ? "bg-accent text-accent-contrast"
+          : "text-muted hover:bg-surface-hover hover:text-fg"
+      }`}
+    >
+      {label}
+    </button>
   );
 }

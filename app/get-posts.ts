@@ -1,21 +1,20 @@
-import postsData from "./posts.json";
-import { db } from "./firebase";
 import commaNumber from "comma-number";
-import { getReadTime } from "./author";
 
-// Type for posts as they exist in the JSON file
-type PostData = {
-  id: string;
-  date: string;
-  title: string;
-  series?: string;
-  excerpt?: string;
-};
+import { db } from "./firebase";
+import {
+  getAllPosts as getIndexedAllPosts,
+  getPost as getIndexedPost,
+  getPosts as getIndexedPosts,
+} from "@/lib/content";
+import type { IndexedPost } from "@/lib/post-types";
 
-export type Post = PostData & {
+/**
+ * A post as the UI consumes it: the generated index plus live Firebase views.
+ * The index is the single source of truth for everything except the view count.
+ */
+export type Post = Omit<IndexedPost, "body"> & {
   views: number;
   viewsFormatted: string;
-  readTime: string;
 };
 
 // shape of views from Firebase
@@ -23,31 +22,43 @@ type Views = {
   [key: string]: number;
 };
 
-export const getPosts = async () => {
-  let allViews: Views = {};
-
+async function fetchViews(): Promise<Views> {
   try {
-    console.log("Fetching all views from Firebase");
-    allViews = await db.getViews();
-    console.log("Retrieved views:", allViews);
+    return await db.getViews();
   } catch (error) {
     console.warn("Failed to fetch views from Firebase, using defaults:", error);
     // Continue with empty views object - posts will show 0 views
+    return {};
   }
+}
 
-  const posts = (postsData.posts as PostData[]).map((post): Post => {
-    const views = Number(allViews?.[post.id] ?? 0);
-    console.log(`Post ${post.id}: ${views} views`);
-    return {
-      ...post,
-      views,
-      viewsFormatted: commaNumber(views),
-      readTime: getReadTime(post.id),
-    };
-  });
+function withViews(post: IndexedPost, allViews: Views): Post {
+  const { body: _body, ...rest } = post;
+  const views = Number(allViews?.[post.id] ?? 0);
+  return {
+    ...rest,
+    views,
+    viewsFormatted: commaNumber(views),
+  };
+}
 
-  console.log(`Processed ${posts.length} posts`);
-  return posts;
+export const getPosts = async (): Promise<Post[]> => {
+  const allViews = await fetchViews();
+  return getIndexedPosts().map(post => withViews(post, allViews));
 };
 
+/**
+ * Every post on disk, drafts included. The post route needs this: a draft
+ * still renders at its own URL (with `noindex`), so its header, byline and
+ * footer must resolve even in production, where `getPosts()` hides drafts.
+ */
+export const getAllPosts = async (): Promise<Post[]> => {
+  const allViews = await fetchViews();
+  return getIndexedAllPosts().map(post => withViews(post, allViews));
+};
 
+export const getPost = async (slug: string): Promise<Post | undefined> => {
+  const post = getIndexedPost(slug);
+  if (!post) return undefined;
+  return withViews(post, await fetchViews());
+};

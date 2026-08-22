@@ -1,17 +1,20 @@
-// we use `[ul_&]` prefix for the <UL> variety
+// `[ul_&]` styles only the unordered variety; <OL> keeps native markers.
 export function LI({ children }) {
   return (
     <li
       className={`
-    my-2
-    [ul_&]:relative
-    [ul_&]:pl-4
-    [ul_&]:before:text-gray-400
-    [ul_&]:before:content-['–']
-    [ul_&]:before:mr-2
-    [ul_&]:before:absolute
-    [ul_&]:before:-ml-4
-  `}
+        my-2
+        font-serif
+        text-body
+        text-fg
+        [ul_&]:relative
+        [ul_&]:pl-5
+        [ul_&]:before:absolute
+        [ul_&]:before:left-0
+        [ul_&]:before:font-mono
+        [ul_&]:before:text-accent
+        [ul_&]:before:content-['—']
+      `}
     >
       {children}
     </li>

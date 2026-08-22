@@ -10,6 +10,13 @@ interface SectionNavigationProps {
   sections: Section[];
 }
 
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
 export function SectionNavigation({ sections }: SectionNavigationProps) {
   const [activeSection, setActiveSection] = useState<string>("");
 
@@ -43,7 +50,7 @@ export function SectionNavigation({ sections }: SectionNavigationProps) {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({
-        behavior: "smooth",
+        behavior: prefersReducedMotion() ? "auto" : "smooth",
         block: "start",
       });
     }
@@ -53,18 +60,18 @@ export function SectionNavigation({ sections }: SectionNavigationProps) {
     <>
       {/* Desktop Navigation */}
       <nav className="hidden lg:block fixed right-8 top-1/2 transform -translate-y-1/2 z-10">
-        <div className="bg-gray-50 dark:bg-gray-800/30 backdrop-blur-sm rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+        <div className="rounded-card border border-border bg-surface/95 backdrop-blur-sm p-4">
           <div className="space-y-2">
             {sections.map((section) => (
               <button
                 key={section.id}
                 onClick={() => scrollToSection(section.id)}
                 className={`
-                  block w-full text-left px-3 py-2 rounded-md text-sm transition-all duration-200
+                  block w-full rounded-sm px-3 py-2 text-left font-mono text-micro uppercase tracking-tag transition-colors duration-quick ease-console
                   ${
                     activeSection === section.id
-                      ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-medium"
-                      : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-100"
+                      ? "bg-accent text-accent-contrast"
+                      : "text-muted hover:bg-surface-hover hover:text-accent"
                   }
                 `}
               >
@@ -76,19 +83,19 @@ export function SectionNavigation({ sections }: SectionNavigationProps) {
       </nav>
 
       {/* Mobile Navigation */}
-      <nav className="lg:hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 z-10">
-        <div className="bg-gray-50 dark:bg-gray-800/30 backdrop-blur-sm rounded-lg border border-gray-200 dark:border-gray-700 p-2">
-          <div className="flex space-x-1">
+      <nav className="fixed bottom-4 left-1/2 z-10 w-[calc(100%-2rem)] max-w-[22rem] -translate-x-1/2 lg:hidden">
+        <div className="rounded-card border border-border bg-surface/95 backdrop-blur-sm p-2">
+          <div className="flex gap-1 overflow-x-auto">
             {sections.map((section) => (
               <button
                 key={section.id}
                 onClick={() => scrollToSection(section.id)}
                 className={`
-                  px-2 py-1 rounded-md text-xs transition-all duration-200 whitespace-nowrap
+                  whitespace-nowrap rounded-sm px-2 py-1 font-mono text-micro uppercase tracking-tag transition-colors duration-quick ease-console
                   ${
                     activeSection === section.id
-                      ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-medium"
-                      : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-100"
+                      ? "bg-accent text-accent-contrast"
+                      : "text-muted hover:bg-surface-hover hover:text-accent"
                   }
                 `}
               >

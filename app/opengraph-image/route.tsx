@@ -33,7 +33,7 @@ export async function GET() {
             M. Semih Babacan
           </div>
           <div tw="grow" />
-          <div tw="text-[28px]">solace.com</div>
+          <div tw="text-[28px]">semihbabacan.com</div>
         </header>
 
         <main tw="flex mt-10 flex-col w-full" style={font("Roboto Mono 400")}>

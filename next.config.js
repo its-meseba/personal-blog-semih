@@ -10,6 +10,11 @@ module.exports = withMDX({
   experimental: {
     mdxRs: true,
   },
+  // `lib/content.ts` reads the post sources at request time on dynamic routes,
+  // so the MDX files must be traced into the serverless output.
+  outputFileTracingIncludes: {
+    "/**": ["./app/(post)/2026/**/*.mdx"],
+  },
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if

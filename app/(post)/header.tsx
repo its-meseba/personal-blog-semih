@@ -3,27 +3,31 @@
 import { useSelectedLayoutSegments } from "next/navigation";
 import { useEffect, useRef } from "react";
 import useSWR from "swr";
+
 import type { Post } from "@/app/get-posts";
-import { SeriesBadge } from "@/app/components/SeriesBadge";
+import { SeriesTag } from "@/app/components/SeriesBadge";
 import { AuthorCard } from "@/app/components/AuthorCard";
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
-// Format date for display
 const formatDate = (dateStr: string): string => {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("en-US", {
+  return new Date(dateStr).toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
   });
 };
 
+/**
+ * Post masthead: series, title, standfirst, then one mono meta line.
+ * Everything above the first paragraph, and nothing else.
+ */
 export function Header({ posts }: { posts: Post[] }) {
   const segments = useSelectedLayoutSegments();
   const initialPost = posts.find(
     post => post.id === segments[segments.length - 1]
   );
+
   const { data: post, mutate } = useSWR(
     `/api/view?id=${initialPost?.id ?? ""}`,
     fetcher,
@@ -36,34 +40,31 @@ export function Header({ posts }: { posts: Post[] }) {
   if (initialPost == null) return <></>;
 
   return (
-    <header className="mb-8">
-      {/* Series Badge */}
-      {post.series && (
-        <div className="mb-4">
-          <SeriesBadge series={post.series} size="md" />
+    <header className="mb-block border-b border-border pb-rhythm">
+      {(post.series || post.status === "draft") && (
+        <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+          {post.series && <SeriesTag series={post.series} size="md" />}
+          {post.status === "draft" && (
+            <span className="rounded-xs border border-border-strong px-1.5 py-0.5 font-mono text-micro uppercase tracking-tag text-faint">
+              Draft
+            </span>
+          )}
         </div>
       )}
 
-      {/* Title - Large, bold, sans-serif */}
-      <h1
-        className="text-3xl md:text-[42px] font-bold leading-tight tracking-tight mb-4"
-        style={{ fontFamily: 'Inter, -apple-system, sans-serif' }}
-      >
+      <h1 className="font-display text-h1 font-semibold leading-tight tracking-tight text-fg sm:text-display">
         {post.title}
       </h1>
 
-      {/* Author Section */}
-      <AuthorCard
-        date={formatDate(post.date)}
-        readTime={post.readTime}
-      />
+      {post.description && (
+        <p className="mt-4 font-serif text-lead text-muted">
+          {post.description}
+        </p>
+      )}
 
-      {/* Views Counter (subtle) */}
-      <Views
-        id={post.id}
-        mutate={mutate}
-        defaultValue={post.viewsFormatted}
-      />
+      <AuthorCard date={formatDate(post.date)} readTime={post.readTime}>
+        <Views id={post.id} mutate={mutate} defaultValue={post.viewsFormatted} />
+      </AuthorCard>
     </header>
   );
 }
@@ -85,12 +86,5 @@ function Views({ id, mutate, defaultValue }) {
     }
   });
 
-  return views != null ? (
-    <p
-      className="text-sm mt-4 pt-4 border-t border-gray-100 dark:border-gray-800"
-      style={{ fontFamily: 'Inter, -apple-system, sans-serif', color: 'rgba(117, 117, 117, 1)' }}
-    >
-      {views} views
-    </p>
-  ) : null;
+  return views != null ? <span>{views} views</span> : null;
 }

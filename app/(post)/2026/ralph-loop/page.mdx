@@ -1,12 +1,16 @@
-export const metadata = {
-  title: 'Ralph Loop: The Night Shift You Don\'t Pay For',
-  description: 'Something weird is happening in the repos of a small but growing group of developers. They\'re pushing commits at 3am, 4am, 5am — not because they\'re grinding through the night, but because they\'re asleep. Their agent isn\'t.',
-  openGraph: {
-    title: 'Ralph Loop: The Night Shift You Don\'t Pay For',
-    description: 'Something weird is happening in the repos of a small but growing group of developers. They\'re pushing commits at 3am — because they\'re asleep. Their agent isn\'t.',
-    images: [{ url: '/og/ralph-loop' }]
-  }
-}
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "ralph-loop",
+  title: "Ralph Loop: The Night Shift You Don't Pay For",
+  description: "Something weird is happening in the repos of a small but growing group of developers. They're pushing commits at 3am, 4am, 5am — not because they're grinding through the night, but because they're asleep. Their agent isn't.",
+  date: "2026-03-04",
+  series: "Agentic Coding",
+  tags: ["agents", "automation", "claude-code"],
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
 
 ---
 

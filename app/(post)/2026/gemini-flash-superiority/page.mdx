@@ -1,12 +1,16 @@
-export const metadata = {
-  title: 'Smaller Models, Superior Performance: The Gemini Flash Inversion',
-  description: 'Gemini 3 Flash outperforms Gemini 3 Pro on coding benchmarks while costing 75% less and running 3x faster. This counterintuitive result reveals how knowledge distillation inverts model hierarchies and what it means for agentic development workflows.',
-  openGraph: {
-    title: 'Smaller Models, Superior Performance: The Gemini Flash Inversion',
-    description: 'Gemini 3 Flash outperforms Gemini 3 Pro on coding benchmarks while costing 75% less and running 3x faster. This counterintuitive result reveals how knowledge distillation inverts model hierarchies and what it means for agentic development workflows.',
-    images: [{ url: '/og/gemini-flash-superiority' }]
-  }
-}
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "gemini-flash-superiority",
+  title: "Smaller Models, Superior Performance: The Gemini Flash Inversion",
+  description: "Gemini 3 Flash outperforms Gemini 3 Pro on coding benchmarks while costing 75% less and running 3x faster. This counterintuitive result reveals how knowledge distillation inverts model hierarchies and what it means for agentic development workflows.",
+  date: "2026-01-11",
+  series: "Agentic Coding",
+  tags: ["models", "gemini", "benchmarks"],
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
 
 import { YouTube } from "../../components/youtube"
 

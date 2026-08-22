@@ -18,10 +18,8 @@ export function withHeadingId(children) {
                 [span:hover_&]:visible
                 font-mono
                 font-normal
-                text-gray-400
-                hover:text-gray-600
-                dark:text-gray-500
-                dark:hover:text-gray-400
+                text-faint
+                hover:text-accent
               `}
               href={`#${match[1]}`}
             >

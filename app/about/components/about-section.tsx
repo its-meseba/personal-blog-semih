@@ -9,8 +9,8 @@ interface AboutSectionProps {
 
 export function AboutSection({ title, children, className = '', id }: AboutSectionProps) {
   return (
-    <section id={id} className={`mb-12 ${className}`}>
-      <h2 className="text-xl md:text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
+    <section id={id} className={`mb-section ${className}`}>
+      <h2 className="mb-6 font-display text-h3 font-semibold tracking-tight text-fg md:text-h2">
         {title}
       </h2>
       <div className="space-y-4">
@@ -31,7 +31,7 @@ export function AboutCard({
 }) {
   return (
     <div 
-      className={`bg-gray-50 dark:bg-gray-800/30 rounded-lg p-6 border border-gray-200 dark:border-gray-700 ${className}`}
+      className={`rounded-card border border-border bg-surface p-6 ${className}`}
       onClick={onClick}
     >
       {children}

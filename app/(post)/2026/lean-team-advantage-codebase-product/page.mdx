@@ -1,12 +1,16 @@
-export const metadata = {
-  title: 'The Lean Team Advantage: Your Codebase Is the Product',
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "lean-team-advantage-codebase-product",
+  title: "The Lean Team Advantage: Your Codebase Is the Product",
   description: "How small teams are outshipping enterprises with agentic workflows — and why your code is now a data product that AI agents consume.",
-  openGraph: {
-    title: 'The Lean Team Advantage: Your Codebase Is the Product',
-    description: "How small teams are outshipping enterprises with agentic workflows.",
-    images: [{ url: '/og/lean-team-codebase-product' }]
-  }
-}
+  date: "2026-03-16",
+  series: "AI Product Sense",
+  tags: ["teams", "agents", "product"],
+  status: "draft",
+};
+
+export const metadata = postMetadata(post);
 
 ---
 

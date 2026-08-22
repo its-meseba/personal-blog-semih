@@ -1,12 +1,16 @@
-export const metadata = {
-  title: 'Your Soul Is a Markdown File Now',
-  description: 'The best prompt engineers aren\'t writing better prompts — they\'re writing identity documents. Files called SOUL.md, STYLE.md, SKILL.md. And it works disturbingly well.',
-  openGraph: {
-    title: 'Your Soul Is a Markdown File Now',
-    description: 'The best prompt engineers are writing identity documents, not prompts. And it works disturbingly well.',
-    images: [{ url: '/og/soul-md' }]
-  }
-}
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "soul-md",
+  title: "Your Soul Is a Markdown File Now",
+  description: "The best prompt engineers aren't writing better prompts — they're writing identity documents. Files called SOUL.md, STYLE.md, SKILL.md. And it works disturbingly well.",
+  date: "2026-03-04",
+  series: "Agentic Coding",
+  tags: ["prompting", "identity", "markdown"],
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
 
 ---
 
@@ -82,7 +86,7 @@ The community adopted Superpowers heavily, and I think the reason is simple: it 
 
 The deeper lesson here isn't about Superpowers specifically. It's that soul.md was never meant to be a single file. It was always going to evolve into a system. Once you accept that configuring AI happens through language, you inevitably want all the things programmers want for any configuration: modularity, composition, overrides, reuse. Superpowers is what happens when someone takes that inevitability seriously.
 
-*For a deeper dive into why Superpowers works so well, see my separate post: [Superpowers: The Skill System That Makes Claude Unstoppable](https://www.mehmetsemihbabacan.com/2026/superpowers-skill).*
+*For a deeper dive into why Superpowers works so well, see my separate post: [Superpowers: The Skill System That Makes Claude Unstoppable](https://semihbabacan.com/2026/superpowers-skill).*
 
 ---
 

@@ -10,3 +10,6 @@ TODO
 .env*.local
 fonts/*
 !fonts/init.mjs
+
+# build artifact
+tsconfig.tsbuildinfo

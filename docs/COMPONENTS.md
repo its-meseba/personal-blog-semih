@@ -1,7 +1,9 @@
 # MDX component kit
 
 > Shipping a post, canonical URLs and the Substack mirror live in
-> [`docs/PUBLISHING.md`](./PUBLISHING.md). This file is the tag reference.
+> [`docs/PUBLISHING.md`](./PUBLISHING.md). Post covers — the vertical-space
+> rule for the hero and the illustration recipe — live in
+> [`docs/IMAGES.md`](./IMAGES.md). This file is the tag reference.
 
 Everything here is registered in `mdx-components.ts`, so a post uses it with
 **no import**. Just write the tag in `page.mdx`.

@@ -16,11 +16,29 @@ export type PostFrontmatter = {
   description: string;
   /** ISO date, `YYYY-MM-DD`. Owns the canonical URL year. */
   date: string;
+  /**
+   * ISO date (`YYYY-MM-DD`) of a REAL revision, declared by the author.
+   *
+   * Set it only when the prose actually changed in a way a returning reader
+   * would notice: a corrected claim, a rewritten section, new material. It is
+   * not a "file was touched" marker — reformatting, a metadata migration or a
+   * typo fix is not a revision, and claiming one lies to readers and fakes a
+   * freshness signal for search engines.
+   *
+   * Absent (the normal case) means the post has never been revised:
+   * `dateModified` equals `date` and no "Updated" line renders.
+   */
+  updated?: string;
   /** Display name of a series declared in `app/series.ts`. */
   series?: string;
   tags?: string[];
   status: PostStatus;
-  /** Optional cover image, site-absolute (`/images/blog/<slug>/cover.png`). */
+  /**
+   * Optional cover image, site-absolute and resolved against `public/`
+   * (`/images/covers/<slug>.webp`). Validated at build time: a path with no
+   * file behind it fails the build rather than shipping a broken hero.
+   * Rendering rules live in `docs/IMAGES.md`.
+   */
   cover?: string;
   /**
    * Absolute URL of the ORIGINAL publication, for the rare post that appeared
@@ -39,7 +57,7 @@ export type PostFrontmatter = {
 export type IndexedPost = Required<
   Pick<PostFrontmatter, "slug" | "title" | "description" | "date" | "status">
 > &
-  Pick<PostFrontmatter, "series" | "cover" | "canonical"> & {
+  Pick<PostFrontmatter, "series" | "updated" | "cover" | "canonical"> & {
     /** Alias of `slug`; the historical field name used across the app. */
     id: string;
     tags: string[];
@@ -51,6 +69,13 @@ export type IndexedPost = Required<
     excerpt: string;
     /** Raw MDX body with exports/imports stripped — used by the feeds. */
     body: string;
+    /**
+     * Last-modified date, `YYYY-MM-DD`: the author-declared `updated` when
+     * the post has really been revised, otherwise `date` itself. Never
+     * derived from the filesystem or from git — an unrelated migration that
+     * rewrites every post file must not tell readers ten articles changed.
+     */
+    dateModified: string;
   };
 
 export const SITE_URL = "https://mehmetsemihbabacan.com";
@@ -61,7 +86,6 @@ export const SITE_URL = "https://mehmetsemihbabacan.com";
  * generated card (`postOgPath`); this is the fallback, not a replacement.
  */
 export const OG_DEFAULT_IMAGE = "/images/og-default.png";
-
 
 export const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 

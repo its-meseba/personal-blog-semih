@@ -10,18 +10,21 @@ interface AuthorCardProps {
   showBio?: boolean;
   date?: string;
   readTime?: string;
+  /** Formatted "last modified" date, shown only when it differs from `date`. */
+  updated?: string;
   /** Extra meta appended to the mono line (the view counter, today). */
   children?: ReactNode;
 }
 
 /**
  * Byline. One mono meta line, separated by slashes rather than a run of
- * middle dots, so date / read time / views read as one field group.
+ * middle dots, so date / read time / updated / views read as one field group.
  */
 export function AuthorCard({
   showBio = false,
   date,
   readTime,
+  updated,
   children,
 }: AuthorCardProps) {
   return (
@@ -50,6 +53,8 @@ export function AuthorCard({
           {date && <span>{date}</span>}
           {date && readTime && <span aria-hidden="true">/</span>}
           {readTime && <span>{readTime}</span>}
+          {(date || readTime) && updated && <span aria-hidden="true">/</span>}
+          {updated && <span>Updated {updated}</span>}
           {children && <span aria-hidden="true">/</span>}
           {children}
         </div>

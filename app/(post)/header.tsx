@@ -6,6 +6,7 @@ import type { Post } from "@/app/get-posts";
 import { useCurrentPost } from "./use-current-post";
 import { SeriesTag } from "@/app/components/SeriesBadge";
 import { AuthorCard } from "@/app/components/AuthorCard";
+import { PostCover } from "@/app/components/PostCover";
 import { JsonLd } from "@/app/components/JsonLd";
 import {
   blogPostingSchema,
@@ -29,6 +30,12 @@ export function Header({ posts }: { posts: Post[] }) {
   const { post, mutate } = useCurrentPost(posts, { refreshInterval: 5000 });
 
   if (post == null) return <></>;
+
+  // "Updated" renders only when the AUTHOR declared a revision (`updated` in
+  // the post's metadata). `dateModified` falls back to `date`, so an
+  // undeclared post shows no Updated line at all — which is every post that
+  // has merely been reformatted, re-tagged or migrated.
+  const wasModified = post.dateModified !== post.date;
 
   // A draft is `noindex` and absent from the sitemap and /llms.txt, so it gets
   // no structured data either: markup that says "published article" about a
@@ -71,9 +78,21 @@ export function Header({ posts }: { posts: Post[] }) {
         </p>
       )}
 
-      <AuthorCard date={formatDate(post.date)} readTime={post.readTime}>
-        <Views id={post.id} mutate={mutate} defaultValue={post.viewsFormatted} />
+      <AuthorCard
+        date={formatDate(post.date)}
+        readTime={post.readTime}
+        updated={wasModified ? formatDate(post.dateModified) : undefined}
+      >
+        <Views
+          id={post.id}
+          mutate={mutate}
+          defaultValue={post.viewsFormatted}
+        />
       </AuthorCard>
+
+      {/* After the words, before the prose — see `docs/IMAGES.md`. A post
+          without a cover renders nothing here, not an empty frame. */}
+      {post.cover && <PostCover src={post.cover} alt={post.title} />}
     </header>
   );
 }

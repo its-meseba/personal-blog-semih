@@ -28,8 +28,10 @@ export const post = {
   title: "…",
   description: "…",             // also the card excerpt and the Substack subtitle
   date: "2026-08-22",           // owns the URL year: /2026/my-post
+  updated: "2026-09-14",        // optional; ONLY for a real revision — see below
   series: "Agentic Coding",     // optional; must exist in app/series.ts
   tags: ["agents"],
+  cover: "/images/covers/my-post.webp",  // optional; see docs/IMAGES.md
   status: "draft",              // "draft" until it is ready; then "published"
 };
 
@@ -42,6 +44,34 @@ file name instead of vanishing from the site.
 
 `status: "draft"` means: visible in `pnpm dev`, `noindex`, and excluded from the
 production index, the sitemap and `/atom`. Flip it to `"published"` to ship.
+
+## `updated` — the revision date
+
+`updated` is the **only** thing that makes a post claim it was revised. It is
+an ISO `YYYY-MM-DD` date, validated exactly like `date`, and it may not be
+earlier than `date` — the build fails if it is.
+
+Leave it out and the post says nothing: `dateModified` equals the publish
+date, the byline shows no "Updated …" line, `<updated>` in `/atom` and
+`lastmod` in the sitemap both carry the publish date, and the `BlogPosting`
+JSON-LD reports `dateModified === datePublished`.
+
+**Set it only for a real revision** — a corrected claim, a rewritten section,
+new material, something a returning reader would notice. It is a statement to
+readers and a freshness signal to search engines, and both are lies if the
+prose did not change.
+
+**Do not set it for touching the file.** Reformatting, a typo fix, a tag
+change, a metadata migration, a domain flip, a lint pass: none of these are
+revisions. This field exists *because* the site previously derived
+`dateModified` from each file's last git commit, and a batch of unrelated
+migrations made all ten posts announce "Updated 23 August" when their prose
+had not changed since January. Nothing infers this date any more. The author
+declares it or it does not exist.
+
+When you do revise, say what changed in the post itself if it matters to the
+argument. The date tells a reader *that* something changed; only prose tells
+them *what*.
 
 ## Canonical URLs
 

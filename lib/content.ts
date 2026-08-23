@@ -31,6 +31,8 @@ const POSTS_ROOT = join(process.cwd(), "app", "(post)");
 /** A post year folder. Everything else under `(post)` is route plumbing. */
 const YEAR_DIR_RE = /^\d{4}$/;
 const POST_FILE = "page.mdx";
+/** `cover` paths are site-absolute; the file behind one lives here. */
+const PUBLIC_ROOT = join(process.cwd(), "public");
 const POST_EXPORT = "export const post";
 
 /** Drafts are readable while writing, invisible to the public site. */
@@ -222,15 +224,58 @@ function validateFrontmatter(
     );
   }
 
+  // `updated` is a claim made to readers and to search engines, so it is held
+  // to the same shape as `date` and may never predate publication.
+  const updated = optionalString(input, "updated", file);
+  if (updated !== undefined) {
+    if (!ISO_DATE_RE.test(updated) || Number.isNaN(Date.parse(updated))) {
+      throw new PostValidationError(
+        file,
+        `\`updated\` must be a real YYYY-MM-DD date (got "${updated}")`
+      );
+    }
+    if (updated < date) {
+      throw new PostValidationError(
+        file,
+        `\`updated\` ("${updated}") is earlier than \`date\` ("${date}") — a ` +
+          `post cannot be revised before it was published. Fix whichever of ` +
+          `the two is wrong, or drop \`updated\` if the post has never been ` +
+          `substantively revised.`
+      );
+    }
+  }
+
+  const cover = optionalString(input, "cover", file);
+  if (cover !== undefined) {
+    if (!cover.startsWith("/")) {
+      throw new PostValidationError(
+        file,
+        `\`cover\` must be a site-absolute path starting with "/" (got ` +
+          `"${cover}")`
+      );
+    }
+    // A typo here would ship a hero that 404s for every reader, so the build
+    // proves the file exists instead of trusting the string.
+    const coverFile = join(PUBLIC_ROOT, cover);
+    if (!existsSync(coverFile)) {
+      throw new PostValidationError(
+        file,
+        `\`cover\` points at "${cover}" but no file exists at ` +
+          `public${cover}. Add the image or fix the path.`
+      );
+    }
+  }
+
   return {
     slug,
     title: requireString(input, "title", file),
     description: requireString(input, "description", file),
     date,
+    updated,
     series,
     tags,
     status,
-    cover: optionalString(input, "cover", file),
+    cover,
     canonical,
   };
 }
@@ -337,6 +382,11 @@ function buildIndex(): IndexedPost[] {
       readTime: calculateReadTime(stripJsxBlocks(body)),
       excerpt: frontmatter.description,
       body,
+      // Author-declared, never inferred. A file's mtime or last commit says
+      // "someone touched this", which a metadata migration does to every post
+      // at once; only the author knows whether the PROSE changed. Absent
+      // `updated`, the honest answer is the publish date.
+      dateModified: frontmatter.updated ?? frontmatter.date,
     };
   });
 
@@ -396,4 +446,67 @@ export function getSeries(): SeriesWithPosts[] {
 
 export function getSeriesBySlug(slug: string): SeriesWithPosts | undefined {
   return getSeries().find(series => series.id === slug);
+}
+
+/** One rung of a series' reading path: the post, and why it's here. */
+export type ReadingOrderEntry = { post: IndexedPost; reason: string };
+
+export type SeriesReadingPlan = {
+  /**
+   * The curated path, in the order declared by `app/series.ts`'s `order`.
+   * Empty when the series has no curated order — see `isCurated`.
+   */
+  startHere: ReadingOrderEntry[];
+  /**
+   * Everything not in `startHere`, reverse-chronological (newest first) —
+   * the site's usual list order, for a reader who has read the curated path
+   * and wants the rest.
+   */
+  rest: IndexedPost[];
+  /**
+   * False when `app/series.ts` declares no `order` for this series. The
+   * caller should not present `startHere` as a judged curriculum in that
+   * case — see the series page, which relabels it "chronological" and
+   * drops the per-entry reasons instead of inventing them.
+   */
+  isCurated: boolean;
+};
+
+/**
+ * Turns a series' posts into a reading path. A declared `order` wins;
+ * absent that, the whole series falls back to chronological-ascending
+ * (oldest first, no `rest` bucket) rather than a guessed curriculum — see
+ * the comment on `Series["order"]` in `app/series.ts`.
+ */
+export function getSeriesReadingPlan(
+  series: SeriesWithPosts
+): SeriesReadingPlan {
+  if (series.order && series.order.length > 0) {
+    const byId = new Map(series.posts.map(post => [post.id, post]));
+
+    const startHere = series.order
+      .map(slug => byId.get(slug))
+      .filter((post): post is IndexedPost => post !== undefined)
+      .map(post => ({
+        post,
+        reason: series.orderReasons?.[post.id] ?? "",
+      }));
+
+    const startHereIds = new Set(startHere.map(entry => entry.post.id));
+    // `series.posts` is already reverse-chronological (see `getSeries`), so
+    // filtering preserves that order for the leftovers.
+    const rest = series.posts.filter(post => !startHereIds.has(post.id));
+
+    return { startHere, rest, isCurated: true };
+  }
+
+  const chronological = [...series.posts].sort(
+    (a, b) => Date.parse(a.date) - Date.parse(b.date)
+  );
+
+  return {
+    startHere: chronological.map(post => ({ post, reason: "" })),
+    rest: [],
+    isCurated: false,
+  };
 }

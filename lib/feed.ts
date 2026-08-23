@@ -11,9 +11,15 @@ import { SITE_URL, type IndexedPost, postUrl } from "./post-types";
 
 export const ATOM_CONTENT_TYPE = "application/atom+xml; charset=utf-8";
 
-/** Atom wants RFC 3339; post dates are day-precision. */
-function toRfc3339(date: string): string {
-  return `${date}T00:00:00Z`;
+/**
+ * Atom wants RFC 3339. `date` and `dateModified` are both day-precision
+ * (`YYYY-MM-DD`) and get a synthetic midnight-UTC time. The `includes("T")`
+ * branch is a pass-through for any value that already carries a time.
+ */
+function toRfc3339(dateOrDateTime: string): string {
+  return dateOrDateTime.includes("T")
+    ? dateOrDateTime
+    : `${dateOrDateTime}T00:00:00Z`;
 }
 
 function cdata(html: string): string {
@@ -33,13 +39,15 @@ function entry(post: IndexedPost): string {
       <title type="text">${escapeXml(post.title)}</title>
       <link rel="alternate" type="text/html" href="${escapeXml(url)}"/>
       <published>${toRfc3339(post.date)}</published>
-      <updated>${toRfc3339(post.date)}</updated>
+      <updated>${toRfc3339(post.dateModified)}</updated>
       <author>
         <name>${escapeXml(author.name)}</name>
         <uri>${SITE_URL}</uri>
       </author>
       <summary type="text">${escapeXml(post.description)}</summary>
-${categories ? `${categories}\n` : ""}      <content type="html">${cdata(html)}</content>
+${categories ? `${categories}\n` : ""}      <content type="html">${cdata(
+    html
+  )}</content>
     </entry>`;
 }
 
@@ -56,9 +64,20 @@ export type FeedOptions = {
 
 const DEFAULT_LIMIT = 100;
 
-export function buildAtomFeed(posts: IndexedPost[], options: FeedOptions): string {
+export function buildAtomFeed(
+  posts: IndexedPost[],
+  options: FeedOptions
+): string {
   const entries = posts.slice(0, options.limit ?? DEFAULT_LIMIT);
-  const updated = toRfc3339(entries[0]?.date ?? new Date().toISOString().slice(0, 10));
+  // Feed-level `<updated>` is when the feed's actual content last changed —
+  // the newest `dateModified` across the entries served, not just the newest
+  // `date`. A post edited after a newer post shipped should still bump this.
+  const updated =
+    entries.reduce<string | undefined>((latest, post) => {
+      const candidate = toRfc3339(post.dateModified);
+      if (!latest) return candidate;
+      return Date.parse(candidate) > Date.parse(latest) ? candidate : latest;
+    }, undefined) ?? toRfc3339(new Date().toISOString().slice(0, 10));
   const selfUrl = `${SITE_URL}${options.selfPath}`;
   const alternateUrl = `${SITE_URL}${options.alternatePath}`;
 

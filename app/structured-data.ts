@@ -157,17 +157,18 @@ export function blogSchema() {
 /** What a BlogPosting node needs from a post. A subset of `IndexedPost`. */
 export type BlogPostingInput = Pick<
   IndexedPost,
-  "slug" | "title" | "description" | "date" | "year"
+  "slug" | "title" | "description" | "date" | "year" | "dateModified"
 > &
   Partial<Pick<IndexedPost, "tags" | "readTime" | "canonical">>;
 
 /**
  * BlogPosting for one post.
  *
- * `dateModified` deliberately equals `datePublished`: a post declares one
- * `date` and nothing in the repo records a real revision timestamp, so any
- * other value would be fabricated freshness. Give a post a revision date and
- * this is where it belongs.
+ * `dateModified` is the post's author-declared `updated` (`lib/content.ts`),
+ * and equals `datePublished` whenever the author has declared no revision —
+ * which is the honest default. It is deliberately NOT derived from git or
+ * from file mtimes: a repo-wide migration touches every post file at once and
+ * would tell Google that ten unchanged articles were all freshly updated.
  *
  * `mainEntityOfPage` and `url` follow the post's canonical, so a piece that was
  * first published elsewhere credits that URL here too — the same rule the
@@ -182,7 +183,7 @@ export function blogPostingSchema(post: BlogPostingInput) {
     headline: post.title,
     description: post.description,
     datePublished: post.date,
-    dateModified: post.date,
+    dateModified: post.dateModified,
     author: personNode(),
     publisher: publisherNode(),
     mainEntityOfPage: {
@@ -229,4 +230,65 @@ export function postBreadcrumb(post: BlogPostingInput): Crumb[] {
     { name: "Thoughts", url: THOUGHTS_URL },
     { name: post.title, url: postUrl(post) },
   ];
+}
+
+const SERIES_INDEX_URL = `${SITE_URL}/series`;
+
+/** Home → Series → this series. */
+export function seriesBreadcrumb(name: string, url: string): Crumb[] {
+  return [
+    { name: SITE_NAME, url: SITE_URL },
+    { name: "Series", url: SERIES_INDEX_URL },
+    { name, url },
+  ];
+}
+
+/** What the series-listing ItemList needs from a post. A subset of `IndexedPost`. */
+export type SeriesListedPost = Pick<
+  IndexedPost,
+  "slug" | "title" | "year" | "date"
+>;
+
+/**
+ * CollectionPage + ItemList for a series pillar page. `itemListElement`
+ * lists the series' posts in the same order the page renders them (curated
+ * "start here" order when the series has one, chronological otherwise —
+ * see `getSeriesReadingPlan`), so the markup never claims a reading order
+ * the visible page doesn't show.
+ *
+ * `numberOfItems: 0` with an empty `itemListElement` is the honest markup
+ * for a registered series with nothing published yet — not omitted, since
+ * zero is a real count here, not a missing one.
+ */
+export function seriesCollectionSchema(
+  series: { name: string; description?: string },
+  url: string,
+  orderedPosts: SeriesListedPost[]
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: series.name,
+    description: series.description ?? `Posts in the ${series.name} series.`,
+    url,
+    isPartOf: {
+      "@type": "Blog",
+      name: `${SITE_NAME} — Thoughts`,
+      url: THOUGHTS_URL,
+    },
+    author: personNode(),
+    publisher: publisherNode(),
+    inLanguage: "en-US",
+    mainEntity: {
+      "@type": "ItemList",
+      itemListOrder: "https://schema.org/ItemListOrderAscending",
+      numberOfItems: orderedPosts.length,
+      itemListElement: orderedPosts.map((post, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: postUrl(post),
+        name: post.title,
+      })),
+    },
+  };
 }

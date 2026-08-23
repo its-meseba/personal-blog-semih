@@ -76,7 +76,7 @@ them *what*.
 ## Canonical URLs
 
 `postMetadata` gives every post a **self-referencing canonical** —
-`https://mehmetsemihbabacan.com/<year>/<slug>` — with no per-post work. Since every
+`https://www.mehmetsemihbabacan.com/<year>/<slug>` — with no per-post work. Since every
 post file calls it, a post cannot ship without one.
 
 Set `canonical` only when the piece **was published somewhere else first**:
@@ -118,7 +118,7 @@ trims the lead-in at a paragraph boundary. The script warns if the post is
 still a draft or declares an external canonical.
 
 Bulk import instead of pasting: Substack's Settings → Import accepts an RSS
-URL — give it `https://mehmetsemihbabacan.com/atom`, which carries full content for
+URL — give it `https://www.mehmetsemihbabacan.com/atom`, which carries full content for
 every published post. That imports the whole text, so it makes the SEO trade the
 lead-in avoids; use it for the archive, paste for new posts.
 

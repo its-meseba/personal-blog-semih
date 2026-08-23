@@ -1,10 +1,10 @@
 Contact: mailto:m.semihbabacan@gmail.com
 Expires: 2025-12-31T23:59:59.000Z
-Encryption: https://mehmetsemihbabacan.com/pgp-key.txt
+Encryption: https://www.mehmetsemihbabacan.com/pgp-key.txt
 Preferred-Languages: en, tr
-Canonical: https://mehmetsemihbabacan.com/.well-known/security.txt
-Policy: https://mehmetsemihbabacan.com/security-policy
-Acknowledgments: https://mehmetsemihbabacan.com/security-acknowledgments
+Canonical: https://www.mehmetsemihbabacan.com/.well-known/security.txt
+Policy: https://www.mehmetsemihbabacan.com/security-policy
+Acknowledgments: https://www.mehmetsemihbabacan.com/security-acknowledgments
 
 # Security Contact Information
 # 

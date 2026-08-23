@@ -78,7 +78,7 @@ export type IndexedPost = Required<
     dateModified: string;
   };
 
-export const SITE_URL = "https://mehmetsemihbabacan.com";
+export const SITE_URL = "https://www.mehmetsemihbabacan.com";
 
 /**
  * The site-wide share card (1200x630). Every surface without a card of its

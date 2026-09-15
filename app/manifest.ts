@@ -6,7 +6,7 @@ import { LIGHT, THEME_COLOR } from './styles/tokens'
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: SITE_TITLE,
-    short_name: 'Semih Babacan',
+    short_name: 'meseba',
     // One source: `app/author.ts`.
     description: SITE_DESCRIPTION,
     start_url: '/',

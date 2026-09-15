@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   "Fire max" design system - token layer
+   "meseba" design system - token layer
 
    Values mirror `app/styles/tokens.ts` (which exists for the places that
    cannot read CSS: Satori OG routes, the inlined `theme-effect.ts`).
@@ -19,34 +19,29 @@
     color-scheme: light;
 
     /* --- surfaces (cream paper) ----------------------------------------- */
-    --c-background: 251 247 241; /* #FBF7F1 */
-    --c-surface: 243 237 227; /* #F3EDE3 */
-    --c-surface-raised: 255 253 249; /* #FFFDF9 */
-    --c-surface-hover: 235 227 214; /* #EBE3D6 */
+    --c-background: 244 239 231; /* #F4EFE7 */
+    --c-surface: 236 228 220; /* #ECE4DC */
+    --c-surface-raised: 252 248 243; /* #FCF8F3 */
+    --c-surface-hover: 231 220 214; /* #E7DCD6 */
 
     /* --- lines ---------------------------------------------------------- */
-    --c-border: 224 215 200; /* #E0D7C8 */
-    --c-border-strong: 198 185 164; /* #C6B9A4 */
+    --c-border: 219 205 199; /* #DBCDC7 */
+    --c-border-strong: 198 154 156; /* #C69A9C */
 
     /* --- text (near-black ink) ------------------------------------------ */
-    --c-text: 22 19 15; /* #16130F */
-    --c-muted: 95 87 76; /* #5F574C */
-    --c-faint: 123 114 100; /* #7B7264 */
+    --c-text: 36 35 38; /* #242326 */
+    --c-muted: 100 88 94; /* #64585E */
+    --c-faint: 129 112 120; /* #817078 */
 
-    /* --- accent ---------------------------------------------------------
-       `--c-accent` is the ONLY text-legal accent (deep ember, 6.16:1 on the
-       cream ground). The signature hot orange #FF5A1F is 2.92:1 there, so it
-       is confined to `--c-accent-field` (fill under near-black ink) and
-       `--c-accent-mark` (rules, bars, focus, selection - never a glyph).
-       See the contrast rule in `app/styles/tokens.ts`. -------------------- */
-    --c-accent: 168 54 7; /* #A83607 */
-    --c-accent-hover: 126 39 4; /* #7E2704 */
-    --c-accent-contrast: 255 248 242; /* #FFF8F2 */
-    --c-accent-field: 255 90 31; /* #FF5A1F */
-    --c-accent-field-hover: 232 74 18; /* #E84A12 */
-    --c-accent-ink: 22 19 15; /* #16130F */
-    --c-accent-mark: 255 90 31; /* #FF5A1F */
-    --c-accent-chip: 255 231 218; /* #FFE7DA */
+    /* Burgundy text and fields; paper text on solid fields. */
+    --c-accent: 114 47 67; /* #722F43 */
+    --c-accent-hover: 89 35 52; /* #592334 */
+    --c-accent-contrast: 244 239 231; /* #F4EFE7 */
+    --c-accent-field: 114 47 67; /* #722F43 */
+    --c-accent-field-hover: 89 35 52; /* #592334 */
+    --c-accent-ink: 244 239 231; /* #F4EFE7 */
+    --c-accent-mark: 114 47 67; /* #722F43 */
+    --c-accent-chip: 234 215 219; /* #EAD7DB */
 
     /* --- reading measure ------------------------------------------------ */
     --measure: 68ch;
@@ -66,9 +61,9 @@
     --stagger-step: calc(var(--dur-instant) / 2);
 
     /* --- legacy aliases (pre-token CSS still reads these) ---------------- */
-    --foreground-rgb: 22, 19, 15;
-    --background-rgb: 251, 247, 241;
-    --accent-rgb: 168, 54, 7;
+    --foreground-rgb: 36, 35, 38;
+    --background-rgb: 244, 239, 231;
+    --accent-rgb: 114, 47, 67;
 
     -webkit-tap-highlight-color: transparent;
     /* note: must keep in sync with `theme-color` in `theme-effect.ts`
@@ -79,32 +74,31 @@
   :root.dark {
     color-scheme: dark;
 
-    --c-background: 18 17 16; /* #121110 */
-    --c-surface: 27 25 23; /* #1B1917 */
-    --c-surface-raised: 34 31 28; /* #221F1C */
-    --c-surface-hover: 42 38 34; /* #2A2622 */
+    --c-background: 36 35 38; /* #242326 */
+    --c-surface: 45 41 45; /* #2D292D */
+    --c-surface-raised: 55 48 53; /* #373035 */
+    --c-surface-hover: 64 54 60; /* #40363C */
 
-    --c-border: 42 38 34; /* #2A2622 */
-    --c-border-strong: 58 52 46; /* #3A342E */
+    --c-border: 75 63 69; /* #4B3F45 */
+    --c-border-strong: 130 98 110; /* #82626E */
 
-    --c-text: 242 235 224; /* #F2EBE0 */
-    --c-muted: 167 156 141; /* #A79C8D */
-    --c-faint: 131 122 108; /* #837A6C */
+    --c-text: 244 239 231; /* #F4EFE7 */
+    --c-muted: 199 182 189; /* #C7B6BD */
+    --c-faint: 163 139 150; /* #A38B96 */
 
-    /* On the dark register orange IS text-legal: #FF7A45 is 7.29:1 and the
-       signature #FF5A1F itself reaches 6.05:1. */
-    --c-accent: 255 122 69; /* #FF7A45 */
-    --c-accent-hover: 255 154 110; /* #FF9A6E */
-    --c-accent-contrast: 22 19 15; /* #16130F */
-    --c-accent-field: 255 90 31; /* #FF5A1F */
-    --c-accent-field-hover: 255 111 54; /* #FF6F36 */
-    --c-accent-ink: 22 19 15; /* #16130F */
-    --c-accent-mark: 255 90 31; /* #FF5A1F */
-    --c-accent-chip: 46 26 16; /* #2E1A10 */
+    /* Rose accents preserve contrast on the charcoal canvas. */
+    --c-accent: 217 167 181; /* #D9A7B5 */
+    --c-accent-hover: 233 190 201; /* #E9BEC9 */
+    --c-accent-contrast: 36 35 38; /* #242326 */
+    --c-accent-field: 114 47 67; /* #722F43 */
+    --c-accent-field-hover: 129 57 79; /* #81394F */
+    --c-accent-ink: 244 239 231; /* #F4EFE7 */
+    --c-accent-mark: 217 167 181; /* #D9A7B5 */
+    --c-accent-chip: 68 45 54; /* #442D36 */
 
-    --foreground-rgb: 242, 235, 224;
-    --background-rgb: 18, 17, 16;
-    --accent-rgb: 255, 122, 69;
+    --foreground-rgb: 244, 239, 231;
+    --background-rgb: 36, 35, 38;
+    --accent-rgb: 217, 167, 181;
 
     background-color: rgb(var(--c-background));
   }
@@ -134,7 +128,7 @@
   }
 
   ::selection {
-    /* non-text mark (c): the signature orange as a wash behind ink */
+    /* non-text mark (c): the accent as a wash behind text */
     background-color: rgb(var(--c-accent-mark) / 0.32);
     color: rgb(var(--c-text));
   }

@@ -1,7 +1,7 @@
 const plugin = require("tailwindcss/plugin");
 
 /**
- * "Fire max" design system.
+ * "meseba" design system.
  *
  * Colours are declared as `rgb(var(--c-*) / <alpha-value>)` so that every
  * utility keeps working with an opacity modifier (`bg-surface/60`) while the
@@ -33,13 +33,7 @@ module.exports = {
         fg: token("text"),
         muted: token("muted"),
         faint: token("faint"),
-        /**
-         * Accent roles. `accent` (DEFAULT/hover/contrast) is the ONLY
-         * text-legal one: deep ember on cream, bright orange on the dark
-         * register. The signature hot orange #FF5A1F lives in `field` and
-         * `mark`, which are named so they cannot be used for type by
-         * accident - see the contrast rule in `app/styles/tokens.ts`.
-         */
+        /** Semantic accent roles; pair solid fields with accent ink. */
         accent: {
           DEFAULT: token("accent"),
           hover: token("accent-hover"),
@@ -47,7 +41,7 @@ module.exports = {
           /** full-bleed fill; only `text-accent-ink` may sit on it */
           field: token("accent-field"),
           "field-hover": token("accent-field-hover"),
-          /** near-black ink, the only type colour allowed on a field */
+          /** contrasting text for a solid accent field */
           ink: token("accent-ink"),
           /** non-text marks only: rules, bars, progress, focus, selection */
           mark: token("accent-mark"),

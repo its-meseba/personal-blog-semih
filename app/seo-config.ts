@@ -23,7 +23,7 @@ export const seoConfig = {
     email: "m.semihbabacan@gmail.com",
     linkedin: author.links.linkedin,
     github: author.links.github,
-    twitter: "@semihbabacan",
+    twitter: author.handle,
     location: "Istanbul, Turkey",
   },
 
@@ -97,8 +97,8 @@ export const seoConfig = {
   // Twitter defaults
   twitter: {
     card: "summary_large_image",
-    creator: "@semihbabacan",
-    site: "@semihbabacan",
+    creator: author.handle,
+    site: author.handle,
   },
 
   // Robots configuration for different environments

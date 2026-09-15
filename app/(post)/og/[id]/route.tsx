@@ -13,11 +13,7 @@ export async function generateStaticParams() {
   return getPublishedPosts().map(post => ({ id: post.id }));
 }
 
-/**
- * "Fire max" card: a full-bleed orange FIELD with near-black display type on
- * top — case (a) of the contrast rule in `app/styles/tokens.ts` (5.94:1).
- * Nothing on this card is set IN the hot orange; the orange is the ground.
- */
+/** Burgundy share card with contrasting paper text from the brand palette. */
 const FIELD = LIGHT.accentField;
 const INK = LIGHT.accentInk;
 const PAPER = LIGHT.background;

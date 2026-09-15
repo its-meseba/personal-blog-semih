@@ -1,6 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { BRAND_NAME } from "./author";
 
 /**
  * Wordmark: an accent prompt glyph plus the name in the display face.
@@ -9,14 +10,7 @@ import Link from "next/link";
 export function Logo() {
   const pathname = usePathname();
 
-  const label = (
-    <>
-      <span aria-hidden="true" className="font-mono text-accent">
-        ~/
-      </span>
-      <span>M. Semih Babacan</span>
-    </>
-  );
+  const label = <span className="font-mono text-accent">{BRAND_NAME}</span>;
 
   const shared =
     "inline-flex items-center gap-1.5 whitespace-nowrap font-display text-ui font-medium tracking-tight sm:text-base";

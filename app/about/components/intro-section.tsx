@@ -1,3 +1,4 @@
+import { MOTTO, PERSONAL_BIO } from "../../author";
 import Image from "next/image";
 import { AboutSection } from "./about-section";
 
@@ -28,6 +29,8 @@ export function IntroSection({
         />
 
         <div className="space-y-4 text-fg">
+          <p className="text-h2 font-semibold text-accent">{MOTTO}</p>
+          <p className="text-lead">{PERSONAL_BIO}</p>
           <p className="text-base leading-relaxed">{description}</p>
 
           <p className="text-base leading-relaxed">{additionalInfo}</p>

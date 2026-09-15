@@ -8,6 +8,10 @@
 
 import { OG_DEFAULT_IMAGE, SITE_URL } from "@/lib/post-types";
 
+export const BRAND_NAME = "meseba";
+export const MOTTO = "Products, mostly. Companies, sometimes.";
+export const PERSONAL_BIO = "I build products and sometimes build companies.";
+
 export const SITE_NAME = "Mehmet Semih Babacan";
 export { OG_DEFAULT_IMAGE, SITE_URL };
 
@@ -21,10 +25,10 @@ export const ROLE = "AI Technical Product Manager";
  * engines quote it whole instead of truncating it.
  */
 export const SITE_DESCRIPTION =
-  "AI Technical Product Manager. Ex-CEO of Solace Technology. I build AI-native products and write about how they actually get built — agents, harnesses, lean teams.";
+  `${MOTTO} I’m Mehmet Semih Babacan (meseba). I build products and write about AI, software, and entrepreneurship.`;
 
 /** Title of the site itself, and the fallback title of any untitled page. */
-export const SITE_TITLE = `${SITE_NAME} — ${ROLE}`;
+export const SITE_TITLE = `${SITE_NAME} (meseba) | ${MOTTO}`;
 
 /** What the writing is about. One line, for feeds and answer engines. */
 export const SITE_SUBJECT =

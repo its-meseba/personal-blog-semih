@@ -85,7 +85,7 @@ export const SITE_URL = "https://www.mehmetsemihbabacan.com";
  * own — home, /about, /thoughts, series — points here. Posts keep their own
  * generated card (`postOgPath`); this is the fallback, not a replacement.
  */
-export const OG_DEFAULT_IMAGE = "/images/og-default.png";
+export const OG_DEFAULT_IMAGE = "/brand/og";
 
 export const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 

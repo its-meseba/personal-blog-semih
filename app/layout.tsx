@@ -77,7 +77,7 @@ export const metadata = {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
     images: [OG_DEFAULT_IMAGE],
-    creator: "@semihbabacan",
+    creator: author.handle,
   },
   alternates: {
     canonical: SITE_URL,

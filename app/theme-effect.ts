@@ -19,7 +19,7 @@ export const themeEffect = function () {
     document.documentElement.classList.add("dark");
     document.head
       .querySelector("meta[name=theme-color]")
-      ?.setAttribute("content", "#121110");
+      ?.setAttribute("content", "#242326");
 
     requestAnimationFrame(() => {
       document.documentElement.classList.remove("pause-transitions");
@@ -30,7 +30,7 @@ export const themeEffect = function () {
     document.documentElement.classList.remove("dark");
     document.head
       .querySelector("meta[name=theme-color]")
-      ?.setAttribute("content", "#FBF7F1");
+      ?.setAttribute("content", "#F4EFE7");
     requestAnimationFrame(() => {
       document.documentElement.classList.remove("pause-transitions");
     });

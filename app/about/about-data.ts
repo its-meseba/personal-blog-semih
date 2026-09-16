@@ -290,7 +290,7 @@ export const aboutData = {
     title: "Experience",
     positions: [
       {
-        company: "Stealth Company",
+        company: "Stealth Startup",
         role: "Founder's Associate & AI Technical Growth Product Manager",
         period: "Jan 2026 - Present",
         location: "Remote / United States",

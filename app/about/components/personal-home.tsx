@@ -39,7 +39,7 @@ export function CurrentCompanySection() {
     <section className={styles.currentCompany} aria-labelledby="currentCompany-heading">
       <div className={styles.currentCompanyCopy}>
         <p className={styles.eyebrow}>02 / Latest company · Jan 2026–Present</p>
-        <h2 id="currentCompany-heading">Stealth Company</h2>
+        <h2 id="currentCompany-heading">Stealth Startup</h2>
         <p className={styles.role}>Founder’s Associate &amp;<br />AI Technical Growth Product Manager</p>
         <p>Building AI systems. Shaping product and growth with the founders.</p>
       </div>

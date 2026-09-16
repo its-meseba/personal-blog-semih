@@ -1,7 +1,6 @@
 import { aboutData } from "./about-data";
 import { AboutLayout } from "./components/about-layout";
 import { IntroSection } from "./components/intro-section";
-import { ProjectsSection } from "./components/projects-section";
 import { ExperienceSection } from "./components/experience-section";
 import { EducationSection } from "./components/education-section";
 import { AchievementsSection } from "./components/achievements-section";
@@ -48,11 +47,6 @@ export const metadata = {
     />
 
     <LatestPostsSection />
-
-    <ProjectsSection
-      title={aboutData.featuredProjects.title}
-      projects={aboutData.featuredProjects.projects}
-    />
 
     <ExperienceSection
       title={aboutData.experience.title}

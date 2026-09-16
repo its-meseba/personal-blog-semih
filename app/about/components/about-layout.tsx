@@ -8,7 +8,6 @@ interface AboutLayoutProps {
 
 const sections = [
   { id: "about-section", title: "About" },
-  { id: "projects-section", title: "Featured Projects" },
   { id: "experience-section", title: "Experience" },
   { id: "education-section", title: "Education" },
   { id: "achievements-section", title: "Achievements" },

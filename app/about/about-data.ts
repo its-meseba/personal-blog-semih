@@ -290,25 +290,25 @@ export const aboutData = {
     title: "Experience",
     positions: [
       {
-        company: "CraftNote",
+        company: "Stealth Company",
         role: "Founder's Associate & AI Technical Growth Product Manager",
         period: "Jan 2026 - Present",
         location: "Remote / United States",
-        description: "I work with the founders on product and growth, and build the AI systems behind them. My work includes customer research, pricing, lifecycle marketing, and automating support."
+        description: "I build AI systems and work with the founders on product and growth."
       },
       {
         company: "Upily",
         role: "AI Technical Product Manager",
         period: "Aug 2025 - Jan 2026",
         location: "Remote / Global",
-        description: "Led AI product development for consumer apps, including Wonjo Kids. Owned the roadmap and technical architecture, taking features from prototype to release."
+        description: "Led AI product strategy and engineering for consumer apps."
       },
       {
         company: "Solace Technology Incorporated",
         role: "CEO & Co-Founder",
         period: "Nov 2023 - Aug 2025",
         location: "Istanbul, Turkey",
-        description: "Co-founded Solace and launched Ensi and EMA, AI assistants for homes and businesses. Built the products, raised funding, and grew the team."
+        description: "Co-founded Solace, built two AI products, and raised funding."
       }
     ]
   },

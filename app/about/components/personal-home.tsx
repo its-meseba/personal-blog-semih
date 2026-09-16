@@ -34,21 +34,20 @@ export function WorkSection() {
   );
 }
 
-export function CraftNoteSection() {
+export function CurrentCompanySection() {
   return (
-    <section className={styles.craftnote} aria-labelledby="craftnote-heading">
-      <div className={styles.craftnoteCopy}>
+    <section className={styles.currentCompany} aria-labelledby="currentCompany-heading">
+      <div className={styles.currentCompanyCopy}>
         <p className={styles.eyebrow}>02 / In practice · Jan 2026–Present</p>
-        <h2 id="craftnote-heading">CraftNote</h2>
+        <h2 id="currentCompany-heading">Stealth Company</h2>
         <p className={styles.role}>Founder’s Associate &amp;<br />AI Technical Growth Product Manager</p>
-        <p>Working closely with the founders, engineering, design, and product teams to connect customer needs, AI systems, and growth.</p>
-        <ul><li>Built and deployed AI agents and internal systems.</li><li>Turned support insights and global interviews into product priorities.</li><li>Owned lifecycle marketing, pricing strategy, and product analytics.</li></ul>
+        <p>Building AI systems. Shaping product and growth with the founders.</p>
       </div>
       <div className={styles.scale}>
         <p className={styles.eyebrow}>The product’s scale</p>
         <div><strong>140K<span>+</span></strong><p>monthly active users</p></div>
         <div><strong>240K<span>+</span></strong><p>notes created monthly</p></div>
-        <p className={styles.scaleNote}>CraftNote product usage<br />August 2026</p>
+        <p className={styles.scaleNote}>Product usage<br />August 2026</p>
       </div>
     </section>
   );

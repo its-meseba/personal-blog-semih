@@ -1,5 +1,5 @@
 import { aboutData } from "./about-data";
-import { PersonalHome, PersonalHero, WorkSection, CraftNoteSection, CareerSection, PersonalContact } from "./components/personal-home";
+import { PersonalHome, PersonalHero, WorkSection, CurrentCompanySection, CareerSection, PersonalContact } from "./components/personal-home";
 import { ExperienceSection } from "./components/experience-section";
 import { EducationSection } from "./components/education-section";
 import { AchievementsSection } from "./components/achievements-section";
@@ -39,7 +39,7 @@ export const metadata = {
 <PersonalHome>
   <PersonalHero />
   <WorkSection />
-  <CraftNoteSection />
+  <CurrentCompanySection />
   <LatestPostsSection />
   <CareerSection>
     <ExperienceSection title="Experience" positions={aboutData.experience.positions} />

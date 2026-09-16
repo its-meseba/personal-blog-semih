@@ -39,7 +39,6 @@ export const metadata = {
     "developer tooling",
     "TypeScript",
     "Next.js",
-    "CraftNote",
     "Product strategy",
     "Solace Technology",
     "Istanbul",

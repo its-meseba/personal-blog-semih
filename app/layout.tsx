@@ -139,15 +139,14 @@ export default async function RootLayout({
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
       </head>
 
-      <body className="flex min-h-screen flex-col bg-background text-fg">
-        <main className="mx-auto w-full max-w-shell grow px-6 pb-block pt-3 md:pt-6">
+      <body className="flex min-h-screen flex-col text-fg">
+        <div className="site-sheet">
           {/* The masthead sits outside `RouteMotion` on purpose: it is the
               fixed point the page turns around, so it must not fade. */}
           <Header />
-          <RouteMotion>{children}</RouteMotion>
-        </main>
-
-        <Footer />
+          <div className="site-content"><RouteMotion>{children}</RouteMotion></div>
+          <Footer />
+        </div>
         <Analytics />
       </body>
     </html>

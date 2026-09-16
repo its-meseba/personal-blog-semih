@@ -1,68 +1,52 @@
-import { ProgressivePortrait } from "./progressive-portrait";
-import Link from "next/link";
 import { author, ROLE, SITE_NAME } from "@/app/author";
-import { WorkLens } from "./work-lens";
+import { aboutData } from "../about-data";
+import { ProgressivePortrait } from "./progressive-portrait";
 import styles from "./personal-home.module.css";
 
-export function PersonalHero() {
-  return (
-    <section className={styles.hero} aria-labelledby="personal-heading">
-      <div className={styles.heroCopy}>
-        <p className={styles.eyebrow}>{SITE_NAME} / {ROLE}</p>
-        <h1 id="personal-heading">Products,<br />mostly.<br /><span>Companies,<br />sometimes.</span></h1>
-        <p className={styles.introduction}>I’m Semih. I connect product thinking with hands-on engineering to turn ideas into things people use.</p>
-        <a href="#work" className={styles.primaryLink}>Explore my work <span aria-hidden="true">↗</span></a>
-      </div>
-      <figure className={styles.portrait}>
-        <ProgressivePortrait />
-        <figcaption><span>A builder, at heart.</span><span className={styles.signature}>meseba</span></figcaption>
-      </figure>
-    </section>
-  );
-}
-
 export function PersonalHome({ children }: { children: React.ReactNode }) {
-  return <div className={styles.home}>{children}</div>;
-}
-
-export function WorkSection() {
   return (
-    <section id="work" className={styles.work} aria-labelledby="work-heading">
-      <div className={styles.sectionHeading}><p className={styles.eyebrow}>01 / How I work</p><h2 id="work-heading">From the right question<br />to working software.</h2></div>
-      <WorkLens />
-    </section>
-  );
-}
-
-export function CurrentCompanySection() {
-  return (
-    <section className={styles.currentCompany} aria-labelledby="currentCompany-heading">
-      <div className={styles.currentCompanyCopy}>
-        <p className={styles.eyebrow}>02 / Latest company · Jan 2026–Present</p>
-        <h2 id="currentCompany-heading">Stealth Startup</h2>
-        <p className={styles.role}>Founder’s Associate &amp;<br />AI Technical Growth Product Manager</p>
-        <p>Building AI systems. Shaping product and growth with the founders.</p>
+    <main className={styles.home} data-personal-home>
+      <div className={styles.columns}>
+        <aside className={styles.identity}>
+          <div className={styles.portrait}><ProgressivePortrait /></div>
+          <div className={styles.identityCopy}>
+            <h1>{SITE_NAME}</h1>
+            <p className={styles.role}>{ROLE}</p>
+          </div>
+          <a href={author.links.linkedin} className={styles.primaryLink}>Connect on LinkedIn <span aria-hidden="true">↗</span></a>
+          <div className={styles.social}><a href={author.links.twitter}>X ↗</a><a href={author.links.github}>GitHub ↗</a></div>
+        </aside>
+        <div className={styles.content}>
+          <section className={styles.intro}>
+            <p className={styles.eyebrow}>Hello, I’m Semih.</p>
+            <h2>Products, mostly.<br /><em>Companies,<br />sometimes.</em></h2>
+            <p>I build products and sometimes build companies.</p>
+          </section>
+          <section id="work" className={styles.experience} aria-label="Experience">
+            {aboutData.experience.positions.map((position, index) => (
+              <article key={position.company} className={styles.position}>
+                <div className={styles.positionMeta}><span>{index === 0 ? "Latest company" : position.company}</span><span>{position.period}</span></div>
+                <h2>{index === 0 ? position.company : position.role}</h2>
+                {index === 0 && <p className={styles.positionRole}>{position.role}</p>}
+                <p className={styles.description}>{position.description}</p>
+                {index === 0 && <>
+                  <div className={styles.scale}><div><strong>140K+</strong><span>monthly active users</span></div><div><strong>$4M</strong><span>revenue</span></div></div>
+                  <p className={styles.scaleNote}>MAU · August 2026</p>
+                </>}
+              </article>
+            ))}
+          </section>
+          {children}
+        </div>
       </div>
-      <div className={styles.scale}>
-        <p className={styles.eyebrow}>Company scale</p>
-        <div><strong>140K<span>+</span></strong><p>monthly active users</p></div>
-        <div><strong>$4M</strong><p>revenue</p></div>
-        <p className={styles.scaleNote}>MAU · August 2026</p>
-      </div>
-    </section>
+      <section className={styles.contact}>
+        <h2>Let’s build something useful.</h2>
+        <a href={author.links.linkedin}>Start a conversation ↗</a>
+      </section>
+    </main>
   );
 }
 
-export function CareerSection({ children }: { children: React.ReactNode }) {
-  return <section className={styles.career} id="experience"><p className={styles.eyebrow}>04 / The path here</p>{children}</section>;
-}
-
-export function PersonalContact() {
-  return (
-    <section className={styles.contact}>
-      <p className={styles.eyebrow}>Good products start with a conversation.</p>
-      <h2>Let’s build<br /><span>something useful.</span></h2>
-      <div><a href={author.links.linkedin} className={styles.primaryLink}>Connect on LinkedIn <span aria-hidden="true">↗</span></a><Link href="/thoughts" className={styles.secondaryLink}>Read my writing ↗</Link></div>
-    </section>
-  );
+export function BackgroundSection({ children }: { children: React.ReactNode }) {
+  return <div className={styles.background}>{children}</div>;
 }

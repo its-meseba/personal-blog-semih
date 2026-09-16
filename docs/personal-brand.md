@@ -17,4 +17,6 @@ Approved by Semih on 2026-09-15.
 
 This records personal branding preferences, not authorization to publish, change account identities, send messages, or run portfolio operations.
 
-Homepage layout and interaction decisions: [editorial homepage](design/personal-home.md).
+Homepage layout and interaction decisions: [personal index](design/personal-home.md).
+
+Approved website direction: option 3, personal index. Serif editorial headings on a paper surface; compact profile beside the career timeline. Apply the shared header, surface, and typography to writing and series pages.

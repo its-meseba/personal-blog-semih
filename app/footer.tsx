@@ -10,7 +10,7 @@ const FOOTER_LINK =
 
 export function Footer() {
   return (
-    <footer className="mx-auto w-full max-w-shell px-6 pb-block pt-rhythm">
+    <footer className="site-footer w-full pb-block pt-rhythm">
       <div className="flex flex-col gap-2 border-t border-border pt-4 font-mono text-meta text-faint sm:flex-row sm:items-center sm:justify-between">
         <div>
           Mehmet Semih Babacan{" "}

@@ -1,33 +1,27 @@
-# meseba editorial homepage
+# meseba personal index
 
-PR direction, September 2026. Identity remains canonical in [personal-brand.md](../personal-brand.md).
+Approved option 3 on September 16, 2026. Canonical identity: [personal-brand.md](../personal-brand.md).
 
 ## Purpose and composition
 
-Adapt Web Printer's `attention` direction for a personal product-builder website. Help readers understand Semih's combination of product judgment and engineering, then explore his experience, writing, or LinkedIn. No project catalogue, fabricated product UI, or decorative stock artwork.
+A compact personal profile for a product manager who builds software. The desktop homepage pairs a sticky portrait/name/contact column with an introduction and three recent roles. “Hello, I’m Semih” sits above the approved motto. One short sentence per role. Earlier internships and the project catalogue are omitted; education and recognition remain available as native disclosures.
 
-- Portrait-led hero with the approved motto as the single H1, name and role above, one work anchor.
-- Understand / Build / Improve selector: real examples of Semih's work, accessible pressed buttons and live detail region. This explains his working approach; it is not a simulated app.
-- Burgundy Stealth Startup feature with role, concise responsibilities, and dated product scale. MAU and revenue describe company scale, not growth personally caused by Semih.
-- Existing live writing feed, followed by three recent roles and native expandable education and recognition.
-- Closing LinkedIn CTA and writing link. No unverified email or availability claim.
+The writing feed stays live. Header links preserve Work, Writing, Series, and LinkedIn; the theme control stays available. The footer retains the Atom feed and social links. No changes to post content, URLs, series filters, analytics, metadata identities, or article interactions.
 
-## Layout and accessibility
+## Shared visual system
 
-Homepage only: 1200px shell; article reading widths stay unchanged. Existing Archivo, Source Serif, JetBrains Mono and theme tokens. Responsive headline 50–101px; section spacing 64–112px. Hero and Stealth Startup split into columns above 700px, stack below. Portrait arch becomes a square crop on small screens. Work buttons form a row on mobile. No fixed overlay navigation. Natural section heights; browser zoom enabled. Focus indicators and reduced-motion-aware existing post skeletons.
+A 1240px paper surface sits on a slightly darker canvas with a fine border and 48px desktop inset. Writing and series retain their reading widths inside this surface. The shared header, footer, serif page titles, small corner radii, and spacing carry the selected direction through the site. Existing Archivo, Source Serif 4 and JetBrains Mono remain self-hosted. Existing semantic palette tokens provide light and dark variants.
 
-## Imagery
+Homepage: 300px profile column and flexible content column, 32–64px gap; below 850px use a compact portrait/name row and one content column. Keep touch targets at least 44px, native zoom, focus rings, and reduced-motion support. Do not resize article screenshots or change post/code behavior merely for visual consistency.
 
-Use the existing real portrait `/public/images/photo.jpeg` (640 x 640), served through Next Image responsive optimization with reserved dimensions and priority. No generated likeness or decorative imagery: authenticity is the explanatory visual for this personal site. The approved logo, favicon and share card remain unchanged.
+## Copy and evidence
 
-## Copy and reuse
-
-Voice: direct, warm, short, specific. Motto: “Products, mostly. Companies, sometimes.” Keep meseba and @its_meseba distinct. Stealth Startup shows 140K+ MAU from August 2026 analytics and $4M revenue supplied by Semih on September 16. The revenue period was not specified: do not label it ARR, annual, or monthly revenue. Do not publish product-identifying usage metrics. Do not reuse unverified subscriber counts or revenue uplift claims. For social crops preserve the existing paper/burgundy palette, readable motto, and text-safe portrait placement. Public posts and ads require separate publishing authorization.
-
-Experience copy follows the CV supplied September 16: Stealth Startup, Upily, and Solace only. Solace title is CEO & Co-Founder. Each role has one short sentence; internships are omitted from this overview.
-
-Public employer label is Stealth Startup. Experience summaries are one short sentence per role; the employer feature uses one short line without responsibility bullets.
+Public employer label: Stealth Startup. Title: Founder's Associate & AI Technical Growth Product Manager. Product scale: 140K+ MAU, explicitly dated August 2026. Revenue: $4M supplied by Semih; period unspecified, so never label ARR, annual or monthly revenue. Do not publish the employer's name or product-identifying usage metrics. Upily and Solace follow the latest supplied CV; Solace title is CEO & Co-Founder.
 
 ## Progressive portrait
 
-The existing 640px photo loads first. After it loads, Next Image requests the responsive optimized version of `/public/images/portrait-high-quality.png`, a 2048px original supplied by Semih. The new layer fades in only after decoding, with matching crop and reserved geometry. The original stays underneath on network/decode failure; reduced motion disables the fade. The original PNG is preserved without alteration; browsers receive optimized responsive variants.
+The existing 640px photo loads first. Next Image then requests a responsive optimized version of `/public/images/portrait-high-quality.png`, the 2048px original supplied by Semih. It fades in only after decoding, with identical square crop and reserved geometry. The original stays underneath on network/decode failure. Reduced motion disables the fade. No generated portrait or stock assets.
+
+## Social continuity
+
+Retain meseba, @its_meseba, the approved motto, burgundy/paper palette, favicon, and sharing artwork. Publishing posts or ads requires separate authorization.

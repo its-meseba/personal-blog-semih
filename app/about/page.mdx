@@ -1,6 +1,5 @@
 import { aboutData } from "./about-data";
-import { PersonalHome, PersonalHero, WorkSection, CurrentCompanySection, CareerSection, PersonalContact } from "./components/personal-home";
-import { ExperienceSection } from "./components/experience-section";
+import { PersonalHome, BackgroundSection } from "./components/personal-home";
 import { EducationSection } from "./components/education-section";
 import { AchievementsSection } from "./components/achievements-section";
 import { LatestPostsSection } from "./components/latest-posts-section";
@@ -37,12 +36,8 @@ export const metadata = {
 <JsonLd data={websiteSchema()} />
 
 <PersonalHome>
-  <PersonalHero />
-  <WorkSection />
-  <CurrentCompanySection />
   <LatestPostsSection />
-  <CareerSection>
-    <ExperienceSection title="Experience" positions={aboutData.experience.positions} />
+  <BackgroundSection>
     <details>
       <summary>Education &amp; research</summary>
       <EducationSection title={aboutData.education.title} degrees={aboutData.education.degrees} research={aboutData.education.research} />
@@ -51,6 +46,5 @@ export const metadata = {
       <summary>Achievements &amp; recognition</summary>
       <AchievementsSection title={aboutData.achievements.title} items={aboutData.achievements.items} />
     </details>
-  </CareerSection>
-  <PersonalContact />
+  </BackgroundSection>
 </PersonalHome>

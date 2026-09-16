@@ -28,18 +28,19 @@ interface Post {
 }
 
 export function LatestPostsSection() {
-    const { data: posts, isLoading } = useSWR<Post[]>("/api/posts", fetcher);
+    const { data: posts, isLoading, error } = useSWR<Post[]>("/api/posts", fetcher);
 
     // Get the latest 2 posts
-    const latestPosts = posts
-        ?.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-        .slice(0, 2);
+    const latestPosts = Array.isArray(posts) ? [...posts]
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, 2) : [];
 
     return (
-        <section className="mb-section">
+        <section id="writing" className="mb-section">
+            <p className="mb-6 font-mono text-micro uppercase tracking-tag text-muted">03 / Notes from building</p>
             <div className="flex items-center justify-between mb-6">
                 <h2 className="font-display text-h3 font-semibold tracking-tight text-fg md:text-h2">
-                    Latest Posts
+                    Thinking out loud
                 </h2>
                 <Link
                     href="/thoughts"
@@ -54,7 +55,7 @@ export function LatestPostsSection() {
                     {[1, 2].map((i) => (
                         <div
                             key={i}
-                            className="rounded-card border border-border bg-surface p-5 animate-pulse"
+                            className="rounded-card border border-border bg-surface p-5 motion-safe:animate-pulse"
                         >
                             <div className="h-4 bg-surface-hover rounded w-1/4 mb-3"></div>
                             <div className="h-5 bg-surface-hover rounded w-3/4 mb-2"></div>
@@ -96,7 +97,7 @@ export function LatestPostsSection() {
                 </div>
             ) : (
                 <div className="text-center py-8 text-muted">
-                    No posts yet.
+                    {error ? "Writing is temporarily unavailable." : "No posts yet."} <Link href="/thoughts" className="underline">Browse all writing</Link>
                 </div>
             )}
         </section>

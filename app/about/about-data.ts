@@ -290,8 +290,22 @@ export const aboutData = {
     title: "Experience",
     positions: [
       {
+        company: "CraftNote",
+        role: "Founder's Associate & AI Technical Growth Product Manager",
+        period: "Jan 2026 - Present",
+        location: "Remote / United States",
+        description: "Combined product strategy with hands-on engineering across AI agents, customer support, analytics, lifecycle marketing, and regional pricing. Worked closely with the founders and engineering, design, and product teams."
+      },
+      {
+        company: "Upily",
+        role: "AI Technical Product Manager",
+        period: "Aug 2025 - Jan 2026",
+        location: "Remote / Global",
+        description: "Owned AI product strategy and roadmaps for consumer apps, taking agentic features from prototype to production with evaluation and staged rollouts."
+      },
+      {
         company: "Solace Technology Inc",
-        role: "CEO & Co-founder",
+        role: "Head of Product & Co-founder",
         period: "Nov 2023 - Aug 2025",
         location: "Istanbul, Turkey",
         description: "Launched two AI products—Ensi (smart home) and EMA (B2B assistant)—leading full-stack development across mobile, web, and backend systems. Built Python/FastAPI backends with WebSockets, deployed CI/CD with Docker and GitHub Actions. Raised $250K, secured TÜBİTAK 1507 grant, scaled team from 4 to 8 engineers, and drove GTM strategy including positioning and investor relations."

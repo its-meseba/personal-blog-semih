@@ -1,0 +1,70 @@
+:global(main):has(.home) { max-width: 1200px; }
+.home { --home-space: clamp(4rem, 8vw, 7rem); }
+.home section { scroll-margin-top: 2rem; }
+.eyebrow { font-family: var(--font-mono), monospace; font-size: 11px; line-height: 1.8; letter-spacing: .075em; text-transform: uppercase; color: rgb(var(--c-muted)); }
+.hero { display: grid; grid-template-columns: 1.3fr 1fr; align-items: center; gap: clamp(2rem, 5vw, 5rem); padding: 2rem 0 var(--home-space); }
+.hero h1 { font-size: clamp(3.4rem, 7vw, 6.3rem); line-height: .98; letter-spacing: -.065em; font-weight: 600; margin: 1.8rem 0; }
+.hero h1 span { color: rgb(var(--c-accent)); }
+.introduction { max-width: 29rem; color: rgb(var(--c-muted)); font-size: 18px; line-height: 1.7; margin-bottom: 1.8rem; }
+.primaryLink { display: inline-flex; align-items: center; justify-content: space-between; gap: 2rem; min-height: 48px; padding: .85rem 1.25rem; background: rgb(var(--c-accent-field)); color: rgb(var(--c-accent-ink)); border-radius: 4px; font-size: 14px; }
+.primaryLink:hover { background: rgb(var(--c-accent-field-hover)); }
+.portrait { margin: 3rem 0 0; transform: rotate(2deg); }
+.portrait img { width: 100%; height: auto; aspect-ratio: 4/5; object-fit: cover; border-radius: 45% 45% 4px 4px; }
+.portrait figcaption { display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; gap: 1rem; font-size: 12px; color: rgb(var(--c-muted)); }
+.signature { font-family: var(--font-mono), monospace; color: rgb(var(--c-accent)); }
+.sectionHeading { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; margin-bottom: 2.5rem; }
+.sectionHeading h2, .contact h2 { font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 500; letter-spacing: -.045em; line-height: 1.1; }
+.work { border-top: 1px solid rgb(var(--c-border)); padding: 2rem 0 var(--home-space); }
+.lens { display: grid; grid-template-columns: 1fr 2fr; border: 1px solid rgb(var(--c-border)); border-radius: 6px; overflow: hidden; }
+.lensControls { display: flex; flex-direction: column; background: rgb(var(--c-surface)); }
+.lensControls button { display: flex; align-items: center; text-align: left; gap: 1rem; padding: 1.5rem; min-height: 80px; flex: 1; border-bottom: 1px solid rgb(var(--c-border)); font-size: 20px; }
+.lensControls button:last-child { border-bottom: 0; }
+.lensControls button span { font-family: var(--font-mono), monospace; font-size: 11px; }
+.lensControls button span:last-child { margin-left: auto; font-size: 20px; }
+.lensControls button[aria-pressed="true"] { background: rgb(var(--c-accent-field)); color: rgb(var(--c-accent-ink)); }
+.lensDetail { padding: clamp(1.5rem, 4vw, 3rem); min-height: 330px; }
+.flow { display: flex; align-items: center; gap: 1rem; color: rgb(var(--c-accent)); font-family: var(--font-mono), monospace; font-size: 11px; margin-bottom: 2rem; }
+.flow span:first-child, .flow span:last-child { border-bottom: 1px solid rgb(var(--c-border-strong)); padding-bottom: .5rem; }
+.lensDetail h3 { font-size: 26px; line-height: 1.25; letter-spacing: -.03em; margin-bottom: 1rem; }
+.lensDetail p { color: rgb(var(--c-muted)); line-height: 1.75; max-width: 36rem; }
+.lensDetail ul { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin-top: 1.5rem; font-size: 12px; color: rgb(var(--c-muted)); }
+.craftnote { display: grid; grid-template-columns: 1.35fr 1fr; background: rgb(var(--c-accent-field)); color: rgb(var(--c-accent-ink)); padding: clamp(1.5rem, 5vw, 4rem); gap: 4rem; border-radius: 6px; margin-bottom: var(--home-space); }
+.craftnote .eyebrow { color: inherit; opacity: .85; }
+.craftnote h2 { font-size: clamp(3rem, 6vw, 5rem); letter-spacing: -.055em; font-weight: 500; margin: 1.4rem 0; line-height: 1; }
+.role { font-size: 18px; line-height: 1.5; margin-bottom: 1.5rem; }
+.craftnoteCopy > p:not(.role):not(.eyebrow) { font-size: 15px; line-height: 1.7; opacity: .9; }
+.craftnote ul { margin-top: 1.5rem; padding-left: 1rem; list-style: disc; font-size: 14px; line-height: 1.7; }
+.craftnote li + li { margin-top: .6rem; }
+.scale { border-left: 1px solid #ffffff40; padding-left: 3rem; display: flex; flex-direction: column; justify-content: space-between; gap: 1.5rem; }
+.scale strong { font-size: clamp(3.3rem, 6vw, 5.5rem); font-weight: 500; letter-spacing: -.06em; line-height: 1; }
+.scale strong span { font-size: .65em; }
+.scale div p { margin-top: .5rem; font-size: 14px; }
+.scaleNote { font-size: 11px; line-height: 1.7; opacity: .8; }
+.career { margin-top: var(--home-space); border-top: 1px solid rgb(var(--c-border)); padding-top: 2rem; }
+.career > .eyebrow { margin-bottom: 2rem; }
+.career details { border-top: 1px solid rgb(var(--c-border)); padding: 1rem 0; }
+.career summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-size: 17px; }
+.career summary::after { content: '+'; color: rgb(var(--c-accent)); }
+.career details[open] summary::after { content: '−'; }
+.career details > section { margin: 1.5rem 0; }
+.contact { border-top: 1px solid rgb(var(--c-border)); padding: var(--home-space) 0 2rem; margin-top: 3rem; }
+.contact h2 { font-size: clamp(2.8rem, 6vw, 5.5rem); margin: 1.8rem 0 2rem; }
+.contact h2 span { color: rgb(var(--c-accent)); }
+.contact > div { display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: center; }
+.secondaryLink { display: inline-flex; align-items: center; min-height: 48px; color: rgb(var(--c-accent)); font-size: 14px; }
+.home a:focus-visible, .home button:focus-visible, .home summary:focus-visible { outline: 2px solid rgb(var(--c-accent)); outline-offset: 5px; }
+@media (max-width: 700px) {
+ .hero { grid-template-columns: 1fr; gap: 2rem; padding-top: 1rem; }
+ .hero h1 { font-size: clamp(3.1rem, 12vw, 5rem); }
+ .portrait { width: min(100%, 400px); justify-self: center; margin-top: 0; transform: none; }
+ .portrait img { aspect-ratio: 1/1; }
+ .sectionHeading { grid-template-columns: 1fr; gap: 1rem; }
+ .lens { grid-template-columns: 1fr; }
+ .lensControls { flex-direction: row; }
+ .lensControls button { padding: 1rem .5rem; min-height: 60px; font-size: 14px; justify-content: center; gap: .4rem; border-bottom: 0; }
+ .lensControls button span:last-child { display: none; }
+ .lensDetail { min-height: 350px; }
+ .flow { gap: .5rem; font-size: 10px; }
+ .craftnote { grid-template-columns: 1fr; gap: 2rem; }
+ .scale { border-left: 0; border-top: 1px solid #ffffff40; padding: 2rem 0 0; }
+}

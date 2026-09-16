@@ -294,49 +294,21 @@ export const aboutData = {
         role: "Founder's Associate & AI Technical Growth Product Manager",
         period: "Jan 2026 - Present",
         location: "Remote / United States",
-        description: "Combined product strategy with hands-on engineering across AI agents, customer support, analytics, lifecycle marketing, and regional pricing. Worked closely with the founders and engineering, design, and product teams."
+        description: "I work with the founders on product and growth, and build the AI systems behind them. My work includes customer research, pricing, lifecycle marketing, and automating support."
       },
       {
         company: "Upily",
         role: "AI Technical Product Manager",
         period: "Aug 2025 - Jan 2026",
         location: "Remote / Global",
-        description: "Owned AI product strategy and roadmaps for consumer apps, taking agentic features from prototype to production with evaluation and staged rollouts."
+        description: "Led AI product development for consumer apps, including Wonjo Kids. Owned the roadmap and technical architecture, taking features from prototype to release."
       },
       {
-        company: "Solace Technology Inc",
-        role: "Head of Product & Co-founder",
+        company: "Solace Technology Incorporated",
+        role: "CEO & Co-Founder",
         period: "Nov 2023 - Aug 2025",
         location: "Istanbul, Turkey",
-        description: "Launched two AI products—Ensi (smart home) and EMA (B2B assistant)—leading full-stack development across mobile, web, and backend systems. Built Python/FastAPI backends with WebSockets, deployed CI/CD with Docker and GitHub Actions. Raised $250K, secured TÜBİTAK 1507 grant, scaled team from 4 to 8 engineers, and drove GTM strategy including positioning and investor relations."
-      },
-      {
-        company: "TÜBİTAK (Scientific and Technological Research Council of Turkey)",
-        role: "Part-Time Researcher",
-        period: "Aug 2023 - Dec 2023",
-        location: "Kocaeli, Turkey",
-        description: "Built a secure cross-platform MPC Wallet in Flutter+Go to eliminate single-key custody risk. Contributed to a Go crypto library and simulated adversarial attacks to test protocol resilience for blockchain security research."
-      },
-      {
-        company: "TÜBİTAK BİLGEM",
-        role: "STAR Presidential Research Intern",
-        period: "Jan 2022 - Jul 2022",
-        location: "Gebze, Turkey",
-        description: "Built CBDC smart contracts with Hyperledger Fabric, Solidity, and TypeScript for Turkey's Central Bank. Developed and deployed a regulated NFT prototype to test digital asset flows internally as part of national digital currency research."
-      },
-      {
-        company: "Baykar Defense / Cezeri AI",
-        role: "Project Management Intern",
-        period: "2021 - 2022",
-        location: "Turkey",
-        description: "Benchmarked CI/CD tools, built containerized pipelines, and proposed a DevOps roadmap including early-stage static analysis and deployment KPIs for AI and robotics applications in defense technology."
-      },
-      {
-        company: "Yıldız Technical University - Autonomous Systems Club",
-        role: "Deep Learning Engineer",
-        period: "Nov 2020 - Aug 2021",
-        location: "Istanbul, Turkey",
-        description: "Boosted detection pipeline throughput (YOLOv4 → TensorRT/TKDNN) from 36 to 140 FPS. Led dataset operations and launched Tableau reviews to ensure labeling and evaluation quality for autonomous vehicle systems."
+        description: "Co-founded Solace and launched Ensi and EMA, AI assistants for homes and businesses. Built the products, raised funding, and grew the team."
       }
     ]
   },

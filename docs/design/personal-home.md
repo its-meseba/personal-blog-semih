@@ -9,7 +9,7 @@ Adapt Web Printer's `attention` direction for a personal product-builder website
 - Portrait-led hero with the approved motto as the single H1, name and role above, one work anchor.
 - Understand / Build / Improve selector: real examples of Semih's work, accessible pressed buttons and live detail region. This explains his working approach; it is not a simulated app.
 - Burgundy CraftNote feature with role, concise responsibilities, and dated product scale. MAU and note volume describe the product, not growth personally caused by Semih.
-- Existing live writing feed, followed by three recent roles and native expandable earlier experience, education, and recognition.
+- Existing live writing feed, followed by three recent roles and native expandable education and recognition.
 - Closing LinkedIn CTA and writing link. No unverified email or availability claim.
 
 ## Layout and accessibility
@@ -23,3 +23,5 @@ Use the existing real portrait `/public/images/photo.jpeg` (640 x 640), served t
 ## Copy and reuse
 
 Voice: direct, warm, short, specific. Motto: “Products, mostly. Companies, sometimes.” Keep meseba and @its_meseba distinct. CraftNote figures use August 2026 analytics from the CV research in this task (140K+ MAU, 240K+ monthly notes); do not treat them as live counters. Do not reuse unverified subscriber counts or revenue uplift claims. For social crops preserve the existing paper/burgundy palette, readable motto, and text-safe portrait placement. Public posts and ads require separate publishing authorization.
+
+Experience copy follows the CV supplied September 16: CraftNote, Upily, and Solace only. Solace title is CEO & Co-Founder. Each role has two short sentences; internships are omitted from this overview.

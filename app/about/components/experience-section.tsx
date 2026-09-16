@@ -31,11 +31,7 @@ export function ExperienceSection({ title, positions }: { title: string; positio
   return (
     <AboutSection title={title} id="experience-section">
       <div>
-        {positions.slice(0, 3).map(position => <Position key={`${position.company}-${position.period}`} position={position} />)}
-        {positions.length > 3 && <details>
-          <summary>Earlier experience</summary>
-          {positions.slice(3).map(position => <Position key={`${position.company}-${position.period}`} position={position} />)}
-        </details>}
+        {positions.map(position => <Position key={`${position.company}-${position.period}`} position={position} />)}
       </div>
     </AboutSection>
   );

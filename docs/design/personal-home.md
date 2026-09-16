@@ -27,3 +27,7 @@ Voice: direct, warm, short, specific. Motto: “Products, mostly. Companies, som
 Experience copy follows the CV supplied September 16: Stealth Company, Upily, and Solace only. Solace title is CEO & Co-Founder. Each role has one short sentence; internships are omitted from this overview.
 
 Public employer label is Stealth Company. Experience summaries are one short sentence per role; the employer feature uses one short line without responsibility bullets.
+
+## Progressive portrait
+
+The existing 640px photo loads first. After it loads, Next Image requests the responsive optimized version of `/public/images/portrait-high-quality.png`, a 2048px original supplied by Semih. The new layer fades in only after decoding, with matching crop and reserved geometry. The original stays underneath on network/decode failure; reduced motion disables the fade. The original PNG is preserved without alteration; browsers receive optimized responsive variants.

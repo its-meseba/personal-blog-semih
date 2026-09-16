@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ProgressivePortrait } from "./progressive-portrait";
 import Link from "next/link";
 import { author, ROLE, SITE_NAME } from "@/app/author";
 import { WorkLens } from "./work-lens";
@@ -14,7 +14,7 @@ export function PersonalHero() {
         <a href="#work" className={styles.primaryLink}>Explore my work <span aria-hidden="true">↗</span></a>
       </div>
       <figure className={styles.portrait}>
-        <Image src="/images/photo.jpeg" alt="Mehmet Semih Babacan" width={640} height={640} sizes="(max-width: 700px) 90vw, 440px" priority />
+        <ProgressivePortrait />
         <figcaption><span>A builder, at heart.</span><span className={styles.signature}>meseba</span></figcaption>
       </figure>
     </section>

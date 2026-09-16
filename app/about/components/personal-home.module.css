@@ -68,3 +68,9 @@
  .currentCompany { grid-template-columns: 1fr; gap: 2rem; }
  .scale { border-left: 0; border-top: 1px solid #ffffff40; padding: 2rem 0 0; }
 }
+
+.portraitFrame { position: relative; }
+.portraitFrame img { display: block; }
+.portraitFrame .portraitHighQuality { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity var(--dur-base) ease; }
+.portraitFrame .portraitHighQuality[data-ready="true"] { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .portraitFrame .portraitHighQuality { transition: none; } }

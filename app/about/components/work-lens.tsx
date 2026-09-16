@@ -4,9 +4,9 @@ import { useState } from "react";
 import styles from "./personal-home.module.css";
 
 const lenses = [
-  { title: "Understand", subtitle: "Find the problem worth solving.", description: "Customer interviews, support conversations, behavioral analytics, and competitor research help me decide what deserves to be built.", input: "Customer signals", output: "Product priorities", examples: ["Global user interviews", "PostHog dashboards", "Market opportunities"] },
-  { title: "Build", subtitle: "Stay close to the code.", description: "I write code, deploy and maintain systems, and work with engineering and design to carry decisions through to a working product.", input: "Product decisions", output: "Working systems", examples: ["Production AI agents", "Product development", "Team AI adoption"] },
-  { title: "Improve", subtitle: "Learn from what people actually do.", description: "I use experiments and product data to refine onboarding, lifecycle marketing, and pricing for different markets and customer needs.", input: "Real user behavior", output: "The next experiment", examples: ["Onboarding analysis", "Lifecycle marketing", "Regional pricing"] },
+  { title: "Understand", subtitle: "Find the problem worth solving.", description: "I use customer insights and data to decide what to build.", input: "Customer signals", output: "Product priorities" },
+  { title: "Build", subtitle: "Stay close to the code.", description: "I turn ideas into working products and keep improving them.", input: "Product decisions", output: "Working systems" },
+  { title: "Improve", subtitle: "Learn from what people actually do.", description: "I use product data to improve user experiences and grow revenue.", input: "Real user behavior", output: "The next experiment" },
 ];
 
 export function WorkLens() {
@@ -19,7 +19,6 @@ export function WorkLens() {
     <div id="work-detail" className={styles.lensDetail} aria-live="polite" aria-atomic="true">
       <div className={styles.flow} aria-label={`${lens.input} to ${lens.output}`}><span>{lens.input}</span><span aria-hidden="true">→</span><span>{lens.output}</span></div>
       <h3>{lens.subtitle}</h3><p>{lens.description}</p>
-      <ul>{lens.examples.map(example => <li key={example}>{example}</li>)}</ul>
     </div>
   </div>;
 }

@@ -38,16 +38,16 @@ export function CurrentCompanySection() {
   return (
     <section className={styles.currentCompany} aria-labelledby="currentCompany-heading">
       <div className={styles.currentCompanyCopy}>
-        <p className={styles.eyebrow}>02 / In practice · Jan 2026–Present</p>
+        <p className={styles.eyebrow}>02 / Latest company · Jan 2026–Present</p>
         <h2 id="currentCompany-heading">Stealth Company</h2>
         <p className={styles.role}>Founder’s Associate &amp;<br />AI Technical Growth Product Manager</p>
         <p>Building AI systems. Shaping product and growth with the founders.</p>
       </div>
       <div className={styles.scale}>
-        <p className={styles.eyebrow}>The product’s scale</p>
+        <p className={styles.eyebrow}>Company scale</p>
         <div><strong>140K<span>+</span></strong><p>monthly active users</p></div>
-        <div><strong>240K<span>+</span></strong><p>notes created monthly</p></div>
-        <p className={styles.scaleNote}>Product usage<br />August 2026</p>
+        <div><strong>$4M</strong><p>revenue</p></div>
+        <p className={styles.scaleNote}>MAU · August 2026</p>
       </div>
     </section>
   );

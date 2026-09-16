@@ -8,7 +8,7 @@ Adapt Web Printer's `attention` direction for a personal product-builder website
 
 - Portrait-led hero with the approved motto as the single H1, name and role above, one work anchor.
 - Understand / Build / Improve selector: real examples of Semih's work, accessible pressed buttons and live detail region. This explains his working approach; it is not a simulated app.
-- Burgundy Stealth Company feature with role, concise responsibilities, and dated product scale. MAU and note volume describe the product, not growth personally caused by Semih.
+- Burgundy Stealth Company feature with role, concise responsibilities, and dated product scale. MAU and revenue describe company scale, not growth personally caused by Semih.
 - Existing live writing feed, followed by three recent roles and native expandable education and recognition.
 - Closing LinkedIn CTA and writing link. No unverified email or availability claim.
 
@@ -22,8 +22,8 @@ Use the existing real portrait `/public/images/photo.jpeg` (640 x 640), served t
 
 ## Copy and reuse
 
-Voice: direct, warm, short, specific. Motto: “Products, mostly. Companies, sometimes.” Keep meseba and @its_meseba distinct. Stealth Company figures use August 2026 analytics from the CV research in this task (140K+ MAU, 240K+ monthly notes); do not treat them as live counters. Do not reuse unverified subscriber counts or revenue uplift claims. For social crops preserve the existing paper/burgundy palette, readable motto, and text-safe portrait placement. Public posts and ads require separate publishing authorization.
+Voice: direct, warm, short, specific. Motto: “Products, mostly. Companies, sometimes.” Keep meseba and @its_meseba distinct. Stealth Company shows 140K+ MAU from August 2026 analytics and $4M revenue supplied by Semih on September 16. The revenue period was not specified: do not label it ARR, annual, or monthly revenue. Do not publish product-identifying usage metrics. Do not reuse unverified subscriber counts or revenue uplift claims. For social crops preserve the existing paper/burgundy palette, readable motto, and text-safe portrait placement. Public posts and ads require separate publishing authorization.
 
-Experience copy follows the CV supplied September 16: Stealth Company, Upily, and Solace only. Solace title is CEO & Co-Founder. Each role has two short sentences; internships are omitted from this overview.
+Experience copy follows the CV supplied September 16: Stealth Company, Upily, and Solace only. Solace title is CEO & Co-Founder. Each role has one short sentence; internships are omitted from this overview.
 
 Public employer label is Stealth Company. Experience summaries are one short sentence per role; the employer feature uses one short line without responsibility bullets.

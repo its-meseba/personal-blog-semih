@@ -16,3 +16,5 @@ Approved by Semih on 2026-09-15.
 - Identity source: `app/author.ts`; palette: `app/styles/tokens.ts` and mirrored CSS in `app/globals.css`.
 
 This records personal branding preferences, not authorization to publish, change account identities, send messages, or run portfolio operations.
+
+Homepage layout and interaction decisions: [editorial homepage](design/personal-home.md).

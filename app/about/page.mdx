@@ -1,6 +1,5 @@
 import { aboutData } from "./about-data";
-import { AboutLayout } from "./components/about-layout";
-import { IntroSection } from "./components/intro-section";
+import { PersonalHome, PersonalHero, WorkSection, CurrentCompanySection, CareerSection, PersonalContact } from "./components/personal-home";
 import { ExperienceSection } from "./components/experience-section";
 import { EducationSection } from "./components/education-section";
 import { AchievementsSection } from "./components/achievements-section";
@@ -37,31 +36,21 @@ export const metadata = {
 <JsonLd data={personSchema()} />
 <JsonLd data={websiteSchema()} />
 
-<AboutLayout>
-  <div className="pb-chapter">
-    <IntroSection
-      title={aboutData.intro.title}
-      description={aboutData.intro.description}
-      additionalInfo={aboutData.intro.additionalInfo}
-      personalNote={aboutData.intro.personalNote}
-    />
-
-    <LatestPostsSection />
-
-    <ExperienceSection
-      title={aboutData.experience.title}
-      positions={aboutData.experience.positions}
-    />
-
-    <EducationSection
-      title={aboutData.education.title}
-      degrees={aboutData.education.degrees}
-      research={aboutData.education.research}
-    />
-
-    <AchievementsSection
-      title={aboutData.achievements.title}
-      items={aboutData.achievements.items}
-    />
-  </div>
-</AboutLayout>
+<PersonalHome>
+  <PersonalHero />
+  <WorkSection />
+  <CurrentCompanySection />
+  <LatestPostsSection />
+  <CareerSection>
+    <ExperienceSection title="Experience" positions={aboutData.experience.positions} />
+    <details>
+      <summary>Education &amp; research</summary>
+      <EducationSection title={aboutData.education.title} degrees={aboutData.education.degrees} research={aboutData.education.research} />
+    </details>
+    <details>
+      <summary>Achievements &amp; recognition</summary>
+      <AchievementsSection title={aboutData.achievements.title} items={aboutData.achievements.items} />
+    </details>
+  </CareerSection>
+  <PersonalContact />
+</PersonalHome>

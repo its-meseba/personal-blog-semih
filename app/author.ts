@@ -25,7 +25,7 @@ export const ROLE = "AI Technical Product Manager";
  * engines quote it whole instead of truncating it.
  */
 export const SITE_DESCRIPTION =
-  `${MOTTO} I’m Mehmet Semih Babacan (meseba). I build products and write about AI, software, and entrepreneurship.`;
+  `${MOTTO} I’m Mehmet Semih Babacan (meseba). I connect AI product strategy with hands-on engineering, and write about building products and companies.`;
 
 /** Title of the site itself, and the fallback title of any untitled page. */
 export const SITE_TITLE = `${SITE_NAME} (meseba) | ${MOTTO}`;

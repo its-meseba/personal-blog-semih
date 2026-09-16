@@ -39,6 +39,7 @@ export const metadata = {
     "developer tooling",
     "TypeScript",
     "Next.js",
+    "Product strategy",
     "Solace Technology",
     "Istanbul",
   ],
@@ -101,8 +102,6 @@ export const viewport = {
   ],
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   viewportFit: "cover",
 };
 

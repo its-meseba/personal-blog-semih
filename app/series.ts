@@ -85,6 +85,31 @@ export const series: Record<string, Series> = {
     // One published post — nothing to order yet. Falls back to
     // chronological-ascending, which for one post is a no-op.
   },
+  "Harness Engineering": {
+    id: "harness-engineering",
+    name: "Harness Engineering",
+    description:
+      "Getting real work out of Claude Code: loops that finish, graphs that check each other, and skills that learn",
+    // Written and published as a set on 2026-09-23, so the order is the
+    // order they were written to be read in: each post assumes the one
+    // before it, and the last one also stands on its own.
+    order: [
+      "loop-engineering",
+      "graph-engineering",
+      "loops-and-graphs",
+      "skills-that-learn",
+    ],
+    orderReasons: {
+      "loop-engineering":
+        "Start here: make Claude Code finish a job with a finish line it has to prove, instead of typing continue.",
+      "graph-engineering":
+        "Then give it a team: split work across agents with one job each, including one whose only job is to disagree.",
+      "loops-and-graphs":
+        "Then decide which setup a recurring job needs, and build a review that runs every week and checks itself.",
+      "skills-that-learn":
+        "Finally, write your job down once as skills that keep your corrections, so no session starts from zero.",
+    },
+  },
 };
 
 export const getSeriesConfig = (seriesName?: string): Series | undefined => {

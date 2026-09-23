@@ -1,0 +1,249 @@
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "graph-engineering",
+  title: "Give Claude Code a team: graph engineering for everyday work",
+  description: "Some jobs are too big for one Claude conversation, and some answers shouldn't be checked by the agent that produced them. You can split the work across agents with one job each, including one whose only job is to disagree. Three setups you can ask for today, with prompts to paste.",
+  date: "2026-09-23",
+  series: "Harness Engineering",
+  tags: ["claude-code", "multi-agent", "productivity"],
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
+
+Even the people around me who use Claude Code well still use one Claude at a time. One conversation reads everything, does everything, and then checks its own work. You can run a small team instead: several agents, each with one job and a clean slate, and one of them there only to catch the others' mistakes. Most people I show this to don't know they can ask for it in a single sentence.
+
+Two situations call for it. The job is too big for one conversation to hold at once, like fifty documents, a long queue, or a report with many parts. Or the answer matters enough that the agent who produced it shouldn't be the one who checks it, like a number going into a board deck or a decision about money. A longer prompt fixes neither. Splitting the work can: more material covered, and an answer tested from several angles, as long as each agent gets the evidence it needs. I call drawing that split graph engineering: boxes for the agents, arrows for what they hand each other.
+
+By the end of this post you can:
+
+- have three agents check a number before it goes in front of anyone,
+- work through a queue where only the risky items get a second look,
+- assemble a report from several writers who all follow one brief,
+- and tell when a team is overkill.
+
+This is the second of four posts on getting more out of Claude Code. If you're new to this, [the first one, on loops](/2026/loop-engineering), is the easier starting point; the others cover [setting up work that repeats every week](/2026/loops-and-graphs) and [teaching Claude your job once](/2026/skills-that-learn).
+
+## What a team of agents looks like
+
+Each agent gets exactly one job. Ask for fresh agents and each one starts with only the task and the material you hand it, not your whole conversation, so it hasn't absorbed your assumptions or your earlier drafts. That makes it harder to inherit a mistake, though agents can still share blind spots. For a real check, keep the checkers from seeing each other's conclusions until the final review.
+
+When the next step depends on a result, ask agents to return named fields, like finding, evidence, and severity, rather than a page of prose. Then the next step can act on "severity: major" without rereading five hundred words. And in every team worth running, one agent's only job is to try to prove the others wrong.
+
+## How to ask for one
+
+In Claude Code, you ask in plain words. Put the word `ultracode` in your request, or just say "use a workflow", and Claude writes a small plan of agents, shows you the phases, and runs them in the background after you approve. You can keep working while it runs, and `/workflows` shows each phase and what every agent found. On the Pro plan, turn on Dynamic workflows in `/config` first.
+
+The fastest way to see one is the workflow that ships with Claude Code:
+
+```text
+/deep-research What are the main arguments for and against a four-day
+work week, based on studies published since 2022?
+```
+
+It sends agents out to search from several angles, checks the sources against each other, and gives you one cited report, with claims that didn't survive the cross-check filtered out. When a run of your own does what you wanted, open `/workflows`, select it, and press `s` to save it as a command you can run again by name.
+
+A team costs more than a single conversation, in tokens and in time. Try it on a small slice first, like one folder instead of the whole drive, and watch the cost in `/workflows` before you run it on everything.
+
+## Check a number before it goes in the deck
+
+This is the one I reach for most. When a number is about to change a decision, one agent recomputes it from scratch, one attacks the method, and one accepts the number but argues for a different explanation. A fourth reads all three and writes the verdict.
+
+I've used this before acting on business metrics, with separate agents testing the calculation, the method, and other explanations, and once with a whole run built only to try to break one number that would have changed a program's direction. It's the cheapest insurance I know against presenting something wrong.
+
+<Diagram
+  title="Three independent checks feed one final review, and only a supported claim reaches you as settled"
+  caption="The checkers look at the calculation, the method, and other explanations. The final reviewer weighs their evidence and reports what holds, what needs correcting, and what is still unclear."
+>
+  <svg viewBox="0 0 620 290" className="min-w-[560px]" role="presentation">
+    <defs>
+      <marker id="ge-arrow-1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+    </defs>
+
+    <rect x="10" y="123" width="90" height="44" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="55" y="149" textAnchor="middle">the claim</text>
+
+    <line x1="100" y1="145" x2="136" y2="60" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-1)" />
+    <line x1="100" y1="145" x2="136" y2="145" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-1)" />
+    <line x1="100" y1="145" x2="136" y2="230" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-1)" />
+
+    <rect x="140" y="38" width="140" height="44" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="210" y="57" textAnchor="middle">redo the math</text>
+    <text x="210" y="73" textAnchor="middle" fill="rgb(var(--c-muted))">verifier one</text>
+    <rect x="140" y="123" width="140" height="44" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="210" y="142" textAnchor="middle">attack the method</text>
+    <text x="210" y="158" textAnchor="middle" fill="rgb(var(--c-muted))">verifier two</text>
+    <rect x="140" y="208" width="140" height="44" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="210" y="227" textAnchor="middle">rival cause</text>
+    <text x="210" y="243" textAnchor="middle" fill="rgb(var(--c-muted))">verifier three</text>
+    <text x="210" y="24" textAnchor="middle" fill="rgb(var(--c-muted))">same claim, three jobs</text>
+
+    <line x1="280" y1="60" x2="330" y2="134" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-1)" />
+    <line x1="280" y1="145" x2="330" y2="145" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-1)" />
+    <line x1="280" y1="230" x2="330" y2="156" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-1)" />
+    <text x="305" y="118" textAnchor="middle" fill="rgb(var(--c-muted))">attacks</text>
+
+    <rect x="334" y="121" width="110" height="48" rx="8" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" />
+    <text x="389" y="143" textAnchor="middle" fill="rgb(var(--c-accent))">adjudicator</text>
+    <text x="389" y="158" textAnchor="middle" fill="rgb(var(--c-muted))">reruns it</text>
+
+    <line x1="444" y1="135" x2="490" y2="84" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-1)" />
+    <line x1="444" y1="155" x2="490" y2="206" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-1)" />
+    <text x="450" y="148" textAnchor="start" fill="rgb(var(--c-muted))">ruling</text>
+
+    <rect x="494" y="58" width="116" height="46" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="552" y="78" textAnchor="middle">survives</text>
+    <text x="552" y="93" textAnchor="middle" fill="rgb(var(--c-muted))">reaches you</text>
+    <rect x="494" y="186" width="116" height="46" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-muted))" strokeDasharray="4 4" />
+    <text x="552" y="206" textAnchor="middle">killed</text>
+    <text x="552" y="221" textAnchor="middle" fill="rgb(var(--c-muted))">number fixed</text>
+  </svg>
+</Diagram>
+
+The prompt needs the evidence, not only the claim. An agent can't recompute a number it doesn't have the data for:
+
+```text
+use a workflow to check this claim before I present it: <the claim>.
+The data is in <file path> and the original calculation is in <file
+path>. Use this metric definition and period: <definition, dates>.
+Have three separate agents check the calculation, the method, and
+other explanations. Then have one final reviewer weigh their findings.
+Mark each point as supported, refuted, or unverified. Only mark it
+refuted with contradicting evidence, and mark it unverified if data is
+missing. Return the verdict, the sources, and any corrected number.
+```
+
+The trap is asking one agent to check its own work. It tends to find its typos and miss its blind spots, because the blind spot is exactly what it didn't think to check the first time.
+
+## Give every item one check, and a second only when it's needed
+
+This one fits any queue: support tickets, requests, applications, reviews. Most items are fine, a few aren't, and you can't tell which up front.
+
+For a batch of support tickets, one agent read each full thread and drafted a reply, and a second, independent agent rechecked every fact in the draft against the source and rated each problem as blocker, major, or minor. Only a blocker or a major sent the draft back for revision and a fresh check. At the end, one more agent read across the whole batch for things a single ticket can't show, like the same customer on two tickets with different facts. And no agent could send, tag, or update anything. Everything came out as a draft for a person to read.
+
+```text
+use a workflow on the tickets in <folder or file>. Use <reference docs
+or past replies> as the source of truth. Draft replies only: never
+send, tag, or update anything. For each ticket, one agent drafts a
+reply and a separate agent checks every factual claim against the
+sources. Rate problems as blocker (unsafe or not allowed), major (a
+wrong fact that changes the advice), or minor (wording). Revise and
+recheck only blockers and majors, once. Leave anything still unclear
+for me. Finish by checking the whole batch for contradictions.
+```
+
+Skip the rating and every item pays for the expensive second pass because you're nervous about the risky ones. The rating is what keeps the queue cheap.
+
+## Split the writing, but agree on one brief first
+
+Anything built in parts that must fit together at the end wants this: a report with several sections, a deck, a proposal, a web page. If five agents start writing at once, each one invents its own idea of the audience, the terms, and the format, and you find out at assembly that nothing matches.
+
+So one agent goes first and writes the brief: the audience, the outline, the terms everyone uses, the format, and what "done" means for each part. Only then do the writers start, one section each, all working from that brief. One agent puts the pieces together, and one checks the result against the brief and the sources. I first used this to rebuild a landing page: one agent set up the shared names and styles, five built sections in parallel, one assembled, one checked the build.
+
+<Diagram
+  title="Agree on a shared brief before splitting the writing"
+  caption="Left: writers start without a shared brief and each one guesses, so the pieces don't fit. Right: one agent writes the brief first and every writer works from it. The assembled result still gets a final check."
+>
+  <svg viewBox="0 0 610 300" className="min-w-[560px]" role="presentation">
+    <defs>
+      <marker id="ge-arrow-2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+    </defs>
+
+    <text x="145" y="16" textAnchor="middle" fill="rgb(var(--c-muted))">no shared brief</text>
+    <rect x="105" y="26" width="80" height="36" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="145" y="48" textAnchor="middle">spec</text>
+
+    <line x1="125" y1="62" x2="66" y2="108" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-2)" />
+    <line x1="138" y1="62" x2="122" y2="108" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-2)" />
+    <line x1="152" y1="62" x2="178" y2="108" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-2)" />
+    <line x1="165" y1="62" x2="234" y2="108" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-2)" />
+    <text x="222" y="84" textAnchor="start" fill="rgb(var(--c-muted))">each guesses</text>
+
+    <g fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))">
+      <rect x="36" y="112" width="54" height="30" rx="6" />
+      <rect x="94" y="112" width="54" height="30" rx="6" />
+      <rect x="152" y="112" width="54" height="30" rx="6" />
+      <rect x="210" y="112" width="54" height="30" rx="6" />
+    </g>
+    <text x="63" y="131" textAnchor="middle">1</text>
+    <text x="121" y="131" textAnchor="middle">2</text>
+    <text x="179" y="131" textAnchor="middle">3</text>
+    <text x="237" y="131" textAnchor="middle">4</text>
+
+    <line x1="63" y1="142" x2="145" y2="190" stroke="rgb(var(--c-muted))" strokeDasharray="3 3" />
+    <line x1="121" y1="142" x2="145" y2="190" stroke="rgb(var(--c-muted))" strokeDasharray="3 3" />
+    <line x1="179" y1="142" x2="145" y2="190" stroke="rgb(var(--c-muted))" strokeDasharray="3 3" />
+    <line x1="237" y1="142" x2="145" y2="190" stroke="rgb(var(--c-muted))" strokeDasharray="3 3" />
+
+    <rect x="65" y="194" width="160" height="42" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-muted))" strokeDasharray="4 4" />
+    <text x="145" y="212" textAnchor="middle">assemble</text>
+    <text x="145" y="228" textAnchor="middle" fill="rgb(var(--c-muted))">pieces don't fit</text>
+
+    <line x1="305" y1="6" x2="305" y2="294" stroke="rgb(var(--c-border))" strokeDasharray="2 6" />
+
+    <text x="465" y="16" textAnchor="middle" fill="rgb(var(--c-accent))">brief first</text>
+    <rect x="425" y="26" width="80" height="36" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="465" y="48" textAnchor="middle">spec</text>
+    <line x1="465" y1="62" x2="465" y2="90" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-2)" />
+
+    <rect x="400" y="94" width="130" height="36" rx="8" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" />
+    <text x="465" y="116" textAnchor="middle" fill="rgb(var(--c-accent))">brief agent</text>
+
+    <line x1="420" y1="130" x2="386" y2="164" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-2)" />
+    <line x1="450" y1="130" x2="442" y2="164" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-2)" />
+    <line x1="480" y1="130" x2="498" y2="164" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-2)" />
+    <line x1="510" y1="130" x2="554" y2="164" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-2)" />
+    <text x="396" y="146" textAnchor="end" fill="rgb(var(--c-muted))">one brief</text>
+
+    <g fill="rgb(var(--c-surface))" stroke="rgb(var(--c-accent))">
+      <rect x="356" y="168" width="54" height="30" rx="6" />
+      <rect x="414" y="168" width="54" height="30" rx="6" />
+      <rect x="472" y="168" width="54" height="30" rx="6" />
+      <rect x="530" y="168" width="54" height="30" rx="6" />
+    </g>
+    <text x="383" y="187" textAnchor="middle">1</text>
+    <text x="441" y="187" textAnchor="middle">2</text>
+    <text x="499" y="187" textAnchor="middle">3</text>
+    <text x="557" y="187" textAnchor="middle">4</text>
+
+    <line x1="383" y1="198" x2="465" y2="240" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-2)" />
+    <line x1="441" y1="198" x2="465" y2="240" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-2)" />
+    <line x1="499" y1="198" x2="465" y2="240" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-2)" />
+    <line x1="557" y1="198" x2="465" y2="240" stroke="rgb(var(--c-border-strong))" markerEnd="url(#ge-arrow-2)" />
+
+    <rect x="385" y="244" width="160" height="42" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-accent))" />
+    <text x="465" y="262" textAnchor="middle">assemble</text>
+    <text x="465" y="278" textAnchor="middle" fill="rgb(var(--c-muted))">fits together</text>
+  </svg>
+</Diagram>
+
+```text
+use a workflow to write a report that answers <the question or
+decision> for <who will read it>, about <length>, from the sources in
+<folder>. First, one agent writes a shared brief: outline, key terms,
+citation style, and a checklist for each section. Then separate agents
+write one section each, in separate files, following the brief. One
+agent combines the sections. Finally, a reviewer checks the full report
+against the brief and the sources and flags unsupported claims.
+```
+
+The same shape works for a plan you want pressure-tested before anyone acts on it: a few agents gather facts, one drafts the plan, three critics each attack it from a named angle, and one finalizes it. Nothing gets changed along the way. The only output is a plan for you to approve.
+
+## When a team is overkill
+
+A team is easy to reach for out of habit. I once watched a small interface change, six files, the kind of thing one person reviews in an afternoon, go through a full team anyway: twelve agents building and twelve reviewing, and it took hours instead of minutes. My rule since then: count the pieces first. If you could check the result yourself in an afternoon, one conversation and one review at the end is enough. Save the team for the number that is going in front of your board, and the queue or report too big to check by hand.
+
+## Your setup, ready this week
+
+1. Run `/deep-research` on a question you actually care about and read how the report cites and filters its sources.
+2. Pick one number you know well, put its data and definition in a folder, and run the check-a-number prompt. Compare its result with your own and look at every source it cites.
+3. Later, try the queue prompt on five old tickets or requests, with personal details removed, and compare what it flags with what you would have flagged.
+
+You're done when you can reproduce the team's answer yourself and see clearly what it's still unsure about. Honestly, I expected teams of agents to be about speed. They mostly aren't. The ones worth their cost were the ones where I didn't trust a single pass to catch its own mistake, and the speed was a side effect of running the disagreement in parallel.
+
+The rest of this series: [loop engineering](/2026/loop-engineering), [loops and graphs](/2026/loops-and-graphs), and [skills that learn](/2026/skills-that-learn).

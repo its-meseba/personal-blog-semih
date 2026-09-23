@@ -1,0 +1,259 @@
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "skills-that-learn",
+  title: "Stop re-explaining your work to Claude Code: skills that keep your corrections",
+  description: "Most people re-explain their work to Claude Code every session. You can write it down once instead: a skill for each task you repeat, a notes file where every correction sticks, and a short instructions file that points to the rest. A ready-to-use setup, with a prompt to paste at every step.",
+  date: "2026-09-23",
+  series: "Harness Engineering",
+  tags: ["claude-code", "skills", "claude-md", "productivity"],
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
+
+Most people I watch use Claude Code start every session the same way. Who they are, what the project is, how the team likes things done, what went wrong last time. Then they close the window and explain it all again tomorrow. I kept seeing this with colleagues and friends, smart people getting a fraction of what the tool can do, and it's the part I most wanted to show them: you can write your job down once, as skills Claude reads every time, and stop explaining it from scratch. You'll still check the work. You just won't start from zero.
+
+By the end of this post you can:
+
+- turn any task you repeat into a skill that Claude runs on request,
+- give that skill a notes file, so a correction you make once gets read on every run,
+- keep a short instructions file that tells Claude where everything else lives,
+- and share your skills with a team, rules included.
+
+You don't write code for any of it. You describe what you want, and Claude writes the files. I run my own work and a team's recurring operations this way, from weekly reports to support replies to finding customers worth interviewing, and what follows is the setup I'd hand a friend on day one.
+
+This is the last of four posts on getting more out of Claude Code, and you can read it on its own. The others cover [making Claude finish what it starts](/2026/loop-engineering), [giving it a team of agents](/2026/graph-engineering), and [setting up work that repeats every week](/2026/loops-and-graphs).
+
+## Step 1: know what a skill is
+
+A skill is a folder with one file in it, `SKILL.md`. Put it in `~/.claude/skills/<name>/` and it works in every project on your machine. Put it in `.claude/skills/<name>/` inside a project and it travels with that project, so anyone who opens the folder gets it too.
+
+The file starts with a short header:
+
+```yaml
+---
+name: weekly-update
+description: Writes my weekly team update from this week's notes and
+  tracker. Use when I ask for the weekly update, the Friday summary,
+  or "what did we ship this week".
+---
+```
+
+Below the header go the instructions: what to read, what to do, what the output looks like. Claude Code lists your available skills with their descriptions (shortened when you have many), and when your request matches one, it loads that skill's instructions and follows them. You can also run it by name, `/weekly-update`. The instructions only load when the skill is used, so a skill costs almost nothing on the days you don't need it.
+
+Two details matter more than they look. The description is how Claude decides when to use the skill, so write it in the words you'd actually type. And if a skill should only ever run when you ask, anything that sends or publishes for example, add `disable-model-invocation: true` to the header and Claude will never start it on its own.
+
+## Step 2: turn your next repeated task into a skill
+
+Don't start by writing a skill. Start by doing the task once with Claude, the normal way, until the result is right. Then ask it to turn what you just did into a skill:
+
+```text
+Turn the task we just finished into a skill. Save it as
+.claude/skills/<skill-name>/SKILL.md. Include what it's for, the inputs
+it needs, the steps we actually took, and the format of the output.
+If an input is missing when it runs, it should ask me instead of
+guessing. It must never send, publish, or delete anything. Then show
+me how to run it.
+```
+
+Pick the task you explain most often. For most people I've shown this to, that's a weekly update, a meeting summary in a fixed format, a report built from the same three sources, or a reply to the same kind of email.
+
+Then test it where it counts: open a fresh session, run `/<skill-name>` on a new example, and check the output. If you have Anthropic's `skill-creator` skill installed, it does the same job and can also help you sharpen the description so the skill starts when you expect it to.
+
+## Step 3: give the skill a notes file, so corrections stick
+
+A skill that does the same thing the same way forever is a saved prompt. What makes it get better is a small notes file next to it, one it reads before every run and adds to when you correct it:
+
+```text
+Update the <skill-name> skill. Add a file learnings.md next to its
+SKILL.md, and make reading it the first step of every run. When I say
+"save this" while using the skill, add one dated rule to that file:
+what went wrong and what to do instead. If a new rule contradicts an
+old one, replace the old line instead of adding a second. Show me the
+file after each save.
+```
+
+Two rules keep this file useful. First, it only records things that would have cost you real time or money if they happened again. A report that came out fine goes nowhere; a report that used last month's numbers because the file name changed becomes a rule. My ads skill has more than fifty of these after a few months, and each one is a mistake it now checks for before it starts. Second, when a rule changes, the old line gets replaced. A notes file that holds two versions of the same rule is worse than no file, because the next run can't tell which one is current.
+
+Test it the same way: correct the skill once, say "save this", then run it in a fresh session on an example that would have triggered the same mistake.
+
+## Step 4: give Claude a short instructions file
+
+`CLAUDE.md` is the file Claude Code reads at the start of every session: `~/.claude/CLAUDE.md` for everything you do, `CLAUDE.md` in a project folder for that project. Claude Code also keeps its own memory notes as you work. Most people treat `CLAUDE.md` as a notebook and keep adding to it until it's long, contradictory, and mostly ignored. The official guidance is to keep it under 200 lines, and that's the right instinct.
+
+Treat it as a map instead. Keep the handful of rules that apply every single session. For everything else, write down where it lives and when to read it, and let Claude open that file only when the task calls for it.
+
+<Diagram
+  title="A short CLAUDE.md points Claude to the right file for the task instead of holding everything"
+  caption="Keep the rules that always apply in CLAUDE.md. For everything else, list the file and when to read it. Claude opens those only when a task calls for them, and a task can need more than one."
+>
+  <svg viewBox="0 0 620 320" className="min-w-[560px]" role="presentation">
+    <defs>
+      <marker id="skl-arrow-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+    </defs>
+
+    <rect x="6" y="136" width="76" height="46" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="44" y="155" textAnchor="middle">your</text>
+    <text x="44" y="170" textAnchor="middle">question</text>
+    <line x1="82" y1="159" x2="108" y2="159" stroke="rgb(var(--c-border-strong))" markerEnd="url(#skl-arrow-a)" />
+
+    <rect x="110" y="34" width="180" height="256" rx="10" fill="none" stroke="rgb(var(--c-accent))" strokeDasharray="4 4" />
+    <text x="200" y="24" textAnchor="middle" fill="rgb(var(--c-accent))">CLAUDE.md, always on</text>
+
+    <rect x="124" y="60" width="152" height="40" rx="6" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="200" y="84" textAnchor="middle">skill trigger table</text>
+    <rect x="124" y="139" width="152" height="40" rx="6" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="200" y="163" textAnchor="middle">rule trigger table</text>
+    <rect x="124" y="218" width="152" height="40" rx="6" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="200" y="242" textAnchor="middle">facts index</text>
+
+    <rect x="350" y="34" width="262" height="276" rx="10" fill="none" stroke="rgb(var(--c-muted))" strokeDasharray="2 5" />
+    <text x="481" y="24" textAnchor="middle" fill="rgb(var(--c-muted))">loads only on a match</text>
+
+    <line x1="276" y1="80" x2="370" y2="80" stroke="rgb(var(--c-border-strong))" markerEnd="url(#skl-arrow-a)" />
+    <text x="322" y="72" textAnchor="middle" fill="rgb(var(--c-muted))">match</text>
+    <rect x="374" y="60" width="150" height="40" rx="6" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-accent))" />
+    <text x="449" y="84" textAnchor="middle">one skill body</text>
+
+    <line x1="276" y1="159" x2="370" y2="159" stroke="rgb(var(--c-border-strong))" markerEnd="url(#skl-arrow-a)" />
+    <text x="322" y="151" textAnchor="middle" fill="rgb(var(--c-muted))">match</text>
+    <rect x="374" y="139" width="150" height="40" rx="6" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-accent))" />
+    <text x="449" y="163" textAnchor="middle">one rule file</text>
+
+    <line x1="276" y1="238" x2="370" y2="238" stroke="rgb(var(--c-border-strong))" markerEnd="url(#skl-arrow-a)" />
+    <text x="322" y="230" textAnchor="middle" fill="rgb(var(--c-muted))">match</text>
+    <rect x="374" y="218" width="150" height="40" rx="6" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-accent))" />
+    <text x="449" y="242" textAnchor="middle">one fact file</text>
+
+    <rect x="540" y="66" width="56" height="28" rx="4" fill="none" stroke="rgb(var(--c-muted))" strokeDasharray="2 3" />
+    <rect x="540" y="145" width="56" height="28" rx="4" fill="none" stroke="rgb(var(--c-muted))" strokeDasharray="2 3" />
+    <rect x="540" y="224" width="56" height="28" rx="4" fill="none" stroke="rgb(var(--c-muted))" strokeDasharray="2 3" />
+    <text x="481" y="292" textAnchor="middle" fill="rgb(var(--c-muted))">the rest stays unread</text>
+  </svg>
+</Diagram>
+
+One detail trips people up. If you write `@some-file.md` in `CLAUDE.md`, Claude Code loads that whole file at the start of every session. To keep a file out until it's needed, write its plain path and say when to read it.
+
+The same map works for facts. My company's tax number once sat in a file nothing pointed to, so every form that asked for it turned into a search. The fix was one page that says which file holds which kind of fact, with no values of its own, and a rule to read that page first.
+
+```text
+Help me set up this project's CLAUDE.md. If one exists, read it; if
+not, ask me which rules should apply every time I work here. Keep the
+rules that must apply in every session in CLAUDE.md (under 200 lines),
+and move reference material that only matters for certain tasks into
+separate files, one topic each. At the bottom of CLAUDE.md, add a
+table of "when I'm doing X, read file Y", using plain file paths
+rather than @ imports. Show me the proposed split before changing
+anything.
+```
+
+## Step 5: keep it lean
+
+Once you start, you'll add skills faster than you remove them. I did. When I finally measured, I had 251 skills and 84% of them had never been used once in the sessions I checked, while by my own count their descriptions added up to about 27,700 tokens (the chunks of text a model reads before it can answer you). That's room your actual question doesn't get.
+
+You don't need a script to check yours. On a recent version of Claude Code, run `/skill-doctor` and it shows what each skill costs and how often it's been used. Treat "never used" as a candidate, not a verdict, then park the ones you don't need where they stop loading:
+
+```text
+Find these skills in this project's .claude/skills/ folder and in my
+personal ~/.claude/skills/ folder: <skill names>. If a name is in both,
+ask which one I mean. Move each into a skills-archive/ folder next to
+where it was, so it stops loading, without deleting anything. Keep a
+list of what moved from where, and tell me how to move any back.
+```
+
+Once a month is enough.
+
+## Step 6: let skills hand work to each other
+
+Once you have a few skills, one can use another's steps without any code. A skill's instructions can simply say: for this part, open that other skill's file and follow its steps. Claude does the rest.
+
+The most useful version of this is splitting "when" from "how". A small calendar skill knows only what's due today, read from a table you give it. For each due item, it names the skill that knows how to do the work and hands over. The calendar never does the work; the working skill never tracks dates. When they disagree, the rule is written down: the calendar wins on timing, the working skill wins on method.
+
+<Diagram
+  title="A calendar skill hands the due task to the skill that knows how, and that skill keeps its own notes"
+  caption="The calendar decides when. The weekly-report skill decides how, reads its learnings before every run, and borrows the customer-profile skill's steps instead of copying them."
+>
+  <svg viewBox="0 0 600 230" className="min-w-[540px]" role="presentation">
+    <defs>
+      <marker id="skl-arrow-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+    </defs>
+
+    <rect x="10" y="40" width="130" height="46" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="75" y="60" textAnchor="middle">calendar skill</text>
+    <text x="75" y="76" textAnchor="middle" fill="rgb(var(--c-muted))">what's due today</text>
+    <line x1="140" y1="63" x2="186" y2="63" stroke="rgb(var(--c-border-strong))" markerEnd="url(#skl-arrow-b)" />
+    <text x="163" y="30" textAnchor="middle" fill="rgb(var(--c-muted))">due</text>
+
+    <rect x="190" y="40" width="150" height="46" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="265" y="60" textAnchor="middle">weekly-report</text>
+    <text x="265" y="76" textAnchor="middle" fill="rgb(var(--c-muted))">knows how</text>
+    <line x1="340" y1="63" x2="396" y2="63" stroke="rgb(var(--c-border-strong))" markerEnd="url(#skl-arrow-b)" />
+    <text x="368" y="30" textAnchor="middle" fill="rgb(var(--c-muted))">writes</text>
+
+    <rect x="400" y="40" width="150" height="46" rx="8" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" />
+    <text x="475" y="60" textAnchor="middle" fill="rgb(var(--c-accent))">draft report</text>
+    <text x="475" y="76" textAnchor="middle" fill="rgb(var(--c-muted))">you review it</text>
+
+    <line x1="235" y1="86" x2="235" y2="166" stroke="rgb(var(--c-border-strong))" markerEnd="url(#skl-arrow-b)" />
+    <text x="227" y="124" textAnchor="end" fill="rgb(var(--c-muted))">reads first</text>
+    <line x1="285" y1="166" x2="285" y2="90" stroke="rgb(var(--c-border-strong))" strokeDasharray="3 3" markerEnd="url(#skl-arrow-b)" />
+    <text x="293" y="150" fill="rgb(var(--c-muted))">"save this"</text>
+    <rect x="170" y="170" width="160" height="40" rx="6" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="250" y="194" textAnchor="middle">learnings.md</text>
+
+    <line x1="330" y1="86" x2="426" y2="166" stroke="rgb(var(--c-border-strong))" markerEnd="url(#skl-arrow-b)" />
+    <text x="392" y="118" fill="rgb(var(--c-muted))">borrows its steps</text>
+    <rect x="410" y="170" width="180" height="40" rx="6" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="500" y="194" textAnchor="middle">customer-profile skill</text>
+  </svg>
+</Diagram>
+
+On a team I work with, a skill that finds customers worth interviewing does exactly this: it produces a shortlist cheaply, and only when someone replies does it follow a separate profiling skill's steps to build a full picture of that person. Neither skill copies the other. If you copy steps between skills, the two copies drift apart, and nobody can tell which one is right.
+
+```text
+Create a skill at .claude/skills/calendar/SKILL.md. First ask me for
+my timezone and a table of each recurring task, the days it's due, and
+the skill that handles it. When I run /calendar, it lists what's due
+today and asks which ones to run. For each one I pick, it follows that
+skill's own instructions and notes instead of copying them. It never
+sends, publishes, spends, or deletes anything. It adds a line to
+calendar-log.md on every run, even when nothing is due.
+```
+
+## Step 7: share it with your team, rules included
+
+If you lead a team, this is where the payoff multiplies. The rules people forget, never contact the same customer twice, anything that spends money needs a yes, always use the approved template, go inside the skill. Claude reads them on every run instead of whenever someone remembers.
+
+I've set this up for a team's support replies: approved templates, and every edit someone makes to a draft saved as a note for improving that template. The team's judgment ends up in a file anyone can read and fix, which is also how we once caught a rule that had quietly been doing the wrong thing.
+
+One honest limit: a rule written in a skill is guidance, and Claude follows it well, but it isn't a lock. For the few rules that must never break, like spending money or messaging customers, also block the action itself with a permission rule or a hook in Claude Code, and test that it actually blocks.
+
+To share, commit the skills to your team's project under `.claude/skills/`, and keep personal things out: contact histories, account details, anything with a password or key in it.
+
+```text
+Prepare my team skills for sharing. Copy only the skills I list into
+this project's .claude/skills/ folder. Leave out anything that is
+personal state: contact histories, logs, account details. Scan the
+copied files for anything that looks like a password, token, or API
+key and stop if you find one. Then list what you copied and what you
+left out. Skills: <skill names>.
+```
+
+## Your setup, ready this week
+
+You don't need all seven steps on day one. Three days gets you a skill that keeps your corrections:
+
+1. Day one: do one task you repeat with Claude until the result is right, then paste the Step 2 prompt to turn it into a skill.
+2. Day two: add the notes file with the Step 3 prompt. Run the skill, correct it once, and say "save this".
+3. Day three: open a fresh session and run the skill on a new example. Check that it used your correction.
+
+You're done when a new session runs your skill, reads its notes, and gives you something you can check without re-explaining a thing. After that, trim your `CLAUDE.md` with the Step 4 prompt, and run `/skill-doctor` once a month.
+
+What surprised me most, after building a lot of these, is how little of it is clever automation. Most of the value is a rule written down somewhere a person can read it, and a tool that reads it every time.
+
+The rest of this series: [loop engineering](/2026/loop-engineering), [graph engineering](/2026/graph-engineering), and [loops and graphs](/2026/loops-and-graphs).

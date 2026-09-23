@@ -1,0 +1,217 @@
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "loop-engineering",
+  title: "Stop babysitting Claude Code: loop engineering for everyday work",
+  description: "If you keep typing continue while Claude Code stalls halfway, you can hand it a finish line instead: a result it has to show, a check against the real thing, and a rule for when to stop or ask you. Three loops you can set up today, with prompts to paste.",
+  date: "2026-09-23",
+  series: "Harness Engineering",
+  tags: ["claude-code", "automation", "productivity"],
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
+
+I wrote this series because I kept seeing the same thing. Smart people around me, colleagues, friends, founders, had Claude Code installed and used it like a chat window: ask, copy the answer, ask again. They were getting a fraction of what it can do, and the missing piece was never skill. Nobody had shown them the rest. The first thing I show them is how to stop babysitting it.
+
+You probably know the pattern. Claude does a few steps, stops, and waits. You type continue. It does a bit more and stops again. I once counted my own: 284 times in 60 days, I was the thing keeping the work moving. You can hand that job to Claude. Tell it what done looks like in a form it has to prove, and it keeps working, checks the actual result, and then finishes, keeps going, or stops to ask you one clear question. Setting that up on purpose is what I call loop engineering, and none of it needs code.
+
+By the end of this post you can:
+
+- give Claude a finish line with `/goal` and let it work until it can show the result,
+- have it watch something slow and tell you when it's done,
+- put a weekly chore on a schedule that runs without you,
+- and spot the trap that makes a finished-looking job wrong.
+
+This is the first of four posts on getting more out of Claude Code. The others cover [giving it a team of agents](/2026/graph-engineering), [setting up work that repeats every week](/2026/loops-and-graphs), and [teaching it your job once with skills](/2026/skills-that-learn).
+
+## What a loop needs
+
+Every loop that finishes has the same five parts: a finish line, an action, a check, a note of what happened, and a rule for what comes next. Most people only ever write the action ("fix this", "write that") and leave the rest to luck.
+
+<Diagram
+  title="Five parts of a loop that finishes: a finish line, an action, a check against the real result, a log, and three ways out"
+  caption="Define done, act, check the real result, write it down, then continue, stop, or ask. The dashed line is the tempting shortcut: skipping the check and calling it done."
+>
+  <svg viewBox="0 0 600 256" className="min-w-[560px]" role="presentation">
+    <defs>
+      <marker id="le-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+      <marker id="le-arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-muted))" />
+      </marker>
+    </defs>
+
+    <rect x="10" y="30" width="100" height="44" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="60" y="48" textAnchor="middle">finish</text>
+    <text x="60" y="62" textAnchor="middle">line</text>
+    <line x1="110" y1="52" x2="140" y2="52" stroke="rgb(var(--c-border-strong))" markerEnd="url(#le-arrow)" />
+
+    <rect x="144" y="30" width="80" height="44" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="184" y="56" textAnchor="middle">act</text>
+    <line x1="224" y1="52" x2="254" y2="52" stroke="rgb(var(--c-border-strong))" markerEnd="url(#le-arrow)" />
+
+    <rect x="258" y="30" width="140" height="44" rx="8" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" strokeDasharray="4 4" />
+    <text x="328" y="48" textAnchor="middle" fill="rgb(var(--c-accent))">check the</text>
+    <text x="328" y="62" textAnchor="middle" fill="rgb(var(--c-accent))">real signal</text>
+    <line x1="398" y1="52" x2="428" y2="52" stroke="rgb(var(--c-border-strong))" markerEnd="url(#le-arrow)" />
+
+    <rect x="432" y="30" width="100" height="44" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="482" y="56" textAnchor="middle">write log</text>
+
+    <line x1="482" y1="74" x2="482" y2="104" stroke="rgb(var(--c-border-strong))" />
+    <line x1="302" y1="104" x2="526" y2="104" stroke="rgb(var(--c-border-strong))" />
+    <line x1="302" y1="104" x2="302" y2="132" stroke="rgb(var(--c-border-strong))" markerEnd="url(#le-arrow)" />
+    <line x1="401" y1="104" x2="401" y2="132" stroke="rgb(var(--c-border-strong))" markerEnd="url(#le-arrow)" />
+    <line x1="526" y1="104" x2="526" y2="132" stroke="rgb(var(--c-border-strong))" markerEnd="url(#le-arrow)" />
+
+    <rect x="257" y="136" width="90" height="44" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border-strong))" />
+    <text x="302" y="163" textAnchor="middle">done</text>
+
+    <rect x="356" y="136" width="90" height="44" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="401" y="163" textAnchor="middle">not yet</text>
+
+    <rect x="462" y="136" width="128" height="44" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="526" y="155" textAnchor="middle">blocked</text>
+    <text x="526" y="171" textAnchor="middle" fill="rgb(var(--c-muted))">ask a human</text>
+
+    <polyline points="401,180 401,222 164,222 164,74" fill="none" stroke="rgb(var(--c-border-strong))" markerEnd="url(#le-arrow)" />
+    <text x="282" y="240" textAnchor="middle" fill="rgb(var(--c-muted))">loop again</text>
+
+    <polyline points="214,74 214,92 280,92 280,132" fill="none" stroke="rgb(var(--c-muted))" strokeDasharray="3 3" markerEnd="url(#le-arrow-muted)" />
+    <text x="220" y="87" textAnchor="start" fill="rgb(var(--c-muted))">the shortcut</text>
+  </svg>
+</Diagram>
+
+Look at the third way out. "Blocked, ask a human" is a good outcome. A research loop I ran once worked through a full pass of data, then stopped on purpose and handed me a one-line question instead of guessing its way into a second, more expensive pass. A loop that asks when it runs out of safe guesses is doing its job. A loop without that exit either runs forever or quietly makes something up.
+
+## Loop one: give it a finish line
+
+Claude Code has this built in. Type `/goal` followed by the condition you want, and after every turn a small, fast model checks whether the condition is met. If it isn't, Claude starts the next turn by itself, so you stop typing continue. It stops when the condition is met, when it's judged impossible, or when you type `/goal clear`. Your usual permission prompts still apply, so it may pause to ask before running something; `/goal` doesn't grant new permissions.
+
+One thing to know: the checker only reads the conversation. It doesn't open files itself. So write the condition as something Claude has to show on screen, like counts, a list of what's missing, or a test result, and give it an upper limit. A good first one, with a small export of tickets or requests saved in your folder as `tickets.csv`:
+
+```text
+/goal Write triage.md with one entry per row in tickets.csv: the ticket
+ID, a suggested next action, and anything missing. Show the input and
+output row counts and list any IDs you skipped. Don't change
+tickets.csv. Stop after 10 turns if unfinished and tell me what's left.
+```
+
+For bigger jobs, where you want to see the plan first, ask for a checklist with the proof for each item before any work starts:
+
+```text
+Task: <what you want done>. Inputs: <files or links>. Output: <where it
+goes and in what format>. Before doing anything, write a checklist
+where every item names the proof that it's done: a file, a count, a
+command's output, a screenshot. Show me the checklist and wait for my
+OK. Then work through it, record the proof for each item, and tell me
+anything that's blocked.
+```
+
+Name the items after what happened, not after what you built. "Every open email has a drafted reply" is checked when the replies exist. "Build the reply drafter" is checked the moment the drafter exists, which is much earlier, and that's how half a job gets marked finished.
+
+The trap here is a check that only looks like the real thing. A small online store I help runs a tool that drafts answers to customer questions from a marketplace. Its first real run showed a couple of dozen questions as pending, and only two could actually be answered. The rest had been closed by the marketplace days earlier, and the tool's count of "pending" was an old copy nobody had checked against the source. Coding has the same trap: I once watched a test run report success twice while it had run zero tests, because the success signal came from the wrong place. Whatever you check, check the thing itself, not a number that's supposed to reflect it.
+
+## Loop two: let it watch something slow
+
+Some work isn't waiting on Claude. It's waiting on an export, a report, a deploy, an email. `/loop` handles that inside your session. Give it an interval and a prompt and it repeats on that schedule; give it only a prompt and Claude picks the wait itself, shorter while things are moving and longer when they're quiet. Your session has to stay open, press Esc to stop a self-paced loop, and you can ask "what scheduled tasks do I have?" to see and cancel the rest.
+
+```text
+/loop Check <the status page, file, or folder to watch>. Done means
+<the exact status or result>. At the first check, note the time. Check
+every few minutes, faster when it's close, and never wait past 30
+minutes from that first check. When it's done, or the 30 minutes are
+up, tell me the latest status and stop this loop.
+```
+
+Treat the 30 minutes as a request to Claude, not an exact timer. The best version of this I've seen was a domain move that had to wait for the new address to spread across the internet. The loop checked once an hour and said "not yet" until it was ready. Then it ran the rest of the move itself and deleted its own hourly check as the last step.
+
+The trap here is waiting on something nobody is watching. In one of my runs, several helper agents started a slow job in the background, ended their turn expecting to be told when it finished, and never heard back. The fix was one sentence in their instructions: whoever starts a background job collects its result before stopping. If you start something slow, say who checks on it.
+
+## Loop three: run a weekly chore without you
+
+For work that comes back every week, `/schedule` creates a routine: a Claude Code session that runs in the cloud on a schedule, even with your laptop closed. It's available on paid plans and still marked as a preview. Because it runs in the cloud, it can't see files on your laptop. It reaches your tracker only through a connected tool (Google Drive, Notion, Linear and the like) or a repository you give it. It also runs without asking permission, so start with a job that only reads and writes a draft:
+
+```text
+/schedule Every Monday at 9:00 <your timezone>, read <the tracker or
+document link> through <the connected tool>. Write a short summary: what
+is overdue, what is due before next Monday, with links. Don't change
+the tracker and don't send messages. If you can't reach it, say what
+access is missing.
+```
+
+After it's saved, open the routine, check that its connections are there, press **Run now** once, and read the result. A green checkmark on a run only means the session ran; open it and check the summary against the tracker yourself.
+
+<Diagram
+  title="Three loops, three ways to start and stop"
+  caption="The middle of every loop looks the same: act, check, write it down. What changes is what wakes it up and what counts as finished."
+>
+  <svg viewBox="0 0 590 240" className="min-w-[540px]" role="presentation">
+    <defs>
+      <marker id="le2-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+    </defs>
+
+    <text x="95" y="16" textAnchor="middle" fill="rgb(var(--c-muted))">CONDITION</text>
+    <text x="295" y="16" textAnchor="middle" fill="rgb(var(--c-muted))">WAITING</text>
+    <text x="495" y="16" textAnchor="middle" fill="rgb(var(--c-muted))">SCHEDULE</text>
+
+    <rect x="10" y="26" width="170" height="40" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="95" y="42" textAnchor="middle">you write a</text>
+    <text x="95" y="57" textAnchor="middle">finish line</text>
+    <rect x="210" y="26" width="170" height="40" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="295" y="50" textAnchor="middle">a check comes due</text>
+    <rect x="410" y="26" width="170" height="40" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="495" y="50" textAnchor="middle">Monday 9:00 comes</text>
+
+    <line x1="95" y1="66" x2="95" y2="92" stroke="rgb(var(--c-border-strong))" markerEnd="url(#le2-arrow)" />
+    <line x1="295" y1="66" x2="295" y2="92" stroke="rgb(var(--c-border-strong))" markerEnd="url(#le2-arrow)" />
+    <line x1="495" y1="66" x2="495" y2="92" stroke="rgb(var(--c-border-strong))" markerEnd="url(#le2-arrow)" />
+
+    <rect x="10" y="96" width="170" height="46" rx="8" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" strokeDasharray="4 4" />
+    <rect x="210" y="96" width="170" height="46" rx="8" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" strokeDasharray="4 4" />
+    <rect x="410" y="96" width="170" height="46" rx="8" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" strokeDasharray="4 4" />
+    <text x="95" y="123" textAnchor="middle" fill="rgb(var(--c-accent))">act, check, log</text>
+    <text x="295" y="123" textAnchor="middle" fill="rgb(var(--c-accent))">act, check, log</text>
+    <text x="495" y="123" textAnchor="middle" fill="rgb(var(--c-accent))">act, check, log</text>
+
+    <line x1="95" y1="142" x2="95" y2="168" stroke="rgb(var(--c-border-strong))" markerEnd="url(#le2-arrow)" />
+    <line x1="295" y1="142" x2="295" y2="168" stroke="rgb(var(--c-border-strong))" markerEnd="url(#le2-arrow)" />
+    <line x1="495" y1="142" x2="495" y2="168" stroke="rgb(var(--c-border-strong))" markerEnd="url(#le2-arrow)" />
+
+    <rect x="10" y="172" width="170" height="46" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="95" y="192" textAnchor="middle">met, or</text>
+    <text x="95" y="207" textAnchor="middle">impossible</text>
+    <rect x="210" y="172" width="170" height="46" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="295" y="192" textAnchor="middle">done, or the</text>
+    <text x="295" y="207" textAnchor="middle">deadline hits</text>
+    <rect x="410" y="172" width="170" height="46" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="495" y="192" textAnchor="middle">draft written,</text>
+    <text x="495" y="207" textAnchor="middle">until you pause it</text>
+  </svg>
+</Diagram>
+
+<Callout kind="aside" label="Later: one session watching the others">
+Once you run several sessions at once, you can have one of them check on the rest, nudge the ones that stalled, and log every decision. I ran one for about eight hours. In my setup it could not approve the other sessions' permission prompts, which is the right call: approving is your decision. It also made good decisions all day and never wrote the final report it was asked for. A session that watches others needs its own finish line too.
+</Callout>
+
+## Check the whole chain
+
+Even a loop that checks the real result at every step can miss the thing that matters. A feature I worked on had six separate systems, each checked and working: store setup, billing, dashboards, analytics, the server, both apps. The feature still did nothing, because the link that was supposed to open it was never wired to anything. Six green checks proved six parts worked. None of them proved the parts were connected.
+
+So before you call a multi-step job done, run one real example through the whole thing from start to finish, and look at what comes out the other end.
+
+## Your setup, ready this week
+
+You don't need all three loops at once. Start where your week already hurts:
+
+1. Put a small export in a folder and run the `/goal` prompt on it. Check the counts it reports against the file.
+2. The next time you're actually waiting on something (an export, a report, a long job), use the `/loop` prompt instead of checking back yourself, and confirm it stops on its own.
+3. When you have a weekly chore whose source a routine can reach through a connected tool, set it up with `/schedule`, press Run now, and compare the result with the source.
+
+You're done when a run gives you the result you expected and you know how to stop it. I went into this expecting the problem to be loops that never stop. The one I keep running into is loops that stop politely without the one thing they were asked for, which is why the finish line matters more than anything else in this post.
+
+The rest of this series: [graph engineering](/2026/graph-engineering), [loops and graphs](/2026/loops-and-graphs), and [skills that learn](/2026/skills-that-learn).

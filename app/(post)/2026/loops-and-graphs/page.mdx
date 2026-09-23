@@ -1,0 +1,263 @@
+import { postMetadata } from "@/lib/post-metadata";
+
+export const post = {
+  slug: "loops-and-graphs",
+  title: "Loops, graphs, or both: set up work Claude Code can run every week",
+  description: "Once you can make Claude finish a task and split a job across agents, the next step is work that repeats: the weekly review, the support queue, the monthly report. Two questions tell you which setup a job needs. A ready-to-run recurring review, with prompts to paste.",
+  date: "2026-09-23",
+  series: "Harness Engineering",
+  tags: ["claude-code", "workflows", "productivity"],
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
+
+When I show people around me how to make Claude Code finish a job, and then how to give it a team of agents, they almost always ask the same next question: which one do I use for my job? Their real work isn't a one-off task. It's the review they run every Monday, the queue that refills every morning, the report that's due every month. Some of those jobs need one agent on a schedule, some need a team on a schedule, and picking the right one is most of the design.
+
+Get it wrong and you pay for it in one of two ways. Either one agent grades its own homework week after week and nobody ever challenges it, or you pay for two dozen agents to check something you could have checked yourself in an afternoon.
+
+By the end of this post you can:
+
+- decide the setup for any job with two questions,
+- build a review that runs every Monday and Friday and checks itself,
+- make a recurring job learn from your corrections,
+- and turn any one-off job that went well into a command you can rerun.
+
+This is the third of four posts. It builds on [loops](/2026/loop-engineering) and [graphs](/2026/graph-engineering), but the two questions below work on their own. The fourth post covers [teaching Claude your job once with skills](/2026/skills-that-learn).
+
+## Two questions decide the setup
+
+A loop repeats work until something says stop: a finish line is met, a check passes, a clock says it's time again. A graph splits a job into steps and hands the results between them; here, I mean splitting it across several agents who each own one piece. Neither one replaces the other. They answer different questions.
+
+The first question: can one agent do the whole job, and can a cheap, real check tell you it worked? Rerun the numbers, count the rows, compare with the source. If yes, a loop is enough. If the job is too big for one conversation, or the check needs judgment you wouldn't trust the same agent to apply to its own work, use a graph.
+
+The second question applies either way: does this job come back, or do you not know yet how much of it there is? If yes, wrap it in a loop, either a schedule for work that recurs or "keep going until two rounds in a row find nothing new" for work of unknown size.
+
+<Diagram
+  title="Two questions decide the setup: can one agent do it with a cheap check, and does the work come back"
+  caption="The first question picks one agent or a team. The second decides whether it runs once or on a loop. Recurring work needs a schedule; whether it needs a team depends on the job and its check."
+>
+  <svg viewBox="0 0 620 350" className="min-w-[560px]" role="presentation">
+    <defs>
+      <marker id="lag-arrow-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+    </defs>
+
+    <rect x="10" y="170" width="80" height="40" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="50" y="194" textAnchor="middle">the job</text>
+    <line x1="90" y1="190" x2="106" y2="190" stroke="rgb(var(--c-border-strong))" markerEnd="url(#lag-arrow-a)" />
+
+    <polygon points="108,190 190,140 272,190 190,240" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="190" y="186" textAnchor="middle">one agent,</text>
+    <text x="190" y="200" textAnchor="middle">cheap check?</text>
+
+    <polyline points="190,140 190,90 318,90" fill="none" stroke="rgb(var(--c-border-strong))" markerEnd="url(#lag-arrow-a)" />
+    <text x="200" y="116" fill="rgb(var(--c-muted))">yes: loop</text>
+    <polyline points="190,240 190,290 318,290" fill="none" stroke="rgb(var(--c-border-strong))" markerEnd="url(#lag-arrow-a)" />
+    <text x="200" y="272" fill="rgb(var(--c-muted))">no: graph</text>
+
+    <polygon points="320,90 390,50 460,90 390,130" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="390" y="86" textAnchor="middle">recurs, or</text>
+    <text x="390" y="100" textAnchor="middle">unknown size?</text>
+    <polygon points="320,290 390,250 460,290 390,330" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="390" y="286" textAnchor="middle">recurs, or</text>
+    <text x="390" y="300" textAnchor="middle">unknown size?</text>
+
+    <polyline points="460,90 476,90 476,64 492,64" fill="none" stroke="rgb(var(--c-border-strong))" markerEnd="url(#lag-arrow-a)" />
+    <polyline points="460,90 476,90 476,116 492,116" fill="none" stroke="rgb(var(--c-border-strong))" markerEnd="url(#lag-arrow-a)" />
+    <text x="470" y="58" textAnchor="end" fill="rgb(var(--c-muted))">no</text>
+    <text x="470" y="132" textAnchor="end" fill="rgb(var(--c-muted))">yes</text>
+    <rect x="494" y="46" width="118" height="36" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="553" y="68" textAnchor="middle">loop, once</text>
+    <rect x="494" y="98" width="118" height="36" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="553" y="120" textAnchor="middle">loop on a clock</text>
+
+    <polyline points="460,290 476,290 476,264 492,264" fill="none" stroke="rgb(var(--c-border-strong))" markerEnd="url(#lag-arrow-a)" />
+    <polyline points="460,290 476,290 476,316 492,316" fill="none" stroke="rgb(var(--c-border-strong))" markerEnd="url(#lag-arrow-a)" />
+    <text x="470" y="258" textAnchor="end" fill="rgb(var(--c-muted))">no</text>
+    <text x="470" y="332" textAnchor="end" fill="rgb(var(--c-muted))">yes</text>
+    <rect x="494" y="246" width="118" height="36" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="553" y="268" textAnchor="middle">graph, once</text>
+    <rect x="494" y="298" width="118" height="36" rx="8" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" />
+    <text x="553" y="320" textAnchor="middle" fill="rgb(var(--c-accent))">loop of graphs</text>
+  </svg>
+</Diagram>
+
+You don't have to answer these alone. Before your next job that takes more than an afternoon, let Claude propose the setup:
+
+```text
+Here's the job: <describe it, including where the inputs live and what
+the output should be>. Before you touch anything, answer two
+questions. One: can a single agent do all of it, and is there a cheap,
+real way to check the result? Two: does this job come back, or do we
+not know yet how big it is? Based on your answers, propose a setup:
+one agent, a team of agents, or a team that runs on a loop. Say what
+"done" looks like and how you'll check it. Wait for my OK.
+```
+
+## Five steps before any job
+
+Whatever the job turns out to need, answer these in order before anything gets touched.
+
+<Steps>
+
+  <Step title="Write the finish line as something you can see">
+
+  Not "the report is good". Something a fresh agent can check without asking you: one row per ticket, every number linked to its source, two runs in a row find nothing new.
+
+  </Step>
+
+  <Step title="Size the job">
+
+  Count the files or items. If you could check the result yourself in an afternoon, do it with one conversation and one review at the end. Bigger than that, or with parts that can run side by side, earns a team.
+
+  </Step>
+
+  <Step title="Pick the setup">
+
+  Loop or team, once or on a schedule: the two questions above. Say which one out loud before anything gets written.
+
+  </Step>
+
+  <Step title="Make checking its own step">
+
+  A separate agent that never saw the work, or a check that reads the real thing instead of a stand-in for it. Then run one real example all the way through yourself.
+
+  </Step>
+
+  <Step title="Write down what the run learned">
+
+  One dated line, in the file the next run reads first. A loop with no memory repeats its own mistakes on a schedule.
+
+  </Step>
+
+</Steps>
+
+## Build it: a review that runs twice a week
+
+Here's the setup I'd give anyone with a recurring review, whether that's customer feedback, pipeline changes, or open tickets. Every Monday and Friday, one agent reads what came in and drafts a report. A second, independent agent rereads the same material looking for reasons to reject that report. If it finds something, the draft goes back for one correction round; if it still fails, it goes to you. Whatever surprised the run gets one line in a learnings file that the next run reads first.
+
+The order matters: build it, run it by hand, check it, and only then put it on a schedule.
+
+```text
+Help me set up a recurring review. First ask me where the material
+lives, my timezone, and where the report should go. Then create a
+skill called weekly-review: one agent drafts a report from the
+material, and a separate agent rereads the same material and tries to
+reject the report. If it finds problems, allow one revision and one
+recheck, then flag anything left for me. It must read learnings.md
+before each run and add one dated line when something surprised it.
+Keep all output local for now. Show me how to run /weekly-review.
+```
+
+Run `/weekly-review` a couple of times by hand and check the reports against the material yourself. Once you trust them, pick where it runs. For material on your computer, a scheduled task in the Claude Code desktop app runs it on Mondays and Fridays while the app is open. `/loop` works for a trial, but recurring loops expire after seven days. To run with your laptop closed, use `/schedule`: the skill has to live in a repository the routine can use, the material has to be reachable through a connected tool, and the reports and learnings need a place every run can read. Test one cloud run, then a second that reads the first one's learnings.
+
+<Diagram
+  title="A recurring review with one correction round, feeding what it learned into the next run"
+  caption="Each run drafts a report and has it checked by a separate agent. A problem triggers one correction round; anything still wrong goes to a person. The learnings file is read first on the next Monday or Friday."
+>
+  <svg viewBox="0 0 620 410" className="min-w-[560px]" role="presentation">
+    <defs>
+      <marker id="lag-arrow-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+    </defs>
+
+    <rect x="10" y="34" width="600" height="366" rx="12" fill="none" stroke="rgb(var(--c-accent))" strokeDasharray="4 4" />
+    <text x="310" y="24" textAnchor="middle" fill="rgb(var(--c-accent))">CALENDAR LOOP · MON + FRI</text>
+
+    <polyline points="514,108 514,50 88,50 88,106" fill="none" stroke="rgb(var(--c-border-strong))" strokeDasharray="3 3" markerEnd="url(#lag-arrow-b)" />
+    <text x="300" y="64" textAnchor="middle" fill="rgb(var(--c-muted))">next run reads this first</text>
+
+    <rect x="26" y="72" width="356" height="300" rx="10" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="40" y="92" fill="rgb(var(--c-accent))">GRAPH · ONE RUN</text>
+
+    <rect x="40" y="108" width="96" height="40" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="88" y="132" textAnchor="middle">report</text>
+    <line x1="136" y1="128" x2="158" y2="128" stroke="rgb(var(--c-border-strong))" markerEnd="url(#lag-arrow-b)" />
+    <rect x="162" y="108" width="116" height="40" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="220" y="132" textAnchor="middle">reject-check</text>
+
+    <line x1="220" y1="148" x2="220" y2="188" stroke="rgb(var(--c-border-strong))" markerEnd="url(#lag-arrow-b)" />
+    <text x="230" y="172" fill="rgb(var(--c-muted))">found an issue</text>
+
+    <rect x="44" y="192" width="280" height="104" rx="8" fill="none" stroke="rgb(var(--c-border))" strokeDasharray="3 3" />
+    <text x="184" y="210" textAnchor="middle" fill="rgb(var(--c-muted))">small fix loop</text>
+
+    <rect x="60" y="222" width="92" height="36" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="106" y="244" textAnchor="middle">revise</text>
+    <line x1="152" y1="240" x2="184" y2="240" stroke="rgb(var(--c-border-strong))" markerEnd="url(#lag-arrow-b)" />
+    <rect x="188" y="222" width="108" height="36" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="242" y="244" textAnchor="middle">re-verify</text>
+
+    <polyline points="242,258 242,282 106,282 106,262" fill="none" stroke="rgb(var(--c-border-strong))" markerEnd="url(#lag-arrow-b)" />
+    <text x="174" y="277" textAnchor="middle" fill="rgb(var(--c-muted))">one retry, then you</text>
+
+    <line x1="278" y1="128" x2="432" y2="128" stroke="rgb(var(--c-border-strong))" markerEnd="url(#lag-arrow-b)" />
+    <text x="356" y="120" textAnchor="middle" fill="rgb(var(--c-muted))">no issue</text>
+
+    <polyline points="324,240 404,240 404,160 432,160" fill="none" stroke="rgb(var(--c-border-strong))" markerEnd="url(#lag-arrow-b)" />
+    <text x="412" y="206" fill="rgb(var(--c-muted))">fixed</text>
+
+    <rect x="436" y="108" width="156" height="64" rx="10" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" />
+    <text x="514" y="134" textAnchor="middle" fill="rgb(var(--c-accent))">learnings.md</text>
+    <text x="514" y="152" textAnchor="middle" fill="rgb(var(--c-muted))">what surprised us</text>
+  </svg>
+</Diagram>
+
+In the version I run for a team, a tracking ticket opens before each run and closes only when the run reports done. That one habit means a run that quietly failed on Monday is still visible on Friday.
+
+## Grow it: a queue that learns from your corrections
+
+Once a recurring job runs, the next step is making it improve from what you fix. A support queue I helped set up drafts replies from approved templates. Every time a person edits or rejects a draft, the change is logged: what was drafted, what went out instead, and why.
+
+Sending stays under a person's control. A template that goes out unedited again and again becomes a candidate for sending on its own, and a person decides whether it gets that. A low edit rate is a reason to look, not a permission.
+
+```text
+Help me set up a correction log for my reply templates. First ask
+where the templates, the drafts, and my final replies are stored. If
+you can't reach them, make me a simple form to fill in after each
+review. Each record: template, draft, what I sent instead or why I
+rejected it. Then create a Friday summary: templates I keep
+correcting, what I keep changing, and ones sent unedited every time.
+Test it on three records and propose template changes for me to
+approve. Don't change templates or send anything yourself.
+```
+
+## Save it: turn a one-off into a command
+
+Some jobs don't recur on a clock, but you'll want them again. If a job ran as a workflow (you asked with `ultracode` or "use a workflow"), open `/workflows`, select the run, press `s`, and choose where to save it. From then on it runs as a command by its own name. If it ran as an ordinary conversation, ask Claude to turn it into a workflow first and test it. On the Pro plan, turn on Dynamic workflows in `/config`.
+
+```text
+use a workflow for this task: <describe it>. Read <where the inputs
+are>, produce <the output and where it goes>, and check it against
+<what counts as done>. Ask me which inputs change between runs. Use
+the smallest number of agents that does the job, show me the plan
+before running, test it on one small example, and then tell me how to
+save the run as a command.
+```
+
+This series went through exactly this kind of setup. A team of seven research agents read through my own setup, and an eighth agent rechecked their numbers against the raw records and caught one that was reversed. I read everything before a word was written. Then each post went through a writer and four independent reviewers, and at the end a different model reviewed all four posts again. Every step is one of the patterns in this post.
+
+## Four ways to pick the wrong setup
+
+All four are things I've watched happen.
+
+| Setup | What goes wrong | What it looked like |
+|---|---|---|
+| Team, no loop | A plan nobody reruns as the world changes under it | A carefully reviewed [localization plan](/2026/graph-engineering), correct the day it was written, with nothing scheduled to check it again |
+| Loop, no team | The check shares the blind spot of the work it checks | [Six systems checked and working](/2026/loop-engineering), and a feature that did nothing because one link was never wired |
+| A watcher with no finish line | The loop watching other loops forgets it owes an output too | [Eight hours of good decisions](/2026/loop-engineering) and no final report |
+| A team for a small job | Hours of process for an afternoon of work | [A six-file change](/2026/graph-engineering) put through twenty-four agents |
+
+## Your setup, ready this week
+
+1. Pick one recurring report and put five sample items in a folder Claude can read, with personal details removed.
+2. Paste the two-question prompt with the job described, then build it with the weekly-review prompt.
+3. Run it once by hand and check every finding against those five items.
+4. Open a fresh session and run it again without explaining anything. Then schedule it and check the first scheduled result.
+
+You're done when you can find the report, the checker's notes, and the next scheduled run. Where I still slip is skipping the question altogether.
+
+The rest of this series: [loop engineering](/2026/loop-engineering), [graph engineering](/2026/graph-engineering), and [skills that learn](/2026/skills-that-learn).

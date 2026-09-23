@@ -1,4 +1,5 @@
 import { postMetadata } from "@/lib/post-metadata";
+import { Table, Thead, Tbody, Tr, Th, Td } from "app/(post)/components/table";
 
 export const post = {
   slug: "loops-and-graphs",
@@ -7,6 +8,7 @@ export const post = {
   date: "2026-09-23",
   series: "Harness Engineering",
   tags: ["claude-code", "workflows", "productivity"],
+  cover: "/images/covers/loops-and-graphs.webp",
   status: "published",
 };
 
@@ -244,13 +246,17 @@ This series went through exactly this kind of setup. A team of seven research ag
 
 All four are things I've watched happen.
 
-| Setup | What goes wrong | What it looked like |
-|---|---|---|
-| Team, no loop | A plan nobody reruns as the world changes under it | A carefully reviewed [localization plan](/2026/graph-engineering), correct the day it was written, with nothing scheduled to check it again |
-| Loop, no team | The check shares the blind spot of the work it checks | [Six systems checked and working](/2026/loop-engineering), and a feature that did nothing because one link was never wired |
-| A watcher with no finish line | The loop watching other loops forgets it owes an output too | [Eight hours of good decisions](/2026/loop-engineering) and no final report |
-| A team for a small job | Hours of process for an afternoon of work | [A six-file change](/2026/graph-engineering) put through twenty-four agents |
-
+<Table>
+<Thead>
+<Tr><Th>Setup</Th><Th>What goes wrong</Th><Th>What it looked like</Th></Tr>
+</Thead>
+<Tbody>
+<Tr><Td>Team, no loop</Td><Td>A plan nobody reruns as the world changes under it</Td><Td>A carefully reviewed <a href="/2026/graph-engineering">localization plan</a>, correct the day it was written, with nothing scheduled to check it again</Td></Tr>
+<Tr><Td>Loop, no team</Td><Td>The check shares the blind spot of the work it checks</Td><Td><a href="/2026/loop-engineering">Six systems checked and working</a>, and a feature that did nothing because one link was never wired</Td></Tr>
+<Tr><Td>A watcher with no finish line</Td><Td>The loop watching other loops forgets it owes an output too</Td><Td><a href="/2026/loop-engineering">Eight hours of good decisions</a> and no final report</Td></Tr>
+<Tr><Td>A team for a small job</Td><Td>Hours of process for an afternoon of work</Td><Td><a href="/2026/graph-engineering">A six-file change</a> put through twenty-four agents</Td></Tr>
+</Tbody>
+</Table>
 ## Your setup, ready this week
 
 1. Pick one recurring report and put five sample items in a folder Claude can read, with personal details removed.

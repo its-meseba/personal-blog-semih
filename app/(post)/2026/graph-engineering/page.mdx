@@ -5,6 +5,7 @@ export const post = {
   title: "Give Claude Code a team: graph engineering for everyday work",
   description: "Some jobs are too big for one Claude conversation, and some answers shouldn't be checked by the agent that produced them. You can split the work across agents with one job each, including one whose only job is to disagree. Three setups you can ask for today, with prompts to paste.",
   date: "2026-09-23",
+  updated: "2026-09-25",
   series: "Harness Engineering",
   tags: ["claude-code", "multi-agent", "productivity"],
   cover: "/images/covers/graph-engineering.webp",
@@ -13,7 +14,7 @@ export const post = {
 
 export const metadata = postMetadata(post);
 
-Even the people around me who use Claude Code well still use one Claude at a time. One conversation reads everything, does everything, and then checks its own work. You can run a small team instead: several agents, each with one job and a clean slate, and one of them there only to catch the others' mistakes. Most people I show this to don't know they can ask for it in a single sentence.
+Ask Claude Code why signups dropped this week and one conversation will pull the numbers, find a reason, and then, if you ask, confirm that its own reason holds up. That last step is the weak one. The same mind that made the guess is grading it. Even the colleagues I'd call good Claude Code users work this way, one Claude at a time, because nobody told them there's another option. You can run a small team instead: several agents, each with one job and a clean slate, and one of them there only to catch the others' mistakes. You can ask for it in a single sentence.
 
 Two situations call for it. The job is too big for one conversation to hold at once, like fifty documents, a long queue, or a report with many parts. Or the answer matters enough that the agent who produced it shouldn't be the one who checks it, like a number going into a board deck or a decision about money. A longer prompt fixes neither. Splitting the work can: more material covered, and an answer tested from several angles, as long as each agent gets the evidence it needs. I call drawing that split graph engineering: boxes for the agents, arrows for what they hand each other.
 
@@ -22,6 +23,7 @@ By the end of this post you can:
 - have three agents check a number before it goes in front of anyone,
 - work through a queue where only the risky items get a second look,
 - assemble a report from several writers who all follow one brief,
+- point each of these at your analytics, error tracking, ad accounts and tracker,
 - and tell when a team is overkill.
 
 This is the second of four posts on getting more out of Claude Code. If you're new to this, [the first one, on loops](/2026/loop-engineering), is the easier starting point; the others cover [setting up work that repeats every week](/2026/loops-and-graphs) and [teaching Claude your job once](/2026/skills-that-learn).
@@ -117,6 +119,22 @@ refuted with contradicting evidence, and mark it unverified if data is
 missing. Return the verdict, the sources, and any corrected number.
 ```
 
+With connected tools, the agents can pull the evidence themselves instead of waiting for you to export it. Say your onboarding completion rate fell 8 points this week. The three explanations that usually compete are a real problem in the app, a tracking change that only looks like one, and a different mix of people arriving, often from a new ad campaign. Give each of them an agent:
+
+```text
+use a workflow to explain why onboarding completion dropped from <old
+rate> to <new rate> between <dates>. Read only, change nothing. One
+agent recomputes the rate from raw events in PostHog. One checks
+whether any event, screen or tracking code changed in releases during
+that period. One compares where new users came from, using our ad
+accounts and PostHog's source data. One checks error tracking for new
+errors on onboarding screens. Then one reviewer weighs all four and
+says which explanation the evidence supports, marking anything
+unproven as unverified.
+```
+
+The agent that looks at tracking changes earns its place more often than you'd think. A renamed event makes a funnel step look empty, and a team can spend a week fixing an onboarding screen that was never broken.
+
 The trap is asking one agent to check its own work. It tends to find its typos and miss its blind spots, because the blind spot is exactly what it didn't think to check the first time.
 
 ## Give every item one check, and a second only when it's needed
@@ -134,6 +152,20 @@ sources. Rate problems as blocker (unsafe or not allowed), major (a
 wrong fact that changes the advice), or minor (wording). Revise and
 recheck only blockers and majors, once. Leave anything still unclear
 for me. Finish by checking the whole batch for contradictions.
+```
+
+An app's error tracking is the same kind of queue. Most new errors are noise, a few are real crashes, and a handful of those are easy fixes. One agent per error can read the stack trace and find the cause in the code, and a separate agent checks that the proposed fix actually addresses that trace and that the tests pass:
+
+```text
+use a workflow on the PostHog error-tracking issues from the last 7
+days that affect more than <N> users, with the <repository>. For each
+issue, one agent finds the cause in the code and proposes a fix on its
+own branch. A separate agent checks the fix against the stack trace
+and runs the tests, and rates it: ready, needs work, or can't tell.
+Open a draft pull request only for "ready", and a Linear issue with
+the evidence for everything else, after checking that one isn't
+already open. Never merge. End with one list for me: pull requests,
+issues, and anything skipped.
 ```
 
 Skip the rating and every item pays for the expensive second pass because you're nervous about the risky ones. The rating is what keeps the queue cheap.
@@ -233,6 +265,8 @@ agent combines the sections. Finally, a reviewer checks the full report
 against the brief and the sources and flags unsupported claims.
 ```
 
+A weekly growth report is where this shape pays off most, because each part lives in a different tool. The brief fixes the week, the definitions and the format; then one agent reads the ad accounts for spend and cost per install, one reads the onboarding funnel in PostHog, one reads error tracking, and one reads what shipped in Linear. The assembler writes one page, the reviewer checks every number against its source, and the result goes to Slack as a draft for you to post. Without the brief, the ads agent reports the week Monday to Sunday and the funnel agent reports the last seven days, and the page quietly compares two different weeks.
+
 The same shape works for a plan you want pressure-tested before anyone acts on it: a few agents gather facts, one drafts the plan, three critics each attack it from a named angle, and one finalizes it. Nothing gets changed along the way. The only output is a plan for you to approve.
 
 ## When a team is overkill
@@ -244,6 +278,7 @@ A team is easy to reach for out of habit. I once watched a small interface chang
 1. Run `/deep-research` on a question you actually care about and read how the report cites and filters its sources.
 2. Pick one number you know well, put its data and definition in a folder, and run the check-a-number prompt. Compare its result with your own and look at every source it cites.
 3. Later, try the queue prompt on five old tickets or requests, with personal details removed, and compare what it flags with what you would have flagged.
+4. If you have analytics or error tracking connected, run the onboarding or error-tracking prompt on last week, read-only, and check one of its conclusions yourself in the tool.
 
 You're done when you can reproduce the team's answer yourself and see clearly what it's still unsure about. Honestly, I expected teams of agents to be about speed. They mostly aren't. The ones worth their cost were the ones where I didn't trust a single pass to catch its own mistake, and the speed was a side effect of running the disagreement in parallel.
 

@@ -6,6 +6,7 @@ export const post = {
   title: "Loops, graphs, or both: set up work Claude Code can run every week",
   description: "Once you can make Claude finish a task and split a job across agents, the next step is work that repeats: the weekly review, the support queue, the monthly report. Two questions tell you which setup a job needs. A ready-to-run recurring review, with prompts to paste.",
   date: "2026-09-23",
+  updated: "2026-09-25",
   series: "Harness Engineering",
   tags: ["claude-code", "workflows", "productivity"],
   cover: "/images/covers/loops-and-graphs.webp",
@@ -14,7 +15,7 @@ export const post = {
 
 export const metadata = postMetadata(post);
 
-When I show people around me how to make Claude Code finish a job, and then how to give it a team of agents, they almost always ask the same next question: which one do I use for my job? Their real work isn't a one-off task. It's the review they run every Monday, the queue that refills every morning, the report that's due every month. Some of those jobs need one agent on a schedule, some need a team on a schedule, and picking the right one is most of the design.
+The Monday metrics review. The error list that refills overnight. The ad accounts someone checks every Friday. After I show friends how to make Claude Code finish a job, and how to give it a team of agents, this is the work they bring back, with one question: which of the two do I use for this? It's a fair question, because none of it is a one-off task. Some of those jobs need one agent on a schedule, some need a team on a schedule, and picking the right one is most of the design.
 
 Get it wrong and you pay for it in one of two ways. Either one agent grades its own homework week after week and nobody ever challenges it, or you pay for two dozen agents to check something you could have checked yourself in an afternoon.
 
@@ -85,6 +86,21 @@ The second question applies either way: does this job come back, or do you not k
     <text x="553" y="320" textAnchor="middle" fill="rgb(var(--c-accent))">loop of graphs</text>
   </svg>
 </Diagram>
+
+Here's how the two questions sort some everyday jobs once your tools are connected:
+
+<Table>
+<Thead>
+<Tr><Th>Job</Th><Th>One agent with a cheap check?</Th><Th>Comes back?</Th><Th>Setup</Th></Tr>
+</Thead>
+<Tbody>
+<Tr><Td>List new errors in error tracking each morning</Td><Td>Yes: counts and links, easy to compare with the tool</Td><Td>Daily</Td><Td>One agent on a schedule</Td></Tr>
+<Tr><Td>Explain why onboarding completion dropped</Td><Td>No: several explanations compete</Td><Td>Once</Td><Td>A team, run once</Td></Tr>
+<Tr><Td>Suggest ad budget changes</Td><Td>No: money, and the agent shouldn't grade its own call</Td><Td>Weekly</Td><Td>A team on a schedule, you approve</Td></Tr>
+<Tr><Td>Turn fixable errors into draft pull requests</Td><Td>Partly: tests check the fix, a second agent checks it matches the error</Td><Td>Daily</Td><Td>A small team on a schedule</Td></Tr>
+<Tr><Td>Tidy the tracker: close what shipped, flag what's stuck</Td><Td>Yes, if "shipped" means a linked, merged change</Td><Td>Weekly</Td><Td>One agent on a schedule</Td></Tr>
+</Tbody>
+</Table>
 
 You don't have to answer these alone. Before your next job that takes more than an afternoon, let Claude propose the setup:
 
@@ -208,6 +224,8 @@ Run `/weekly-review` a couple of times by hand and check the reports against the
   </svg>
 </Diagram>
 
+The same shape fits an ad review well, because the second agent is exactly what a budget decision needs. On Monday and Friday, one agent reads spend, installs and cost per result from your ad accounts, and cost per paying user from your analytics, and proposes changes. The second agent tries to reject each proposal: too little data, a campaign still in its learning phase, a drop that matches a tracking change rather than real performance. What survives goes to Slack for your yes. Neither agent changes a budget. Over a few weeks the learnings file fills with the rules of your own accounts, like how many days a new campaign needs before its numbers mean anything.
+
 In the version I run for a team, a tracking ticket opens before each run and closes only when the run reports done. That one habit means a run that quietly failed on Monday is still visible on Friday.
 
 ## Grow it: a queue that learns from your corrections
@@ -226,6 +244,8 @@ correcting, what I keep changing, and ones sent unedited every time.
 Test it on three records and propose template changes for me to
 approve. Don't change templates or send anything yourself.
 ```
+
+The same idea works for a routine that files issues. If a daily error check opens Linear issues, every issue you close as "not a bug" or "duplicate" is a correction. Have the routine read last week's closed issues before each run and note why each one was closed, and it stops filing the error you already decided to ignore.
 
 ## Save it: turn a one-off into a command
 

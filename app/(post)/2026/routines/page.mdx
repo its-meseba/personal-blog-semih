@@ -1,0 +1,280 @@
+import { postMetadata } from "@/lib/post-metadata";
+import { Table, Thead, Tbody, Tr, Th, Td } from "app/(post)/components/table";
+
+export const post = {
+  slug: "routines",
+  title: "Put Claude Code on a schedule: routines for everyday work",
+  description: "A routine is a Claude Code session that starts on its own, on a schedule, from an API call or from a GitHub event, and works while your laptop is closed. What to give it, which connections and secrets it can use, where a person stays in the loop, and the mistakes a real one made in its first weeks. With prompts to paste.",
+  date: "2026-09-26",
+  series: "Harness Engineering",
+  tags: ["claude-code", "automation", "productivity"],
+  cover: "/images/covers/routines.webp",
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
+
+Every three hours, a Claude Code session I didn't start opens the error tracking and the onboarding funnel of one of my apps. It checks which errors still happen on a build people actually have, files the new ones as issues, writes a fix for at most one of them as a draft pull request, and tells me in Slack only when something changed. On one of its first runs it filed the number that mattered most that month: on Android, 17% of the people who started onboarding finished it. On iPhone it was 88%.
+
+Nobody asked it to look that day. That's the part people around me find hardest to picture, because everything they've done with Claude Code so far started with them typing something. A routine starts without you. It runs on a schedule, when another tool calls it, or when something happens on GitHub, and it keeps working with your laptop closed. Most of the work is deciding what it should know, what it may touch, and when it has to come back to a person.
+
+By the end of this post you can:
+
+- pick where a scheduled job should live: inside a session, on your computer, or in the cloud,
+- start a routine from a schedule, an API call, or a pull request,
+- give it the context it needs, when it starts every run with no memory of the last one,
+- connect it to your data and your tools without handing it keys it can read,
+- keep yourself in the loop with draft pull requests and a Slack message you'll actually read,
+- have one routine review another's work,
+- and avoid the mistakes a real routine made in its first weeks.
+
+This is the fifth post in a series on getting more out of Claude Code. The others cover [making Claude finish what it starts](/2026/loop-engineering), [giving it a team of agents](/2026/graph-engineering), [setting up work that repeats every week](/2026/loops-and-graphs), and [teaching it your job once with skills](/2026/skills-that-learn).
+
+## Three places scheduled work can live
+
+Claude Code can repeat work in three places, and they differ mostly in what they can see and whether your computer has to be on.
+
+<Table>
+<Thead>
+<Tr><Th>Where</Th><Th>How you start it</Th><Th>What it can reach</Th><Th>Good for</Th></Tr>
+</Thead>
+<Tbody>
+<Tr><Td>Inside an open session</Td><Td>/loop</Td><Td>Everything your session can. Stops when the session closes, and a recurring loop expires after seven days</Td><Td>Watching something slow for the next hour or two</Td></Tr>
+<Tr><Td>On your computer</Td><Td>A scheduled task in the Claude desktop app</Td><Td>Your local files and your own setup. Runs only while the app is open</Td><Td>Work on files that live on your laptop</Td></Tr>
+<Tr><Td>In the cloud</Td><Td>A routine: /schedule, or claude.ai/code/routines</Td><Td>The repositories, connectors and environment you give it. Runs with your laptop closed</Td><Td>Anything that should happen whether or not you're around</Td></Tr>
+</Tbody>
+</Table>
+
+The rest of this post is about the third one. Routines are in research preview on the Pro, Max, Team and Enterprise plans, so the details below can change. They count against your usage like any other session, and there's a daily cap on how many runs can start, which you can see on the routines page.
+
+## What starts a routine
+
+A routine is a saved Claude Code setup: a prompt, one or more GitHub repositories, a cloud environment, and the connectors it may use. Three kinds of trigger start it, and one routine can have several.
+
+**A schedule.** Hourly, daily, weekdays or weekly, in your own time zone, or a custom cron expression set with `/schedule update`. The shortest interval is one hour. You can also schedule a single run at a set time ("in two weeks, open a pull request that removes the feature flag"); those don't count toward the daily cap.
+
+**An API call.** Each routine can get its own URL and token. Your alerting tool, a deploy script or a form can call it and pass along some text, like the alert body. That text arrives marked as untrusted data, and Claude won't act on instructions inside it unless your routine's prompt says to, so write the prompt to refer to it: "investigate the alert described in the payload".
+
+**A GitHub event.** A pull request being opened, updated, labeled or merged, or a release being published. Filters narrow it down: only pull requests into main, only ones that aren't drafts, only ones with a certain label. This needs the Claude GitHub App installed on the repository.
+
+The quickest start is from the terminal:
+
+```text
+/schedule every weekday at 8:00, read <the tracker> through the
+<connector> connection and write a short summary of what is overdue and
+what is due this week, with links. Don't change anything and don't send
+messages. If you can't reach the tracker, say what access is missing.
+```
+
+Claude asks follow-up questions about the repository and the schedule, then saves it. Open it at claude.ai/code/routines, press **Run now** once, and read the whole run. A green mark in the run list only means the session started and finished without an infrastructure error. It says nothing about whether the job was done.
+
+## Give it everything, because it remembers nothing
+
+Every run starts from a fresh copy of your repository and no memory of the run before. My triage routine runs eight times a day, and each of those runs meets the job for the first time. So what it knows has to be written down where it will find it.
+
+Three places carry that knowledge.
+
+**The saved prompt** is short and points elsewhere. Mine is one paragraph: read the runbook, read the record of earlier runs, check the guards, respect the caps, and say so in one line when there's nothing new.
+
+**A runbook in the repository** holds the actual method: what to query, how to tell a live error from an old one, when to file, when to open a pull request, how the Slack message looks. It's a file in the repo, so it gets reviewed and versioned like code, and I can fix the routine by editing it without touching the routine itself.
+
+**A ledger file** is the routine's memory. Every issue it filed, every error it judged already fixed, every pattern it decided is noise, with the reason. Each run reads it before writing anything, and appends a row when it changed something. Without it, the run at 7pm files what the run at 4pm already filed.
+
+One thing surprises people here. Your own setup doesn't come along. Skills in your home folder, your personal `CLAUDE.md`, plugins you've installed, and MCP servers you added locally all live on your computer, not in the cloud. What does come along is what's committed to the repository: its `CLAUDE.md`, the skills in its `.claude/skills/` folder, and a project `.mcp.json`. If a routine needs one of your skills, commit it to the repo. Plugins aren't installed in cloud sessions at all, so move what a routine needs from a plugin into the repo too.
+
+```text
+Help me prepare this repository for a routine that will <the job>. It
+runs with no memory between runs. Write docs/runbook.md with the exact
+steps, what counts as a real finding, and what the routine must never
+do. Create docs/ledger.md with sections for what it filed, what it
+judged already fixed, and what it treats as noise, and make reading
+it the first step. Check that every skill the job needs is committed
+under .claude/skills/ and list anything that only exists on my machine.
+Show me both files before committing.
+```
+
+## Connections, secrets, and what it can touch
+
+A routine can use three kinds of access, and each one should be scoped to the job.
+
+**Connectors** are the integrations on your claude.ai account: Slack, Linear, Gmail, Google Drive, PostHog, BigQuery and many more. When you create a routine, all of your connectors are included by default. Remove the ones the job doesn't need, because a routine uses every tool of an included connector, writes included, without asking. And it acts as you: its Slack messages, Linear issues, commits and pull requests carry your name. Connectors you manage at claude.ai/customize/connectors, so a new data source is one connection that every routine and chat can use, instead of a key you paste into each project.
+
+**The environment** decides network access and runs a setup script. The default only reaches a list of common package registries and cloud APIs. Connectors don't need to be on that list, because their traffic goes through Anthropic's servers. Your own services do.
+
+**Secrets** are where people get burned. Environment variables on a cloud environment are readable by anyone who uses that environment, and by the session itself. On Pro and Max plans, store API keys as API credentials instead: you list the hosts a key is for, and a proxy adds it to requests after they leave the session, so Claude and the commands it runs never see the key. Never put a key in the prompt, the runbook, or the repository.
+
+The data sources worth connecting first are the ones you already check by hand:
+
+- **Product analytics** like PostHog: funnels, error tracking, session replays.
+- **A data warehouse** like BigQuery, for the numbers that live in tables: revenue, cohorts, anything joined across sources. Give it a read-only account.
+- **Your tracker** like Linear, to file and close issues.
+- **Slack**, to tell you what happened.
+- **Ad accounts, app store dashboards, support inboxes**, whatever you open every Monday to see if something moved.
+
+<Diagram
+  title="What a routine run starts from, what it does, and what it leaves for a person"
+  caption="Everything on the left is written down or connected once. The run checks its guards before anything else, and everything on the right waits for a person: the pull request is a draft, the issue is a ticket, the message is a message."
+>
+  <svg viewBox="0 0 600 282" className="min-w-[560px]" role="presentation">
+    <defs>
+      <marker id="rt-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+    </defs>
+
+    <text x="85" y="18" textAnchor="middle" fill="rgb(var(--c-muted))">starts from</text>
+    <rect x="10" y="28" width="150" height="40" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="85" y="52" textAnchor="middle">saved prompt</text>
+    <rect x="10" y="80" width="150" height="40" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="85" y="104" textAnchor="middle">runbook + ledger</text>
+    <rect x="10" y="132" width="150" height="40" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="85" y="156" textAnchor="middle">connectors</text>
+    <rect x="10" y="184" width="150" height="40" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="85" y="208" textAnchor="middle">credentials</text>
+
+    <line x1="160" y1="48" x2="206" y2="110" stroke="rgb(var(--c-border-strong))" markerEnd="url(#rt-arrow)" />
+    <line x1="160" y1="100" x2="206" y2="120" stroke="rgb(var(--c-border-strong))" markerEnd="url(#rt-arrow)" />
+    <line x1="160" y1="152" x2="206" y2="132" stroke="rgb(var(--c-border-strong))" markerEnd="url(#rt-arrow)" />
+    <line x1="160" y1="204" x2="206" y2="142" stroke="rgb(var(--c-border-strong))" markerEnd="url(#rt-arrow)" />
+
+    <rect x="210" y="70" width="170" height="112" rx="8" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" />
+    <text x="295" y="94" textAnchor="middle" fill="rgb(var(--c-accent))">one run</text>
+    <text x="295" y="118" textAnchor="middle" fill="rgb(var(--c-muted))">1. check the guards</text>
+    <text x="295" y="138" textAnchor="middle" fill="rgb(var(--c-muted))">2. do the job</text>
+    <text x="295" y="158" textAnchor="middle" fill="rgb(var(--c-muted))">3. stay under the caps</text>
+
+    <line x1="380" y1="100" x2="426" y2="48" stroke="rgb(var(--c-border-strong))" markerEnd="url(#rt-arrow)" />
+    <line x1="380" y1="118" x2="426" y2="100" stroke="rgb(var(--c-border-strong))" markerEnd="url(#rt-arrow)" />
+    <line x1="380" y1="134" x2="426" y2="152" stroke="rgb(var(--c-border-strong))" markerEnd="url(#rt-arrow)" />
+    <line x1="380" y1="152" x2="426" y2="204" stroke="rgb(var(--c-border-strong))" markerEnd="url(#rt-arrow)" />
+
+    <text x="510" y="18" textAnchor="middle" fill="rgb(var(--c-muted))">leaves for you</text>
+    <rect x="430" y="28" width="160" height="40" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border-strong))" />
+    <text x="510" y="52" textAnchor="middle">draft pull request</text>
+    <rect x="430" y="80" width="160" height="40" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="510" y="104" textAnchor="middle">issue in the tracker</text>
+    <rect x="430" y="132" width="160" height="40" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="510" y="156" textAnchor="middle">Slack line</text>
+    <rect x="430" y="184" width="160" height="40" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="510" y="208" textAnchor="middle">ledger row</text>
+
+    <text x="295" y="262" textAnchor="middle" fill="rgb(var(--c-muted))">a guard fails: write nothing, post one line saying why</text>
+  </svg>
+</Diagram>
+
+## Guards and caps: the rules it checks before it acts
+
+A routine runs without permission prompts. There's no one to click "allow", so the rules that would normally live in your head have to be written into the runbook, and the routine has to check them itself.
+
+**Check you're in the right place.** My account can reach two companies' analytics and two companies' trackers, and the analytics connector has a shared "current organization" setting that a different session can switch. So the first thing every run does is confirm the organization and project in the analytics tool and the workspace in the tracker. If it can't confirm both, it stops and writes nothing. Doing nothing is a fine outcome. Filing one company's bug into another company's tracker is not, and it can't be unsent.
+
+**Cap what it can create.** At most five new issues and one draft pull request per run. A run that files fifteen issues buries the two that matter, and a queue of half-considered pull requests costs more review time than it saves.
+
+**Say what counts as real.** Most of an error list is history: crashes from builds nobody runs anymore. My runbook says an error only counts if it still happens on the newest build users have, and names what never counts: debug builds, emulators, the test accounts we seed. Each of those rules prevented a false issue on the very first run.
+
+```text
+Add a guards section to docs/runbook.md, to be checked before anything
+else in every run. First, confirm the routine is connected to
+<the right analytics project> and <the right tracker workspace>; if
+either can't be confirmed, stop, write nothing, and report which check
+failed. Second, set caps: at most <N> new issues and one draft pull
+request per run; beyond that, report what was held back. Third, list
+what never counts as a finding: <debug builds, test accounts, internal
+users>. A run that finds nothing new says so in one line.
+```
+
+## Keep a person in the loop
+
+A routine that does everything on its own is the wrong goal. The useful version does the tedious part and hands the decision to a person in a form that's quick to check.
+
+**Draft pull requests, never merges.** The routine pushes to its own branch, which cloud sessions name with a `claude/` prefix, and opens a draft. My runbook also makes it write, in the pull request, exactly what it verified and what it couldn't. It runs in a cloud sandbox with no phone and no simulator, so it can't confirm that a mobile fix works, and it has to say so. A pull request that claims a check nobody ran is worse than one that claims none, because the reviewer stops looking.
+
+**Only take a fix it can finish.** One where the cause is visible in the code, small enough to read in one sitting. It doesn't touch signing, store settings, anything that needs a product decision, or anything where it can't tell whether tests cover it. The 17% Android onboarding number is the standing example: that one needs a person to go through the builds and decide, and a guessed patch would hide the real cause.
+
+**Post to Slack only when something changed.** Eight runs a day, and most find nothing once the backlog is clean. That's success, not news. Eight "nothing new" messages a day teach everyone to mute the channel, and then they miss the one that matters. When something did change, it's one message you can read in five seconds:
+
+```text
+🔍 Triage · 2 new · 1 closed · 1 draft PR
+🔴 Android crash on the widget, build 1.3.9 · 14 users
+📈 Sign-in error now on 1.3.9 too · 6 users, was 1
+✅ Closed: no occurrences on the current build for 7 days
+🔧 Draft PR for the widget crash · <link>
+```
+
+Each line starts with what kind of thing it is, says what the number counts (users, sessions, occurrences), and names the build. The details live in the issue, one click away. The one message worth interrupting people for is the guard failing, because it means the routine is blind until someone looks.
+
+**Let it follow up on its own work.** Some of my routines are one-off check-ins a session scheduled for itself: check this pull request in an hour; if nothing changed, schedule another check in an hour and say nothing; if the tests fail or a reviewer commented, deal with it; stop when it's merged. That's the pattern for anything that waits on someone else.
+
+## Have one routine check another
+
+The same idea as the [team of agents](/2026/graph-engineering): the agent that wrote something shouldn't be the one that approves it. With GitHub triggers, that can happen without you starting anything.
+
+This is the piece I'd add next to my own setup, and it's a small one. The triage routine opens a draft pull request. A second routine, triggered when a pull request is opened on a branch starting with `claude/` or `triage/`, reads the change against the issue it links to, runs the tests, and leaves a review: does the fix match the error, is anything outside the issue touched, is the claim of what was verified true. You read one pull request with a second opinion already on it, instead of one nobody has questioned.
+
+<Diagram
+  title="One routine writes the fix, a second routine reviews it, a person decides"
+  caption="The review routine starts on its own when the draft pull request is opened. Neither routine merges anything. The person reads a pull request that has already been questioned."
+>
+  <svg viewBox="0 0 600 196" className="min-w-[560px]" role="presentation">
+    <defs>
+      <marker id="rt2-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+    </defs>
+
+    <rect x="10" y="40" width="130" height="52" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="75" y="62" textAnchor="middle">triage routine</text>
+    <text x="75" y="80" textAnchor="middle" fill="rgb(var(--c-muted))">every 3 hours</text>
+    <line x1="140" y1="66" x2="176" y2="66" stroke="rgb(var(--c-border-strong))" markerEnd="url(#rt2-arrow)" />
+
+    <rect x="180" y="40" width="120" height="52" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border-strong))" />
+    <text x="240" y="62" textAnchor="middle">draft PR</text>
+    <text x="240" y="80" textAnchor="middle" fill="rgb(var(--c-muted))">one per run</text>
+    <line x1="300" y1="66" x2="336" y2="66" stroke="rgb(var(--c-border-strong))" markerEnd="url(#rt2-arrow)" />
+    <text x="320" y="30" textAnchor="middle" fill="rgb(var(--c-muted))">opened</text>
+
+    <rect x="340" y="40" width="130" height="52" rx="8" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" />
+    <text x="405" y="62" textAnchor="middle" fill="rgb(var(--c-accent))">review routine</text>
+    <text x="405" y="80" textAnchor="middle" fill="rgb(var(--c-muted))">GitHub trigger</text>
+    <line x1="470" y1="66" x2="506" y2="66" stroke="rgb(var(--c-border-strong))" markerEnd="url(#rt2-arrow)" />
+
+    <rect x="510" y="40" width="80" height="52" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border))" />
+    <text x="550" y="62" textAnchor="middle">you</text>
+    <text x="550" y="80" textAnchor="middle" fill="rgb(var(--c-muted))">merge</text>
+
+    <polyline points="405,92 405,140 240,140 240,96" fill="none" stroke="rgb(var(--c-border-strong))" strokeDasharray="4 4" markerEnd="url(#rt2-arrow)" />
+    <text x="322" y="160" textAnchor="middle" fill="rgb(var(--c-muted))">review comments on the same PR</text>
+  </svg>
+</Diagram>
+
+```text
+/schedule create a routine that reviews pull requests in <repository>.
+Trigger it when a pull request is opened and its head branch starts
+with claude/. For each one: read the issue it links to, check the change
+fixes what the issue describes and touches nothing else, run the tests,
+and check that every claim in the description about what was verified
+is true. Leave one review comment with what holds, what doesn't, and
+what you couldn't check. Never approve, merge, or push to the branch.
+```
+
+## What went wrong in the first weeks
+
+The routine I've been describing has run eight times a day for weeks. These are its real mistakes, and each one is now a line in the runbook.
+
+**It opened pull requests for nothing.** In its first two days it opened nine draft pull requests that only added a row to its own ledger. Each one looked like work. None of it was. Now a pull request exists only for a code fix, and a ledger row goes straight to the main branch as a docs-only commit, or into the one open ledger pull request if the push is refused.
+
+**It called a real fix fabricated.** A comment on an issue said a fix was done. The routine searched the main branch, found nothing, called the comment false, and moved the issue back. The fix was sitting in an open pull request on another branch, and it was merged that morning. The rule now: before calling a "fixed" claim false, search every branch and every pull request, not only main.
+
+**Two runs edited the ledger at once.** Two triage runs overlapped and both changed the same file, and their pull requests conflicted. A follow-up check-in had to merge them and recheck the disputed numbers against fresh data. If your routine keeps a ledger, make runs append to it, and keep only one ledger change open at a time.
+
+**Silence looked like health.** For a while, the Android app sent no error reports at all because of a bug in an analytics library, so "no Android errors" meant nothing. Later, Android devices stopped sending any events at all. Both are in the ledger now, each with a warning for every future run: until this is fixed, an Android number that stopped moving isn't evidence of anything. When a number goes to zero, check that data is still arriving before you believe it. Zero is a question, not an answer.
+
+## Your setup, ready this week
+
+1. Pick one check you do by hand every week, and do it once with Claude in a normal session until the result is right.
+2. Paste the repository prompt above to turn it into a runbook and a ledger, and commit both.
+3. Create the routine with `/schedule`, read-only at first, with only the connectors it needs. Press **Run now** and read the whole run, not the green mark.
+4. After a week of runs you trust, add the guards, then one write step: an issue first, a draft pull request later, a Slack line only when something changed.
+5. When it's opening draft pull requests, add the review routine.
+
+You're done when a run you didn't start leaves you something you can check in under a minute, and a quiet run leaves you nothing at all. What I didn't expect is how much of this is writing. The routine itself took a few minutes to create. The runbook took weeks, one mistake at a time, and it's the reason the eighth run of the day is as careful as the first.

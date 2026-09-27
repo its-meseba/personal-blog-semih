@@ -89,7 +89,7 @@ export const series: Record<string, Series> = {
     id: "harness-engineering",
     name: "Harness Engineering",
     description:
-      "Getting real work out of Claude Code: loops that finish, graphs that check each other, skills that learn, and routines that run on their own",
+      "Getting real work out of Claude Code: loops that finish, graphs that check each other, skills that learn, routines that run on their own, and one tracker for people and agents",
     // Written and published as a set on 2026-09-23, so the order is the
     // order they were written to be read in: each post assumes the one
     // before it, and the last one also stands on its own.
@@ -99,6 +99,7 @@ export const series: Record<string, Series> = {
       "loops-and-graphs",
       "skills-that-learn",
       "routines",
+      "headless-project-management",
     ],
     orderReasons: {
       "loop-engineering":
@@ -110,7 +111,9 @@ export const series: Record<string, Series> = {
       "skills-that-learn":
         "Then write your job down once as skills that keep your corrections, so no session starts from zero.",
       routines:
-        "Finally, put it on a schedule: routines that run with your laptop closed, check their own guards, and hand the decision back to a person.",
+        "Then put it on a schedule: routines that run with your laptop closed, check their own guards, and hand the decision back to a person.",
+      "headless-project-management":
+        "Finally, share one tracker with your agents: issues they can continue from, evidence before Done, and a Linear setup guide.",
     },
   },
 };

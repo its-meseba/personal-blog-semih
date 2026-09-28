@@ -1,0 +1,221 @@
+import { postMetadata } from "@/lib/post-metadata";
+import { Table, Thead, Tbody, Tr, Th, Td } from "app/(post)/components/table";
+
+export const post = {
+  slug: "queryable-company",
+  title: "The queryable company: an agent for every teammate that works like them",
+  description: "Agents are fast, but they don't know anything your team hasn't written down. A company becomes queryable when its product data and the decisions its people already made sit where agents can read them. How a designer, a PM and an engineer can each get an agent that works like them, and why a senior's agent is the best onboarding a junior can get. With prompts to paste.",
+  date: "2026-09-28",
+  series: "AI Product Sense",
+  tags: ["agents", "claude-code", "teams"],
+  cover: "/images/covers/queryable-company.webp",
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
+
+Agents don't know your company. They run on instructions, in a loop, as long as you let them. Everything that makes a company work, which customers matter, which shortcuts are forbidden, why the pricing is what it is, what the team tried last spring and dropped, lives in the heads of the people who were there. An agent with no access to that is a very fast new hire on their first day, every day.
+
+Most teams I work with already use agents daily. The designer has one, the PM has one, the engineers have a few. What they don't have is a connection between those agents and the team. Each person's setup is private. The team never talks to it, and it never talks to the team. So every agent starts cold, and every person keeps re-explaining the company to their own tools.
+
+The fix I keep coming back to is making the company queryable. Not only its product data, which many teams already have in a warehouse, but its judgment: the decisions people made, the rules they agreed on, and the way each of them works. When that sits where agents can read it, every person's agent starts warm, and the most senior people's way of working stops being locked in their heads.
+
+## Two halves of a queryable company
+
+A company is queryable when an agent can answer two kinds of question without asking a person.
+
+The first kind is about the product. How many people finished onboarding last week, which markets are growing, what the refund rate was after the price change. Most of this already lives somewhere an agent can reach: a data warehouse like BigQuery, product analytics, the app stores, the billing system. Connect them read-only, agree on what each metric means and how fresh it has to be, and this half is mostly done. For a warehouse like BigQuery that means a read-only role plus permission to run queries, and a cap on how much a single query may scan, because queries cost money.
+
+The second kind is about the company's judgment. Why is the free trial seven days and not three? Which customers do we never email? What did we decide about the Android release after the last crash? Who owns the onboarding funnel, and what would they say about this change? None of that is in a warehouse. It's in meetings, threads, and people. And it's the half that makes an agent's answer right instead of plausible.
+
+<Diagram
+  title="A queryable company has two halves: the product data, and the decisions people already made"
+  caption="The left half answers 'what happened'. The right half answers 'what do we do about it here'. An agent with only the left half gives answers that are correct and wrong for your company at the same time."
+>
+  <svg viewBox="0 0 600 250" className="min-w-[560px]" role="presentation">
+    <defs>
+      <marker id="qc-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+    </defs>
+
+    <text x="120" y="20" textAnchor="middle" fill="rgb(var(--c-muted))">what happened</text>
+    <rect x="20" y="32" width="200" height="40" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="120" y="57" textAnchor="middle">warehouse (BigQuery)</text>
+    <rect x="20" y="82" width="200" height="40" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="120" y="107" textAnchor="middle">product analytics</text>
+    <rect x="20" y="132" width="200" height="40" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="120" y="157" textAnchor="middle">stores, billing</text>
+
+    <text x="480" y="20" textAnchor="middle" fill="rgb(var(--c-muted))">what we do about it here</text>
+    <rect x="380" y="32" width="200" height="40" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="480" y="57" textAnchor="middle">decisions, with the why</text>
+    <rect x="380" y="82" width="200" height="40" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="480" y="107" textAnchor="middle">MUSTs and MUST NOTs</text>
+    <rect x="380" y="132" width="200" height="40" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="480" y="157" textAnchor="middle">how each person works</text>
+
+    <line x1="220" y1="102" x2="252" y2="192" stroke="rgb(var(--c-border-strong))" markerEnd="url(#qc-arrow)" />
+    <line x1="380" y1="102" x2="348" y2="192" stroke="rgb(var(--c-border-strong))" markerEnd="url(#qc-arrow)" />
+
+    <rect x="220" y="196" width="160" height="44" rx="8" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" />
+    <text x="300" y="215" textAnchor="middle" fill="rgb(var(--c-accent))">every person's agent</text>
+    <text x="300" y="231" textAnchor="middle" fill="rgb(var(--c-muted))">starts warm</text>
+  </svg>
+</Diagram>
+
+## Agents are fast. Attention is the scarce part
+
+Here's what I've seen change when a team sets this up. The agents don't get smarter. The model is the same one everyone else has. What changes is that the attention the team already spent stops being wasted.
+
+A senior person spends real attention on a decision: they look at the data, argue it out, and land on "we never discount the annual plan in the first month". That attention is expensive and rare. In most companies it's spent once and then lives in one person's head and a meeting nobody recorded. Every agent after that, and every new hire, rediscovers it or breaks it.
+
+Written down as a rule an agent reads, the same attention keeps paying out. Every run reads it before it acts, and the rules that must never break are also backed by permissions and review, not only by the text. That's why the MUSTs and MUST NOTs matter more than any prompt: they're the attention a team has already paid, piled up where agents can use it. They're also, I'd argue, the most honest description of a team's character you'll find anywhere. What a team refuses to do says more about it than its values page.
+
+The teams I've helped set this up saw real productivity gains once they got used to it. Most of it came from people no longer spending their attention twice on the same question.
+
+## Map the company so agents know where they are
+
+An agent needs to know where it's standing before it can act well: which project this is, who owns it, which tracker and which data belong to it, which channel to report to. People pick that up from context. Agents need it written.
+
+A simple map does most of the work: teams, projects, owners, and for each project, where its issues live, where its data lives, and what an agent may and may not touch there. With a tracker like Linear used headlessly, the project structure is already half of that map. In my own setup, the folder I'm working in decides which project, which tracker workspace and which Slack workspace a write may go to, and the agent checks the workspace before its first write. That rule, backed by separate credentials for each company, is what keeps their work apart.
+
+```text
+Help me write an agent map of our company in docs/company-map.md. Ask me
+for our teams and projects, then for each project list: the owner, the
+tracker project, the data sources (read-only), the Slack channel it reports
+to, and what an agent may never change there. Keep it under 150 lines and
+link to deeper docs instead of copying them. Show me the draft here and
+don't save anything until I approve it.
+```
+
+## A digital twin for every person
+
+The part that surprises people most is also the simplest. Each person's agent can learn to work the way that person works: their checks, their shortcuts, the mistakes they've already made and don't make anymore. Over months, it becomes a working copy of their judgment for the jobs they do most. A digital twin, in a modest and practical sense.
+
+It's built from things you've seen in this blog already. Skills that hold how a job is done. A notes file the skill reads first, where every correction lands as a rule. A few MUSTs and MUST NOTs the person would say out loud if you asked. Nothing exotic, just kept up.
+
+The value shows up when someone else uses it.
+
+- **A junior or a new hire** gets the senior's way of doing the job on day one. Not a wiki page about it: the actual skill, with the senior's documented checks and the things they refuse to do. Permissions and review still guard anything that must never happen.
+- **Another senior** leading a neighboring department can ask how the growth lead would approach a pricing test, and get an answer shaped by that person's real rules instead of a generic one.
+- **The senior themselves** stops being the bottleneck for questions they've answered fifty times.
+
+```text
+Draft my working twin as a skill at .claude/skills/<my-role>/SKILL.md.
+Read my existing skills, their learnings files, and my last 30 days of
+corrections in this project. Write: the jobs I do most, how I do each one,
+the checks I never skip, my MUSTs and MUST NOTs with the reason for each,
+and when to ask me instead of deciding. Only include what you can point to
+in those files; list anything you guessed separately for me to confirm.
+Show me the draft here; don't create the file until I approve it.
+```
+
+A twin is a copy of how someone works, not a replacement for them. It should say when it's unsure, and it should hand decisions it wasn't built for back to a person.
+
+<Diagram
+  title="Each person's agent learns from their corrections, and the rest of the team can use it"
+  caption="A senior's corrections become rules in their skills. The shared repository carries those skills to everyone, so a new hire's agent starts with the senior's checks instead of none."
+>
+  <svg viewBox="0 0 600 224" className="min-w-[560px]" role="presentation">
+    <defs>
+      <marker id="qc2-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="rgb(var(--c-border-strong))" />
+      </marker>
+    </defs>
+
+    <rect x="10" y="30" width="130" height="52" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="75" y="52" textAnchor="middle">senior</text>
+    <text x="75" y="70" textAnchor="middle" fill="rgb(var(--c-muted))">"save this"</text>
+    <line x1="140" y1="56" x2="176" y2="56" stroke="rgb(var(--c-border-strong))" markerEnd="url(#qc2-arrow)" />
+
+    <rect x="180" y="30" width="140" height="52" rx="8" fill="rgb(var(--c-accent-chip))" stroke="rgb(var(--c-accent))" />
+    <text x="250" y="52" textAnchor="middle" fill="rgb(var(--c-accent))">their twin</text>
+    <text x="250" y="70" textAnchor="middle" fill="rgb(var(--c-muted))">skills + rules</text>
+    <line x1="320" y1="56" x2="356" y2="56" stroke="rgb(var(--c-border-strong))" markerEnd="url(#qc2-arrow)" />
+
+    <rect x="360" y="30" width="140" height="52" rx="8" fill="rgb(var(--c-surface))" stroke="rgb(var(--c-border-strong))" />
+    <text x="430" y="52" textAnchor="middle">shared repository</text>
+    <text x="430" y="70" textAnchor="middle" fill="rgb(var(--c-muted))">synced to all</text>
+
+    <line x1="430" y1="82" x2="330" y2="146" stroke="rgb(var(--c-border-strong))" markerEnd="url(#qc2-arrow)" />
+    <line x1="430" y1="82" x2="430" y2="146" stroke="rgb(var(--c-border-strong))" markerEnd="url(#qc2-arrow)" />
+    <line x1="430" y1="82" x2="530" y2="146" stroke="rgb(var(--c-border-strong))" markerEnd="url(#qc2-arrow)" />
+
+    <rect x="270" y="150" width="120" height="48" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="330" y="179" textAnchor="middle">new hire</text>
+    <rect x="400" y="150" width="60" height="48" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="430" y="179" textAnchor="middle">junior</text>
+    <rect x="470" y="150" width="120" height="48" rx="8" fill="rgb(var(--c-surface-raised))" stroke="rgb(var(--c-border))" />
+    <text x="530" y="179" textAnchor="middle">another senior</text>
+
+    <text x="120" y="176" textAnchor="middle" fill="rgb(var(--c-muted))">starts with their checks,</text>
+    <text x="120" y="194" textAnchor="middle" fill="rgb(var(--c-muted))">not from zero</text>
+  </svg>
+</Diagram>
+
+## Departments improve their own tools, and everyone gets the update
+
+The skills and plugins a team uses shouldn't be frozen at the version someone wrote in the first week. The people who use them every day are the ones who find what's missing, and they should be the ones improving them.
+
+So each department owns its part of the shared repository: growth owns the ads and lifecycle skills, product owns the analysis and research ones, engineering owns the release and triage ones. When someone improves a skill, it goes back to the repository, and everyone picks it up on their next pull. In my own setup this runs through a sync script after every change, so a fix made in one session is in every other session the same day. Plugins can carry the parts every project needs, installed once per person and updated through the marketplace they come from.
+
+A correction one person made on Tuesday is a rule every agent reads on Wednesday.
+
+## Decisions written where agents read them
+
+The heaviest part of working in a team is usually not the work. It's the communication around it: explaining earlier decisions again and again. A lot of that exists only because the decision was never written anywhere a new person, or an agent, would find it.
+
+A decision log fixes most of it, if it's kept the way agents need it: one entry per decision, with the date, who decided, what was decided, why, and what would make us revisit it. Linked from the project it affects. Agents read it before proposing anything in that area; people read it instead of asking.
+
+```text
+Read the last 30 days of <Slack channel or meeting notes> and the closed
+issues in <tracker project>. Find decisions that were made: pricing, scope,
+rules, trade-offs. For each, draft a decision log entry: date, who decided,
+the decision, the reason, and what would make us revisit it. Mark anything
+you inferred rather than read. Don't write to any tool; show me the list so
+I can approve each entry.
+```
+
+## Slack, read-only, and only as much as the team wants
+
+Most of a team's live context is in Slack, so it's tempting to plug every agent into every channel. I'd go slower. The Slack connector can also send messages, so turn its write tools off in the connector settings and check which channels the connected account can actually see. Then let the team decide the scope: some channels on by default, others only when someone asks an agent to look, and some never.
+
+Two rules make this work. The agent reads, it doesn't post, unless a specific routine has one channel to report to. And people know which channels agents can read. A team that finds out later that its jokes were being summarized won't trust the setup again, and it shouldn't.
+
+## Keep it true, or it's worse than nothing
+
+A queryable company is only useful if the answers are right. An agent that confidently repeats a stale decision or a broken metric does more damage than one that says "I don't know".
+
+Three habits keep it honest:
+
+- **Check numbers against the source.** An agent that reports a metric should say where it came from and when. A number that suddenly drops to zero is a question, not an answer: check that data is still arriving before believing it.
+- **Give decisions an expiry.** Every decision entry says what would make it worth revisiting. A monthly routine reads the log and flags the ones whose conditions changed.
+- **Re-test when the tools change.** The frontier moves every few months, and the newest harnesses and models unlock things the old ones couldn't. A queryable company is exactly the kind of long-context, many-source work where that shows. When a new model or harness lands, run it on a handful of real questions your team asks and keep it if the answers are better.
+
+## What can go wrong
+
+<Table>
+<Thead>
+<Tr><Th>Risk</Th><Th>What it looks like</Th><Th>What to do</Th></Tr>
+</Thead>
+<Tbody>
+<Tr><Td>It feels like surveillance</Td><Td>People stop writing openly in channels agents read</Td><Td>Publish which channels are read, read-only, and let the team choose</Td></Tr>
+<Tr><Td>A twin that fossilizes</Td><Td>It keeps applying last year's rules</Td><Td>Rules carry a date and a reason; old ones get reviewed</Td></Tr>
+<Tr><Td>Stale decisions</Td><Td>Agents defend a choice nobody believes anymore</Td><Td>Each decision says when to revisit it</Td></Tr>
+<Tr><Td>Wrong data, confidently</Td><Td>A broken metric becomes a plan</Td><Td>Every number cites its source and time</Td></Tr>
+<Tr><Td>Someone leaves</Td><Td>Nobody knows who owns their twin</Td><Td>Skills belong to the team's repository, with a named owner per department</Td></Tr>
+</Tbody>
+</Table>
+
+## Start this week
+
+1. Connect one data source read-only, the one people ask about most, and ask an agent a question you'd normally ask a colleague.
+2. Write the company map for one team with the map prompt.
+3. Pick the most senior person on that team and draft their twin with the twin prompt. Have a newer person try it on a real task.
+4. Run the decision log prompt on last month's channel and keep the entries the team agrees with.
+5. Decide, as a team, which Slack channels agents may read.
+
+You're done when a new person's agent can answer "why do we do it this way?" with the real reason and the name of the person who decided it. What I find most striking about teams that get here is how little of it is technology. The agents were always capable. What was missing was the attention the team had already paid, written down where they could use it.
+
+The mechanics behind all of this are in my Harness Engineering series: [skills that keep your corrections](/2026/skills-that-learn), [routines that run on their own](/2026/routines), and [one tracker for people and agents](/2026/headless-project-management).

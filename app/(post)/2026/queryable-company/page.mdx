@@ -4,8 +4,9 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "app/(post)/components/table";
 export const post = {
   slug: "queryable-company",
   title: "The queryable company: an agent for every teammate that works like them",
-  description: "Agents are fast, but they don't know anything your team hasn't written down. A company becomes queryable when its product data and the decisions its people already made sit where agents can read them. How a designer, a PM and an engineer can each get an agent that works like them, and why a senior's agent is the best onboarding a junior can get. With prompts to paste.",
+  description: "Agents are fast, but they don't know your company. It becomes queryable when its product data and the decisions its people already made sit where agents can read them. How each person gets an agent that works like them, what that looks like in real skills from a product company and an app studio, the team layer that shares it, and the file structures to copy. With prompts to paste.",
   date: "2026-09-28",
+  updated: "2026-09-29",
   series: "AI Product Sense",
   tags: ["agents", "claude-code", "teams"],
   cover: "/images/covers/queryable-company.webp",
@@ -70,9 +71,39 @@ Here's what I've seen change when a team sets this up. The agents don't get smar
 
 A senior person spends real attention on a decision: they look at the data, argue it out, and land on "we never discount the annual plan in the first month". That attention is expensive and rare. In most companies it's spent once and then lives in one person's head and a meeting nobody recorded. Every agent after that, and every new hire, rediscovers it or breaks it.
 
-Written down as a rule an agent reads, the same attention keeps paying out. Every run reads it before it acts, and the rules that must never break are also backed by permissions and review, not only by the text. That's why the MUSTs and MUST NOTs matter more than any prompt: they're the attention a team has already paid, piled up where agents can use it. They're also, I'd argue, the most honest description of a team's character you'll find anywhere. What a team refuses to do says more about it than its values page.
+Written down as a rule an agent reads, the same attention keeps paying out. Every run is told to read it before it acts, and the rules that must never break are also backed by permissions and review, not only by the text. That's why the MUSTs and MUST NOTs matter more than any prompt: they're the attention a team has already paid, piled up where agents can use it. They're also, I'd argue, the most honest description of a team's character you'll find anywhere. What a team refuses to do says more about it than its values page.
 
 The teams I've helped set this up saw real productivity gains once they got used to it. Most of it came from people no longer spending their attention twice on the same question.
+
+## The company brain, as files
+
+This sounds abstract until you see it on disk. In my own setup, and in the ones I've built with teams, the company's judgment lives in a handful of plain files that agents read, in a fixed order. Nothing here needs special software. It's a folder, kept honestly.
+
+```text
+company-brain/
+  CLAUDE.md                 the map: short, read every session
+  rules/                    MUSTs and MUST NOTs, one topic per file,
+                            read only when the task touches that topic
+  facts-index.md            where each fact lives (never the values)
+  decisions/                one entry per decision, with the why
+  skills/
+    growth-ads/
+      SKILL.md              how the job is done
+      state/learnings.md    corrections, one dated rule each
+      state/log.md          what each run did
+    data-analyst/
+      SKILL.md
+      references/learnings/ terminology, schema, identity, baselines
+    support-replies/ ...
+```
+
+Three details carry most of the weight.
+
+**The map stays short.** `CLAUDE.md` is read at the start of every session, so it holds only the rules that always apply and a table of where everything else lives: "when you're doing ads work, read the ads skill; when you need a tax or account fact, read the facts index". The rest stays unread until a task needs it. Most people's instructions file is a notebook that grew for months. Mine is a map.
+
+**Facts have an index, not copies.** My facts index is one page of rows saying which file holds which kind of fact, an address, a tax number, which account owns which app, with no values in it. The rule on top: never answer a fact from memory, read the one row it points to. A value copied into a second place is the stale copy that gets read next month.
+
+**Learnings are sorted, not piled.** One data analyst skill I built keeps its learnings in separate files by kind: what the business terms mean, which tables and fields to trust, how users are identified, and baseline numbers. The baselines do quiet work. Before the skill presents a number, it compares it with the stored baseline and flags anything far outside it for a second look.
 
 ## Map the company so agents know where they are
 
@@ -110,6 +141,8 @@ and when to ask me instead of deciding. Only include what you can point to
 in those files; list anything you guessed separately for me to confirm.
 Show me the draft here; don't create the file until I approve it.
 ```
+
+Here's what that looks like for me, concretely. My ads operator keeps four files next to the skill: the accounts it may touch, the goals, a log of every change it made, and a learnings file with every correction I've made to it. My standup skill reconstructs what I actually did on a given day from my session history, my commits and the tracker, and writes it as the update the team expects in Slack. Neither is me. Both carry how I work, and a colleague could adapt either one once they've set up their own access and read its assumptions.
 
 A twin is a copy of how someone works, not a replacement for them. It should say when it's unsure, and it should hand decisions it wasn't built for back to a person.
 
@@ -154,13 +187,46 @@ A twin is a copy of how someone works, not a replacement for them. It should say
   </svg>
 </Diagram>
 
-## Departments improve their own tools, and everyone gets the update
+## What this looks like in real skills
 
-The skills and plugins a team uses shouldn't be frozen at the version someone wrote in the first week. The people who use them every day are the ones who find what's missing, and they should be the ones improving them.
+Here are skills I run myself or built with teams, with identifying details generalized.
 
-So each department owns its part of the shared repository: growth owns the ads and lifecycle skills, product owns the analysis and research ones, engineering owns the release and triage ones. When someone improves a skill, it goes back to the repository, and everyone picks it up on their next pull. In my own setup this runs through a sync script after every change, so a fix made in one session is in every other session the same day. Plugins can carry the parts every project needs, installed once per person and updated through the marketplace they come from.
+<Table>
+<Thead>
+<Tr><Th>Role</Th><Th>What the skill does</Th><Th>What it carries that a new person wouldn't know</Th></Tr>
+</Thead>
+<Tbody>
+<Tr><Td>Data analyst</Td><Td>Answers revenue and funnel questions</Td><Td>What each term means in the data, which internal accounts to leave out, baselines to check every number against</Td></Tr>
+<Tr><Td>Lifecycle marketer</Td><Td>Builds and sends campaigns</Td><Td>Recalculate the audience right before every send, because a saved audience goes stale; show the exact reach and wait for a yes</Td></Tr>
+<Tr><Td>Support</Td><Td>Drafts replies to customer emails</Td><Td>Real replies mined from thousands of past threads, a live account check, and: never close a ticket whose reply can't be delivered</Td></Tr>
+<Tr><Td>User researcher</Td><Td>Finds users worth interviewing</Td><Td>Shortlist cheaply first, profile only the few worth it</Td></Tr>
+<Tr><Td>Operations calendar</Td><Td>Runs what's due today</Td><Td>A ticket opens and closes around each run, so a skipped day is visible; findings go to a person, not the board</Td></Tr>
+<Tr><Td>Ads operator</Td><Td>Proposes ad changes</Td><Td>Goals, accounts, a change log and learnings; spending needs a yes</Td></Tr>
+<Tr><Td>Portfolio lead</Td><Td>Keeps the tracker honest</Td><Td>The code is the truth; close an issue only with evidence posted first</Td></Tr>
+</Tbody>
+</Table>
 
-A correction one person made on Tuesday is a rule every agent reads on Wednesday.
+Read the right-hand column again: it's what a good colleague tells you in your second week, after you've already made the mistake once.
+
+## The team layer: two repositories and a few team rules
+
+The next step is deciding which skills the team shares and who looks after them. It's simple, and it's the part most teams skip.
+
+**Two repositories, and every skill lives in exactly one.** My personal skills sync to my own private repository. The team's skills sync to a company repository that every employee pulls, with a clear naming prefix so nobody wonders which is which. A skill never lives in both, because two copies drift and nobody can tell which one is right. After a reviewed change, a sync script pushes it, and everyone gets it on their next pull.
+
+**Every department owns its skills.** Growth owns the ads and lifecycle skills, product owns analysis and research, engineering owns release and triage. The people who use a skill every day find what's missing, and they're the ones allowed to improve it.
+
+**Team rules sit on top of personal ones.** At one company I work with, agents don't file defects into the team's tracker at all: they report to a person, and a person decides what reaches the board, because an issue saying "this is broken" lands on someone's work. In my own setup, the folder I'm working in decides which workspace a write may go to. Rules like these aren't about any one skill. They're the team's character, applied to every agent at once.
+
+```text
+Help me set up our team's skills repository. Ask me for our departments and
+who owns each, then propose: a naming prefix for team skills, a folder per
+department, an owner line at the top of every SKILL.md, a CONTRIBUTING.md
+that says how a correction gets back into a skill, and the list of skills
+from my personal setup that belong to the team instead. Leave out anything
+with credentials, customer data or private notes. Don't move or copy
+anything yet; show me the plan and wait for my OK.
+```
 
 ## Decisions written where agents read them
 
@@ -207,6 +273,38 @@ Three habits keep it honest:
 <Tr><Td>Someone leaves</Td><Td>Nobody knows who owns their twin</Td><Td>Skills belong to the team's repository, with a named owner per department</Td></Tr>
 </Tbody>
 </Table>
+
+## Structures you can copy
+
+These are the shapes I use, trimmed. Copy them, then let the team fill them in.
+
+```text
+--- skills/<department>-<job>/SKILL.md
+---
+name: growth-lifecycle
+description: Builds and sends push and email campaigns. Use when asked to
+  plan, preview or send a campaign, or "who will this reach".
+owner: <name>, growth
+---
+Before anything: read state/learnings.md.
+Steps: ...
+Always stop and ask before: sending, spending, deleting.
+
+--- skills/<...>/state/learnings.md   (one dated line per correction)
+<date>  <what went wrong, and what to do instead>
+<date>  Leave internal accounts out of every rate.
+
+--- decisions/<date>-<topic>.md
+Decided: <the decision>
+By: <name>, with <names>
+Why: <the evidence or reasoning>
+Revisit if: <the condition that would change it>
+
+--- <team>/CLAUDE.md   (short: the map, not the manual)
+Always: <3-5 rules that apply to every task>
+Read when needed: ads work -> skills/growth-ads; a fact -> facts-index.md
+Never: <the MUST NOTs>
+```
 
 ## Start this week
 

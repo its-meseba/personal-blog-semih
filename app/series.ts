@@ -116,6 +116,14 @@ export const series: Record<string, Series> = {
         "Finally, share one tracker with your agents: issues they can continue from, evidence before Done, and a Linear setup guide.",
     },
   },
+  "App Founder": {
+    id: "app-founder",
+    name: "App Founder",
+    description:
+      "How to be an app founder: getting found in the stores, getting chosen, and the details that decide whether an app grows",
+    // One published post (2026-09-29) — nothing to order yet. Falls back
+    // to chronological-ascending until there is a body of work to curate.
+  },
 };
 
 export const getSeriesConfig = (seriesName?: string): Series | undefined => {

@@ -3,6 +3,11 @@ import { join } from "path";
 import { readFile } from "fs/promises";
 import { Caption } from "./caption";
 import { BlogImage as ClientBlogImage } from "./blog-image";
+import { SITE_URL } from "@/lib/post-types";
+
+const IS_WORKERS_RUNTIME =
+  typeof navigator !== "undefined" &&
+  navigator.userAgent === "Cloudflare-Workers";
 
 export async function Image({
   src,
@@ -33,14 +38,10 @@ export async function Image({
             imageBuffer = Buffer.from(await response.arrayBuffer());
           }
         } else {
-          if (
-            !process.env.CI &&
-            process.env.VERCEL_URL &&
-            process.env.NODE_ENV === "production"
-          ) {
-            const response = await fetch(
-              "https://" + process.env.VERCEL_URL + src
-            );
+          // Workers has no filesystem: an ISR re-render there measures the
+          // image over HTTP. The build (Node) still reads it from `public/`.
+          if (IS_WORKERS_RUNTIME) {
+            const response = await fetch(SITE_URL + src);
             if (response.ok) {
               imageBuffer = Buffer.from(await response.arrayBuffer());
             }

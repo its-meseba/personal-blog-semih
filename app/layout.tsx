@@ -5,7 +5,6 @@ import { fontVariables } from "./styles/fonts";
 import { atomAlternateTypes } from "@/lib/feed-links";
 import { THEME_COLOR } from "./styles/tokens";
 import { themeEffect } from "./theme-effect";
-import { Analytics } from "./analytics";
 import { Header } from "./header";
 import { Footer } from "./footer";
 import { RouteMotion } from "./components/route-motion";
@@ -147,7 +146,6 @@ export default async function RootLayout({
           <div className="site-content"><RouteMotion>{children}</RouteMotion></div>
           <Footer />
         </div>
-        <Analytics />
       </body>
     </html>
   );

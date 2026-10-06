@@ -10,12 +10,6 @@ module.exports = withMDX({
   experimental: {
     mdxRs: true,
   },
-  // `lib/content.ts` reads the post sources at request time on dynamic routes,
-  // so the MDX files must be traced into the serverless output. Every year
-  // folder, not just this year's — a hardcoded year drops next year's posts.
-  outputFileTracingIncludes: {
-    "/**": ["./app/(post)/*/**/*.mdx"],
-  },
   typescript: {
     // Type errors fail the build. `npx tsc --noEmit` is clean, so nothing is
     // being hidden here and nothing should be.

@@ -1,10 +1,9 @@
 export const revalidate = 60;
 
 import { ImageResponse } from "next/og";
-import { readFileSync } from "fs";
-import { join } from "path";
 
 import { getPublishedPosts, getPost } from "@/lib/content";
+import { inter300, inter600, robotoMono400 } from "@/lib/generated/og-fonts";
 import { LIGHT } from "@/app/styles/tokens";
 
 // Every published post gets a card, generated from the index — so a post can
@@ -20,17 +19,12 @@ const PAPER = LIGHT.background;
 
 const SITE_DOMAIN = "mehmetsemihbabacan.com";
 
-// Satori needs real font binaries, so the OG cards use the .woff files copied
-// into `fonts/` by the postinstall hook rather than the next/font faces.
-const fontsDir = join(process.cwd(), "fonts");
-
-const inter300 = readFileSync(join(fontsDir, "inter-latin-300-normal.woff"));
-
-const inter600 = readFileSync(join(fontsDir, "inter-latin-600-normal.woff"));
-
-const robotoMono400 = readFileSync(
-  join(fontsDir, "roboto-mono-latin-400-normal.woff")
-);
+// Satori needs real font binaries. Workers has no filesystem, so the .woff
+// files are embedded as base64 by `scripts/build-content.ts` and decoded once.
+const fromBase64 = (data: string) => Buffer.from(data, "base64");
+const INTER_300 = fromBase64(inter300);
+const INTER_600 = fromBase64(inter600);
+const ROBOTO_MONO_400 = fromBase64(robotoMono400);
 
 const formatDate = (date: string) =>
   new Date(`${date}T00:00:00Z`).toLocaleDateString("en-US", {
@@ -109,15 +103,15 @@ export async function GET(
       fonts: [
         {
           name: "Inter 300",
-          data: inter300,
+          data: INTER_300,
         },
         {
           name: "Inter 600",
-          data: inter600,
+          data: INTER_600,
         },
         {
           name: "Roboto Mono 400",
-          data: robotoMono400,
+          data: ROBOTO_MONO_400,
         },
       ],
     }

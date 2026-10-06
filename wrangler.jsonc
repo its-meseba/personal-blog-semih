@@ -1,0 +1,34 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "personal-blog-semih",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  // Kept on so the site stays testable at *.lumiostudio.workers.dev.
+  "workers_dev": true,
+  // The apex redirects to www through a zone redirect rule, not the worker.
+  "routes": [
+    { "pattern": "www.mehmetsemihbabacan.com", "custom_domain": true }
+  ],
+  "services": [
+    {
+      // Lets the memory queue call the worker itself to revalidate a page.
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "personal-blog-semih"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      // Next.js incremental cache: the `revalidate = 60` pages and feeds.
+      "binding": "NEXT_INC_CACHE_KV",
+      "id": "40f8ef9bc8a6414b91cbd8fd2060fc90"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

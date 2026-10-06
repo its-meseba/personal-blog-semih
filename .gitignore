@@ -15,3 +15,8 @@ fonts/*
 tsconfig.tsbuildinfo
 .gstack/
 .env*
+
+# Cloudflare Workers build output + generated content index
+.open-next
+.wrangler
+lib/generated/

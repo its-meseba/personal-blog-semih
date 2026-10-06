@@ -42,7 +42,7 @@ export async function GET() {
     "",
     "## Site",
     "",
-    `- [Home / About](${SITE_URL}/about): who he is, what he has built, and how to reach him.`,
+    `- [Home / About](${SITE_URL}/): who he is, what he has built, and how to reach him.`,
     `- [Thoughts](${SITE_URL}/thoughts): every published essay, newest first.`,
     `- [Atom feed](${SITE_URL}/atom): full-text feed of every published post.`,
     `- [Sitemap](${SITE_URL}/sitemap.xml): every indexable URL.`,

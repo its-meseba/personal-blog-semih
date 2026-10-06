@@ -40,7 +40,7 @@ export function AuthorCard({
 
       <div className="min-w-0">
         <Link
-          href="/about"
+          href="/"
           className="font-display text-ui font-medium text-fg transition-colors duration-quick ease-console hover:text-accent"
         >
           {author.name}

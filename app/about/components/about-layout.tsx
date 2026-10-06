@@ -17,8 +17,8 @@ export function AboutLayout({ children }: AboutLayoutProps) {
   return (
     <div className="relative">
       {/*
-        The page masthead, and the page's only <h1>. /about is where `/`
-        redirects, so it is the site's primary indexable page; it was shipping
+        The page masthead, and the page's only <h1>. This layout renders the home page `/`
+        (/about permanently redirects there), the site's primary indexable page; it was shipping
         with no h1 at all, which leaves search and answer engines guessing the
         page's subject from the first <h2> ("About").
       */}

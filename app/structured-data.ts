@@ -29,7 +29,7 @@ function abs(path: string): string {
   return path.startsWith("http") ? path : `${SITE_URL}${path}`;
 }
 
-const ABOUT_URL = `${SITE_URL}/about`;
+const ABOUT_URL = SITE_URL;
 const THOUGHTS_URL = `${SITE_URL}/thoughts`;
 
 /**

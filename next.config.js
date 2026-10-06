@@ -65,6 +65,7 @@ module.exports = withMDX({
   },
   redirects() {
     return [
+      { source: "/about", destination: "/", permanent: true },
       {
         source: "/essays/:nested*",
         destination: "/",

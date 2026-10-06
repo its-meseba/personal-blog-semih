@@ -8,7 +8,7 @@ export function Header() {
     <header className="site-header">
       <Logo />
       <nav aria-label="Main navigation">
-        <Link href="/about#work">Work</Link>
+        <Link href="/#work">Work</Link>
         <Link href="/thoughts">Writing</Link>
         <Link href="/series">Series</Link>
         <a href={author.links.linkedin}>Connect <span aria-hidden="true">↗</span></a>

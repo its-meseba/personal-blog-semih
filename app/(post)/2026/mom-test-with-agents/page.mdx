@@ -1,0 +1,225 @@
+import { postMetadata } from "@/lib/post-metadata";
+import { Table, Thead, Tbody, Tr, Th, Td } from "app/(post)/components/table";
+
+export const post = {
+  slug: "mom-test-with-agents",
+  title: "Your users are being polite. How I use the Mom Test and agents to get real user facts",
+  description: "The Mom Test with agents: pick positive and negative user cohorts from data, prep each call with a one-page user card, ask questions that get facts instead of compliments, and turn interviews, support tickets and cancel reasons into one ledger of user facts. Copyable prompts included.",
+  date: "2026-10-13",
+  series: "App Founder",
+  tags: ["user-research", "mom-test", "customer-interviews", "agents"],
+  cover: "/images/covers/mom-test-with-agents.webp",
+  status: "published",
+};
+
+export const metadata = postMetadata(post);
+
+*Every app, number and person in this post is made up for teaching. The method is real; the data is not.*
+
+Let's imagine Pebble, a $7 a month habit tracker. Say 50,000 people have ever paid for it. 30% still have an active subscription, and of those only 25% opened the app in the last 30 days. That means about 3 out of 4 paying users are paying for something they don't use, and every dashboard still calls them "active".
+
+None of them would tell you that in an interview. Ask them and they say the app is great. They are being polite, the same way your mom is polite about your startup idea. That is the whole point of Rob Fitzpatrick's book *The Mom Test*: people lie to you to be nice, so you stop asking for opinions and start asking about their life.
+
+The book was written for founders with a notebook. I run it with agents now: data picks who I talk to, an agent preps a one-page card per person, and every conversation ends up as a line in one ledger of user facts. This post is that setup, with the prompts.
+
+By the end of this post you can:
+
+1. Pick both a positive and a negative user cohort from your own data, and not get fooled by your labels.
+2. Prep each conversation with a one-page user card an agent writes for you.
+3. Ask Mom Test questions that get facts, not compliments.
+4. Turn interviews, support tickets and cancel reasons into one ledger of user facts that changes what you build.
+
+## The Mom Test in three rules
+
+If you remember nothing else:
+
+1. **Talk about their life, not your idea.** The moment you pitch, they start protecting your feelings.
+2. **Ask about specific past events, not opinions about the future.** "Would you use this?" gets "sure". "Tell me about the last time this happened" gets what actually happened.
+3. **Talk less, listen more.** If you talk more than about a fifth of the call, you are selling, not learning.
+
+The other idea from the book I use every week: a compliment is worth nothing. Real interest costs the person something: their time (a follow-up call), their reputation (an intro to a colleague) or their money (a pre-order, an upgrade). If you leave a call with only nice words, you learned nothing.
+
+<Table>
+<Thead>
+<Tr><Th>Instead of</Th><Th>Ask</Th></Tr>
+</Thead>
+<Tbody>
+<Tr><Td>"Would you use a feature that does X?"</Td><Td>"How do you handle X today? Walk me through the last time."</Td></Tr>
+<Tr><Td>"How much would you pay for this?"</Td><Td>"What did you pay for the last tool you bought for this? Who decided?"</Td></Tr>
+<Tr><Td>"Do you like the app?"</Td><Td>"What did you open it for yesterday? What did you do right after?"</Td></Tr>
+<Tr><Td>"Why did you cancel?"</Td><Td>"Walk me through the 30 days before you cancelled."</Td></Tr>
+</Tbody>
+</Table>
+
+## Let data pick who you talk to, then don't trust the data
+
+Most founders interview whoever replies to an email. That is a cohort too, just a bad one: the people with the most free time and the strongest opinions.
+
+I start from usage instead. A cohort query pulls paying users who were active in the last 30 days, with real usage over the last 90 (sessions, things created, things shared), and ranks them. In our Pebble example, say the founder anchors the first run on one obvious power user, Lena, a nurse who logs a habit after every shift, and sets the thresholds at half of her numbers. The query returns 40 people. Too few, because the thresholds were fit to one person. Loosen them and the same pool gives 600 a week.
+
+Then the data starts lying in more interesting ways. These are the traps I see over and over, shown with made-up Pebble numbers:
+
+- **The labels are wrong.** Pebble tags users with AI personas like "fitness" or "wellbeing". When an agent reads what people actually track, only 60% of "fitness" users fit. The biggest misfit: people tracking medication, who look like fitness users because they log something every morning.
+- **Words fool classifiers.** One "fitness" user, call him Marco, is a gym owner. His habits are full of gym words, but they are "pay the trainers" and "order protein bars for the shop". Nouns tell you the topic, the frame tells you the person.
+- **People don't describe themselves the way you label them.** Say 45% of the users labeled "fitness" didn't pick fitness when onboarding asked why they downloaded Pebble.
+- **"Active" is a snapshot.** A subscription flag copied once a day can say active for someone whose plan expired last week. Check the end date, not only the flag.
+- **Your own team leaks in.** Staff on personal email addresses and test accounts like `name+test@` end up in interview lists. The tell: a test address with nothing created is not a customer.
+- **One person, two IDs.** Someone who reinstalls or switches login method can get a second account, so a person you already emailed comes back in next week's batch.
+
+The lesson: before you email anyone, have an agent read what each person actually did and mark "fits / doesn't fit / unclear". Split the list across a few reviewer agents, about 100 users each, have each one write its verdicts to a file and return only counts. In the Pebble example that check removes about a third of the list.
+
+## Talk to both ends of the cohort
+
+Founders love power users, because those calls feel good. But power users only tell you why the product works for people it already works for. You learn why it fails from the other end.
+
+![Four cohorts by how much users pay and how much they use the app](/images/blog/mom-test-cohorts.png)
+
+<Table>
+<Thead>
+<Tr><Th>Cohort</Th><Th>Who</Th><Th>What you learn</Th><Th>First question</Th></Tr>
+</Thead>
+<Tbody>
+<Tr><Td>Power users</Td><Td>pay and use it all the time</Td><Td>the job they hired it for, workarounds you never built</Td><Td>"Walk me through the last time you used it, from what made you open it."</Td></Tr>
+<Tr><Td>Paying ghosts</Td><Td>still paying, no open in 30 days</Td><Td>what replaced you, why they haven't cancelled yet</Td><Td>"What did you use last week instead, when this came up?"</Td></Tr>
+<Tr><Td>Free heavy users</Td><Td>use it a lot, never paid</Td><Td>what "enough" means, what a price would have to buy</Td><Td>"What would have to break for you to pay for something like this?"</Td></Tr>
+<Tr><Td>Cancelled or refunded</Td><Td>paid, then left</Td><Td>the real story of leaving</Td><Td>"Walk me through the 30 days before you cancelled."</Td></Tr>
+</Tbody>
+</Table>
+
+In the Pebble example, the paying ghosts are most of the paying base, so they deserve more calls than the fans. A power user call gives you a feature list. A ghost can tell you about the day the app stopped being part of their week.
+
+Data also gives you better questions than you would think of. Say Pebble users who joined through a friend's invite pick the yearly plan twice as often as everyone else. Don't guess why on a slide. Ask: "Tell me about the day your friend sent you the invite. What were you trying to fix?"
+
+## Prep every call with a one-page user card
+
+Before a call, an agent builds a card for that person from their data: when they joined, what they pay, what they actually create (titles, not counts), their busiest days and the last time they opened the app. Two minutes of reading turns a generic interview into "I saw you mostly log on Monday mornings, walk me through last Monday."
+
+The card has one rule: **facts from data only, with the source next to each line.** No guessing at their job or age from vibes. If the data doesn't say, the card says "unknown". Inference gets labeled as inference.
+
+## Run the conversation
+
+My running order for a 30-minute call:
+
+1. **Their context (5 min).** "What does a normal week look like for you? Where does this kind of work happen?"
+2. **The last real time (10 min).** "Walk me through the last time you did X. What did you open first? What happened next?" Keep pulling the thread: "and then?"
+3. **Workarounds and cost (5 min).** "What have you hacked together for this? What does it cost you, in time or money?" Workarounds are the best data you will get, because they are pain people already paid for.
+4. **What they tried before (5 min).** "What did you use before? Why did you stop?"
+5. **One ask (5 min).** A follow-up call, an intro to someone like them, or an early test of the next version. Write down what they said yes to. That is the only signal that counts.
+
+For negative cohorts, the order is the same but the second step is the 30 days before they stopped. Never ask "was it the price?" It hands them an easy, face-saving answer.
+
+## Turn every conversation into user facts
+
+This is where most interview programs die: 20 calls, 20 docs nobody reads again. So every call, ticket and review becomes lines in one ledger, and every line is a fact with a source:
+
+<Table>
+<Thead>
+<Tr><Th>Fact</Th><Th>Cohort</Th><Th>Evidence</Th><Th>Source</Th><Th>Confidence</Th></Tr>
+</Thead>
+<Tbody>
+<Tr><Td>F-0142: Logs habits right after a night shift</Td><Td>power user</Td><Td>"I do it on the bus home, before I sleep"</Td><Td>interview #12, 2026-06-14</Td><Td>high (said + data)</Td></Tr>
+<Tr><Td>F-0143: Stopped opening after switching phone</Td><Td>paying ghost</Td><Td>last_open 41 days ago, new device 43 days ago</Td><Td>data + call, 2026-06-15</Td><Td>medium</Td></Tr>
+<Tr><Td>F-0144: Thinks the free tier is "enough" for a weekly habit</Td><Td>free heavy</Td><Td>"I only need it once a week, so why pay"</Td><Td>interview #14, 2026-06-16</Td><Td>high</Td></Tr>
+</Tbody>
+</Table>
+
+(These rows are made up, like everything else about Pebble.) Three rules keep it honest:
+
+1. **A fact is something that happened, not an opinion.** "Would pay for X" is not a fact. "Paid for Y last month" is.
+2. **Every fact has evidence you can open.** A quote with the interview number, or an event in the data.
+3. **Facts can contradict each other, and that's good.** Two power users who do the opposite thing is a segment, not a mistake.
+
+Then once a week an agent groups the ledger: what showed up three or more times, what's new this week, what contradicts last month. That weekly summary is what I bring to product decisions, not the raw calls.
+
+## Customer success is an interview you're already having
+
+You don't need to schedule calls to start. Support tickets, store reviews, cancel-flow answers and refund requests are all people telling you about specific past events, without you asking. They go into the same ledger with the same rules: what happened, the quote, the source.
+
+The difference is the cohort. Support is mostly negative cohort, people who hit a wall. Interviews are mostly positive, people who said yes to a call. Put them in one ledger and you finally see both ends of the same product.
+
+## Iterate on purpose
+
+![The loop: mine, check, card, talk, facts, decide](/images/blog/mom-test-loop.png)
+
+The loop has six steps and the last one feeds the first:
+
+1. **Mine** a cohort from data.
+2. **Check** it by reading what people actually did.
+3. **Card** each person you will talk to.
+4. **Talk**, using Mom Test questions.
+5. **Facts** go into one ledger, with a quote or event behind each.
+6. **Decide**: ship it, kill it, or go ask again. A decision changes next week's cohort, for example "now find ten more people who log right after a shift".
+
+The step people skip is 6. If a week of calls changed nothing about what you build or who you talk to next, you were collecting stories.
+
+## The prompts
+
+Each prompt stands alone. Paste it into Claude Code, Codex or any agent that can read your files. Replace the parts in angle brackets.
+
+**1. Mine a cohort** (I keep this as a skill, called like `/user-miner mine --theme "<segment>" --top 250`):
+
+```
+Task: find <N> users worth interviewing for <product>.
+Inputs: read-only access to <warehouse/table names>. Event window: last 90 days.
+Include: paying now (check the subscription end date, not only an "active" flag),
+opened the app in the last 30 days, real usage (<your events, e.g. created >= 1>).
+Exclude: anyone in <contacted list file>, internal staff (match company names in the
+email local part too), plus-tagged emails with zero created items, and every second
+account ID that shares an email with an excluded one.
+Output: a JSON file, one record per user: id, email handle, cohort, usage numbers,
+last seen. Print only counts and the file path, never emails.
+If a query would scan more than <budget> GB, stop and tell me the estimate first.
+```
+
+**2. Check the labels:**
+
+```
+Task: for each user in <cohort file>, read their last 20 item titles and decide whether
+they fit the segment "<segment>".
+Judge the frame, not the nouns: "Meeting about the school" is a professional, "Class
+notes on X" is a student.
+Output per user: fits / doesn't fit / unclear, plus one evidence title. Write results
+to <file>. Return only the counts. If titles are empty, mark unclear, don't guess.
+```
+
+**3. Build the user card:**
+
+```
+Task: write a one-page card for user <id> before my interview.
+Use only data: signup date, plan and payments, what they create (titles), busiest
+days and hours, last open, what they share. Put the source next to every line.
+Write "unknown" where the data is silent. Label anything inferred as inference.
+End with 3 Mom Test questions based on this person's real past behavior, no
+questions about the future and no description of our product.
+```
+
+**4. Turn a transcript into facts:**
+
+```
+Task: read <transcript file> and extract user facts for the ledger in <ledger file>.
+A fact is a specific thing that happened, with a quote or event as evidence.
+Opinions, hypotheticals and compliments are not facts: list them separately as
+"noise". Note any commitment they made (time, intro, money) as its own line.
+Format: fact | cohort | evidence | source | date | confidence. Append, don't rewrite.
+```
+
+**5. Weekly synthesis:**
+
+```
+Task: read <ledger file> for the last 7 days and the 30 days before that.
+Report: facts seen 3+ times (with ids), new facts this week, facts that contradict
+older ones, and which cohort each pattern came from. Then suggest one decision
+and the next cohort to talk to. Don't invent facts that are not in the ledger.
+```
+
+## Where to start this week
+
+1. Pull two cohorts from your data: 10 power users and 10 paying ghosts (or cancelled users). Have an agent check them against what they actually did.
+2. Book five calls, at least two from the negative side. Use the running order above, and write down every ask they said yes to.
+3. Start the ledger as one file. Put every call and this week's support tickets into it with the fact format.
+
+You're done when you can point at one product decision and say which three facts, from which cohort, made it.
+
+Power users are the pleasant calls. In a setup like Pebble's, the number that should change your plan is the 3 out of 4 paying users who stopped opening the app. No dashboard explains them, and none of them will volunteer it on a feedback form. That is the cohort I'd call first.
+
+What's the last thing a user told you that turned out to be politeness?

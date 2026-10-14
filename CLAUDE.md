@@ -1,0 +1,8 @@
+## Hosting: Cloudflare (moved from Vercel, 2026-10-07)
+- Runtime: Worker via OpenNext (@opennextjs/cloudflare 1.20.8, Next 16.3.8); worker name `personal-blog-semih`; incremental cache = KV (`NEXT_INC_CACHE_KV`) + memory-queue + `WORKER_SELF_REFERENCE` service binding; `IMAGES` binding for /_next/image; `ASSETS` binding.
+- URLs: https://personal-blog-semih.lumiostudio.workers.dev; production https://www.mehmetsemihbabacan.com is a Cloudflare custom domain on this worker (wrangler.jsonc `routes`, LIVE on Cloudflare). Apex redirects to www via a zone redirect rule.
+- Deploy: `CI=1 pnpm exec opennextjs-cloudflare build </dev/null` then `CI=1 pnpm exec opennextjs-cloudflare deploy </dev/null` (pnpm; `pnpm deploy` script does both). Deploying updates production directly.
+- Secrets: key NAMES only; set with ~/dev/work/lumio-studio/scripts/cf-migrate/env-to-worker.sh (pull/push). Missing: none known.
+- Do not: runtime fs reads or new Function on Workers (content is generated at build by scripts/build-content.ts); firebase-admin / @google-cloud/* on Workers (use the Container or REST); Next 16.4.x with OpenNext 1.20.x; remove the IMAGES binding; use R2 for the cache.
+- Account: Cloudflare m.semihbabacan@gmail.com; DNS for the domain is on Cloudflare (zone), Vercel project kept until cleanup.
+- Open issues: the 2026-10-07 rebuild (adds IMAGES binding) built fine but was NOT deployed: the first attempt hit a transient "auth token expired" error, the retry was denied by the auto-mode classifier. /_next/image resizing and /about 308 -> / are unverified after that rebuild. Run the deploy command above, then check `/_next/image?url=/images/photo.jpeg&w=256&q=75` size vs original and `curl -I /about`.

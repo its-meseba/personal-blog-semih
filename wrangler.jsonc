@@ -28,6 +28,10 @@
       "id": "40f8ef9bc8a6414b91cbd8fd2060fc90"
     }
   ],
+  // Cloudflare Images: resizes/recodes /_next/image (w, q) instead of serving the original.
+  "images": {
+    "binding": "IMAGES"
+  },
   "observability": {
     "enabled": true
   }

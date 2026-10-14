@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LUMIO_STUDIO } from "./author";
 
 /**
  * Site footer. Mono, quiet, and the one place the feed is advertised.
@@ -25,6 +26,14 @@ export function Footer() {
         </div>
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          <a
+            className={FOOTER_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            href={LUMIO_STUDIO.url}
+          >
+            Founder of {LUMIO_STUDIO.name}
+          </a>
           <Link className={FOOTER_LINK} href="/atom">
             Atom
           </Link>

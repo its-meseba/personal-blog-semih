@@ -59,6 +59,11 @@ export const AUTHOR_SAME_AS = [
   author.links.twitter,
 ];
 
+export const LUMIO_STUDIO = {
+  name: "Lumio Studio",
+  url: "https://www.lumiostudio.co",
+};
+
 // Calculate estimated reading time based on word count
 export const calculateReadTime = (content: string): string => {
   const wordsPerMinute = 200;

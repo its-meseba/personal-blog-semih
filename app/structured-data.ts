@@ -11,6 +11,7 @@
 
 import {
   AUTHOR_SAME_AS,
+  LUMIO_STUDIO,
   ROLE,
   SITE_DESCRIPTION,
   SITE_NAME,
@@ -44,6 +45,11 @@ function personNode() {
     url: ABOUT_URL,
     jobTitle: ROLE,
     sameAs: AUTHOR_SAME_AS,
+    worksFor: {
+      "@type": "Organization",
+      name: LUMIO_STUDIO.name,
+      url: LUMIO_STUDIO.url,
+    },
   } as const;
 }
 

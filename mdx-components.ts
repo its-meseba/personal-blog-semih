@@ -18,6 +18,7 @@ import { Diagram } from "app/(post)/components/diagram";
 import { PullQuote } from "app/(post)/components/pull-quote";
 import { Steps, Step } from "app/(post)/components/steps";
 import { CodeCompare } from "app/(post)/components/code-compare";
+import { FreeResource } from "app/(post)/components/free-resource";
 import { Embed } from "app/(post)/components/embed";
 import { YouTube } from "app/(post)/components/youtube";
 import { Ref, FootNotes, FootNote } from "app/(post)/components/footnotes";
@@ -54,6 +55,7 @@ export function useMDXComponents(components: {
     Step,
     CodeCompare,
     Embed,
+    FreeResource,
     YouTube,
     Ref,
     FootNotes,

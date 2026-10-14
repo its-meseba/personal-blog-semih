@@ -23,7 +23,7 @@ export function PersonalHome({ children }: { children: React.ReactNode }) {
             <p className={styles.introCopy}>I build products and sometimes build companies.</p>
             <a className={styles.studioLink} href="https://www.lumiostudio.co" target="_blank" rel="noopener noreferrer">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M3 3h6v12h12v6H3z"/><circle cx="18" cy="6" r="3" fill="currentColor" stroke="none"/></svg>
-              <span><small>What I’m building</small><strong>Lumio Studio</strong><span>AI & software solutions</span></span>
+              <span><small>Founder of</small><strong>Lumio Studio</strong><span>AI & software solutions</span></span>
               <span className={styles.studioArrow} aria-hidden="true">↗</span>
             </a>
           </section>
